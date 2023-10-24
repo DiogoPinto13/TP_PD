@@ -114,7 +114,7 @@ public class Main {
             return;
         }
 
-        DatabaseManager.createNewDatabase("tp.db");
+        DatabaseManager.createNewDatabase();
         DatabaseManager.connect();
         DatabaseManager.createNewTable();
         //DatabaseManager.ClearDatabase();

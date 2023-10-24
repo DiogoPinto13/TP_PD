@@ -2,20 +2,11 @@ package Server;
 
 import java.sql.*;
 
-/**
- *
- * @author sqlitetutorial.net
- */
+
 public class DatabaseManager {
+    private final static String url = "jdbc:sqlite:./Database/tp.db";
 
-    /**
-     * Connect to a sample database
-     *
-     * @param fileName the database file name
-     */
-    public static void createNewDatabase(String fileName) {
-
-        String url = "jdbc:sqlite:./Database/" + fileName;
+    public static void createNewDatabase() {
 
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
@@ -35,8 +26,6 @@ public class DatabaseManager {
     public static void connect() {
         Connection conn = null;
         try {
-            // db parameters
-            String url = "jdbc:sqlite:./Database/tp.db";
             // create a connection to the database
             conn = DriverManager.getConnection(url);
 
@@ -57,8 +46,6 @@ public class DatabaseManager {
 
     public static void createNewTable() {
         // SQLite connection string
-        String url = "jdbc:sqlite:./Database/tp.db";
-
         // SQL statement for creating a new table
         String sql = "CREATE TABLE IF NOT EXISTS warehouses (\n"
                 + "	id integer PRIMARY KEY,\n"
@@ -74,8 +61,8 @@ public class DatabaseManager {
             System.out.println(e.getMessage());
         }
     }
+
     public static void ClearDatabase(){
-        String url = "jdbc:sqlite:./Database/tp.db";
         String sql = "DROP TABLE IF EXISTS warehouses;";
 
         try (Connection conn = DriverManager.getConnection(url);
@@ -85,5 +72,38 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * this function receives a string, which will be the query we want to executem and returns
+     * a result set
+     * @param query
+     * @return ResultSet
+     */
+    public static ResultSet executeQuerry(String query) {
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            // create a new table
+            return stmt.executeQuery(query);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+    /**
+     * this function receives a string, which will be the query we want to execute, and returns
+     * if the operation either succeeded or not
+     * @param query query
+     * @return Boolean if success
+     */
+    public static boolean executeUpdate(String query) {
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            // create a new table
+            return stmt.execute(query);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 }
