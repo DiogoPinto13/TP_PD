@@ -74,5 +74,16 @@ public class DatabaseManager {
             System.out.println(e.getMessage());
         }
     }
+    public static void ClearDatabase(){
+        String url = "jdbc:sqlite:./Database/tp.db";
+        String sql = "DROP TABLE IF EXISTS warehouses;";
 
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            // create a new table
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

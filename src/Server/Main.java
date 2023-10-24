@@ -117,6 +117,7 @@ public class Main {
         DatabaseManager.createNewDatabase("tp.db");
         DatabaseManager.connect();
         DatabaseManager.createNewTable();
+        //DatabaseManager.ClearDatabase();
         WaitClient waitClient = new WaitClient(Integer.parseInt(args[0]));
         waitClient.start();
 
