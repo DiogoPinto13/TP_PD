@@ -73,19 +73,10 @@ public class Main {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
             socket.setSoTimeout(TIMEOUT*1000);
 
-
             if(opt == 1){
-                option = "Register";
-                out.writeObject(option);
-                out.flush();
-
                 out.writeObject(register);
                 out.flush();
             }else if(opt == 2) {
-                option = "Login";
-                out.writeObject(option);
-                out.flush();
-
                 out.writeObject(login);
                 out.flush();
             }else{

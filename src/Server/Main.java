@@ -43,7 +43,7 @@ class ClientHandler extends Thread{
     private Socket clientSocket;
     private Login login;
     private Register register;
-    private String receivedOption;
+    private Object receivedObject;
 
     public ClientHandler(Socket socket){
         clientSocket = socket;
@@ -53,19 +53,14 @@ class ClientHandler extends Thread{
         try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
 
-            receivedOption = (String) (in.readObject());
-
-            if(receivedOption.equals("Login")) {
-                login = (Login) (in.readObject());
-                if(login == null){
-                    return;
-                }
+            receivedObject = in.readObject();
+            if(receivedObject == null)
+                return;
+            if(receivedObject instanceof Login) {
+                login = (Login) receivedObject;
             }
-            if(receivedOption.equals("Register")) {
-                register = (Register) (in.readObject());
-                if(register == null){
-                    return;
-                }
+            if(receivedObject instanceof Register) {
+                register = (Register) receivedObject;
             }
             /*
             temos que voltar o campo que nao esta bem do lado do client e obviamente fzr as funcoes pra isto
