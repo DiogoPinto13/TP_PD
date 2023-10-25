@@ -21,14 +21,12 @@ public class DatabaseManager {
     }
 
     /**
-     * Connect to a sample database
+     * A method to create a connection to the database
      */
     public static void connect() {
         Connection conn = null;
         try {
-            // create a connection to the database
             conn = DriverManager.getConnection(url);
-
             System.out.println("Connection to SQLite has been established.");
 
         } catch (SQLException e) {
@@ -45,8 +43,6 @@ public class DatabaseManager {
     }
 
     public static void createNewTable() {
-        // SQLite connection string
-        // SQL statement for creating a new table
         String sql = "CREATE TABLE IF NOT EXISTS warehouses (\n"
                 + "	id integer PRIMARY KEY,\n"
                 + "	name text NOT NULL,\n"
@@ -55,19 +51,21 @@ public class DatabaseManager {
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            // create a new table
             stmt.execute(sql);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * This function is meant to clear all tables from the database
+     */
     public static void ClearDatabase(){
+        //there is no DROP DATABASE, so we have to drop each table manually...
         String sql = "DROP TABLE IF EXISTS warehouses;";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            // create a new table
             stmt.execute(sql);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
