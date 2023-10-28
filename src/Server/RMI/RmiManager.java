@@ -18,7 +18,9 @@ public class RmiManager {
         try{
             Naming.bind(registration, RmiService);
         }
-        catch (MalformedURLException | java.rmi.RemoteException | AlreadyBoundException e) {
+        catch (MalformedURLException | java.rmi.RemoteException e) {
+
+            System.out.println(e);
             return false;
         }
         return true;
