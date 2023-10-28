@@ -38,6 +38,73 @@ CREATE TABLE IF NOT EXISTS eventos_utilizadores (
  */
 
 
+/*
+CREATE SCHEMA IF NOT EXISTS `ClassCodes` DEFAULT CHARACTER SET utf8 ;
+USE `ClassCodes` ;
+
+CREATE TABLE IF NOT EXISTS `ClassCodes`.`eventos` (
+  `idevento` INT NOT NULL AUTO_INCREMENT,
+  `designacao` VARCHAR(255) NOT NULL,
+  `place` VARCHAR(255) NOT NULL,
+  `datetime` DATETIME NOT NULL,
+  PRIMARY KEY (`idevento`))
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `ClassCodes`.`utilizadores` (
+  `idutilizador` VARCHAR(255) NOT NULL,
+  `username` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `nome` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`idutilizador`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC),
+  UNIQUE INDEX `idutilizador_UNIQUE` (`idutilizador` ASC))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `ClassCodes`.`codigos_registo`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ClassCodes`.`codigos_registo` (
+  `idcodigo_registo` INT NOT NULL AUTO_INCREMENT,
+  `codigo` INT NOT NULL,
+  `idevento` INT NOT NULL,
+  PRIMARY KEY (`idcodigo_registo`, `idevento`),
+  INDEX `fk_codigos_registo_eventos1_idx` (`idevento` ASC),
+  CONSTRAINT `fk_codigos_registo_eventos1`
+    FOREIGN KEY (`idevento`)
+    REFERENCES `ClassCodes`.`eventos` (`idevento`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `ClassCodes`.`eventos_utilizadores`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ClassCodes`.`eventos_utilizadores` (
+  `idevento` INT NOT NULL,
+  `idutilizador` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`idevento`, `idutilizador`),
+  INDEX `fk_eventos_has_utilizadores_utilizadores1_idx` (`idutilizador` ASC),
+  INDEX `fk_eventos_has_utilizadores_eventos_idx` (`idevento` ASC),
+  CONSTRAINT `fk_eventos_has_utilizadores_eventos`
+    FOREIGN KEY (`idevento`)
+    REFERENCES `ClassCodes`.`eventos` (`idevento`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_eventos_has_utilizadores_utilizadores1`
+    FOREIGN KEY (`idutilizador`)
+    REFERENCES `ClassCodes`.`utilizadores` (`idutilizador`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+*/
 
 public class DatabaseManager {
     private final static String url = "jdbc:sqlite:./Database/tp.db";
