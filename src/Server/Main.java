@@ -1,5 +1,6 @@
 package Server;
 
+import Server.RMI.RmiManager;
 import Shared.ErrorMessages;
 import Shared.Login;
 import Shared.Register;
@@ -102,6 +103,16 @@ public class Main {
         if(args.length != 1){
             System.out.println("Wrong syntax! java Main port");
             return;
+        }
+        RmiManager rmiManager;
+        boolean serverVariable = true;
+        try {
+            rmiManager = new RmiManager("localhost", serverVariable);
+            if(!rmiManager.registerService())
+                throw new RemoteException();
+        }catch (RemoteException e) {
+           System.out.println("Error while creating the RMI manager: " + e);
+           return;
         }
 
         //DatabaseManager.createNewDatabase();

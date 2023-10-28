@@ -18,7 +18,13 @@ public class RMI extends java.rmi.server.UnicastRemoteObject implements RmiInter
     @Override
     public void run() {
         while(serverVariable){
-
+            try{
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //send heartbeat
+            System.out.println("Heartbeat");
         }
     }
 }
