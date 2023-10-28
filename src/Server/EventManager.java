@@ -11,10 +11,16 @@ import java.util.Random;
 
 public class EventManager {
 
-
+    /**
+     * this function is meant to register a user in an event
+     * @param event
+     * @param username
+     * @param presenceCode
+     * @return
+     */
     public static boolean registerUserInEvent(Event event, String username, int presenceCode){
 
-        if(!userAlreadyInEvent(event, username) && !checkCode(event, presenceCode)){
+        if(!userAlreadyInEvent(event, username) && checkCode(event, presenceCode)){
             /* fzr isto dps do stamm fzr a base de dados
             return DatabaseManager.executeUpdate("INSERT INTO USERS (name, id, username, password)" +
                     " VALUES (" + register.getName()     + ", "
@@ -103,6 +109,10 @@ public class EventManager {
         }
     }
 
+    /**
+     * this function is meant to execute a query and store the result in a CSV file
+     * @param query
+     */
     public static void queryToCSV(String query){
         try{
             ResultSet rs = DatabaseManager.executeQuerry(query);
@@ -128,7 +138,6 @@ public class EventManager {
                     csv.append(",");
                 }
                 csv.append("\n");
-
                 //vamos escrever as cenas
                 while(rs.next()){
                     for(int i = 1; i <= nColunas; i++){
@@ -137,6 +146,7 @@ public class EventManager {
                     }
                     csv.append("\n");
                 }
+                csv.close();
             }
 
         }catch (SQLException sqlException){
