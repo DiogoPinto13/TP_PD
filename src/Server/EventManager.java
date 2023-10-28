@@ -39,12 +39,13 @@ public class EventManager {
     public static boolean createEvent(Event event){
 
         if(!eventAlreadyExists(event.getDesignation())){
-            return DatabaseManager.executeUpdate("INSERT INTO EVENTS (designation, place, date, time, presenceCode)" +
-                    " VALUES (" + event.getDesignation()      + ", "
-                    + event.getPlace()                        + ", "
-                    + event.getDate()                         + ", "
-                    + event.getTime()                         + ", "
-                    + event.getPresenceCode()                 + ");");
+            return DatabaseManager.executeUpdate("INSERT INTO eventos (idevento, designation, place, date, time)" +
+                    " VALUES ('"
+                    + event.getPresenceCode()     + "', '" //temos que mudar dps
+                    + event.getDesignation()      + "', '"
+                    + event.getPlace()            + "', '"
+                    + event.getDate()             + "', '"
+                    + event.getTime()             + "');");
         }
         return false;
     }
@@ -86,8 +87,9 @@ public class EventManager {
      */
     public static void queryEvents(String username, String filters){
         try{
-            String query = (filters == null ? "SELECT * FROM EVENTS WHERE USERNAME = " + username : "SELECT * FROM EVENTS WHERE USERNAME = " + username + filters);
-            ResultSet rs = DatabaseManager.executeQuerry(query);
+
+            String query = (filters == null ? "SELECT * FROM eventos_utilizadores WHERE username = '" + username + "';" : "SELECT * FROM eventos WHERE username = '" + username +"'" + filters + ";");
+            ResultSet rs = DatabaseManager.executeQuery(query);
             if(rs == null)
                 return;
             ResultSetMetaData metaData = rs.getMetaData();
@@ -115,7 +117,7 @@ public class EventManager {
      */
     public static void queryToCSV(String query){
         try{
-            ResultSet rs = DatabaseManager.executeQuerry(query);
+            ResultSet rs = DatabaseManager.executeQuery(query);
             if(rs!=null){
                 //para sacar o nome das colunas
                 ResultSetMetaData metaData = rs.getMetaData();
@@ -158,7 +160,7 @@ public class EventManager {
 
     public static boolean eventAlreadyExists(String designation) {
         try{
-            ResultSet rs = DatabaseManager.executeQuerry("SELECT * FROM EVENTS WHERE DESIGNATION = " + designation);
+            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos WHERE designacao = '" + designation + "';");
             return rs != null ? rs.next() : false;
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
@@ -174,8 +176,8 @@ public class EventManager {
      */
     public static boolean userAlreadyInEvent(Event event, String username){
         try{
-            ResultSet rs = DatabaseManager.executeQuerry("SELECT * FROM EVENTS WHERE DESIGNATION = " + event.getDesignation() +
-                    " AND USERNAME TA LA = " + username);
+            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEvent(event.getDesignation()) + "" +
+                    " AND username ='" + username + "';");
             return rs != null ? rs.next() : false;
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
@@ -183,18 +185,42 @@ public class EventManager {
         return false;
     }
 
+    /**
+     * this function is meant to check if the code the user introduced is valid or not
+     * @param event
+     * @param presenceCode
+     * @return
+     */
     public static boolean checkCode(Event event, int presenceCode){
         try{
-            ResultSet rs = DatabaseManager.executeQuerry("SELECT PRESENCE_CODE FROM EVENTS WHERE DESIGNATION =  " + event.getDesignation());
+            ResultSet rs = DatabaseManager.executeQuery("SELECT codigo FROM codigos_registo WHERE idevento = " + getIdEvent(event.getDesignation()) + ";");
             if(rs == null)
                 return false;
             while(rs.next()){
-                if(rs.getInt("PRESENCE_CODE") == presenceCode)
+                if(rs.getInt("codigo") == presenceCode)
                     return true;
             }
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
         }
         return false;
+    }
+
+    /**
+     * this function is meant to return the ID of the event, given a specific designation,
+     * returns 0 if it didnt find anything.
+     * @param designacao
+     * @return
+     */
+    public static int getIdEvent(String designacao){
+        try{
+            ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM eventos WHERE designacao = '" + designacao + "';");
+            while(rs.next()){
+                return rs.getInt("idevento");
+            }
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return 0;
     }
 }

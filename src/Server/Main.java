@@ -1,5 +1,6 @@
 package Server;
 
+import Shared.ErrorMessages;
 import Shared.Login;
 import Shared.Register;
 
@@ -12,7 +13,6 @@ import java.net.Socket;
 //wait for clients
 class WaitClient extends Thread{
     private int port;
-
     public WaitClient(int port){
         this.port = port;
     }
@@ -58,25 +58,19 @@ class ClientHandler extends Thread{
                 return;
             if(receivedObject instanceof Login) {
                 login = (Login) receivedObject;
+                if(!UserManager.checkPassword(login)){
+                    out.writeObject(ErrorMessages.INVALID_PASSWORD.toString());
+                    out.flush();
+                }
             }
             if(receivedObject instanceof Register) {
                 register = (Register) receivedObject;
+                UserManager.registerUser(register);
+                if(!UserManager.userExists(register.getUsername())){
+                    out.writeObject(ErrorMessages.USERNAME_ALREADY_EXISTS.toString());
+                    out.flush();
+                }
             }
-            /*
-            temos que voltar o campo que nao esta bem do lado do client e obviamente fzr as funcoes pra isto
-            also temos que meter as classes que temos iguais em ambos os lados inclusive o enum com as error messages
-            num package tipo shared que ambos os projetos conseguem ter acesso
-            if(alreadyExists(register.username){
-                String response = ErrorMessages.USERNAME_ALREADY_EXISTS.toString();
-                out.writeObject(response);
-                out.flush();
-            }
-            if(passwordValid(register.username){
-                String response = ErrorMessages.INVALID_PASSWORD.toString();
-                out.writeObject(response);
-                out.flush();
-            }
-             */
             String response = "Welcome! " + (login != null ? login.getUsername() : register.getUsername());
             out.writeObject(response);
             out.flush();
@@ -109,10 +103,16 @@ public class Main {
             return;
         }
 
-        DatabaseManager.createNewDatabase();
+        //DatabaseManager.createNewDatabase();
         DatabaseManager.connect();
-        DatabaseManager.createNewTable();
-        //DatabaseManager.ClearDatabase();
+        //DatabaseManager.createNewTable();
+        //DatabaseManager.clearDatabase();
+
+
+        //dbManager.createNewDatabase();
+        //dbManager.connect();
+        //dbManager.createNewTable();
+
         WaitClient waitClient = new WaitClient(Integer.parseInt(args[0]));
         waitClient.start();
 

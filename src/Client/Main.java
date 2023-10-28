@@ -71,7 +71,7 @@ public class Main {
         try(Socket socket = new Socket(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-            socket.setSoTimeout(TIMEOUT*1000);
+            //socket.setSoTimeout(TIMEOUT*1000);
 
             if(opt == 1){
                 out.writeObject(register);

@@ -1,7 +1,10 @@
 package Shared;
 
 public enum ErrorMessages {
-
+    INVALID_USER{
+        @Override
+        public String toString(){return "This user is not valid";}
+    },
     INVALID_PASSWORD{
         @Override
         public String toString() {return "The password is not valid";}

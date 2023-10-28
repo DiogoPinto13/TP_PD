@@ -1,6 +1,42 @@
 package Server;
 
 import java.sql.*;
+/*
+-- Tabela 'eventos'
+CREATE TABLE IF NOT EXISTS eventos (
+  idevento INTEGER PRIMARY KEY AUTOINCREMENT,
+  designacao TEXT NOT NULL,
+  place TEXT NOT NULL,
+  datetime TEXT NOT NULL
+);
+
+-- Tabela 'utilizadores'
+CREATE TABLE IF NOT EXISTS utilizadores (
+  idutilizador TEXT NOT NULL PRIMARY KEY,
+  username TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
+  nome TEXT NOT NULL
+);
+
+-- Tabela 'codigos_registo'
+CREATE TABLE IF NOT EXISTS codigos_registo (
+  idcodigo_registo INTEGER PRIMARY KEY AUTOINCREMENT,
+  codigo INTEGER NOT NULL,
+  idevento INTEGER NOT NULL,
+  FOREIGN KEY (idevento) REFERENCES eventos (idevento)
+);
+
+-- Tabela 'eventos_utilizadores'
+CREATE TABLE IF NOT EXISTS eventos_utilizadores (
+  idevento INTEGER NOT NULL,
+  idutilizador TEXT NOT NULL,
+  PRIMARY KEY (idevento, idutilizador),
+  FOREIGN KEY (idevento) REFERENCES eventos (idevento),
+  FOREIGN KEY (idutilizador) REFERENCES utilizadores (idutilizador)
+);
+
+ */
+
 
 
 public class DatabaseManager {
@@ -28,7 +64,6 @@ public class DatabaseManager {
         try {
             conn = DriverManager.getConnection(url);
             System.out.println("Connection to SQLite has been established.");
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -43,15 +78,40 @@ public class DatabaseManager {
     }
 
     public static void createNewTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS warehouses (\n"
-                + "	id integer PRIMARY KEY,\n"
-                + "	name text NOT NULL,\n"
-                + "	capacity real\n"
-                + ");";
+        //eventos, utilizadores, codigos_registo, eventos_utilizadores
+
+        String eventos = "CREATE TABLE IF NOT EXISTS eventos (\n" +
+                "  idevento INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "  designacao TEXT NOT NULL,\n" +
+                "  place TEXT NOT NULL,\n" +
+                "  datetime TEXT NOT NULL\n" +
+                ");";
+        String utilizadores = "CREATE TABLE IF NOT EXISTS utilizadores (\n" +
+                "  idutilizador TEXT NOT NULL UNIQUE,\n" +
+                "  username TEXT NOT NULL PRIMARY KEY,\n" +
+                "  password TEXT NOT NULL,\n" +
+                "  nome TEXT NOT NULL\n" +
+                ");";
+        String codigos_registo = "CREATE TABLE IF NOT EXISTS codigos_registo (\n" +
+                "  idcodigo_registo INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "  codigo INTEGER NOT NULL,\n" +
+                "  idevento INTEGER NOT NULL,\n" +
+                "  FOREIGN KEY (idevento) REFERENCES eventos (idevento)\n" +
+                ");";
+        String eventos_utilizadores = "CREATE TABLE IF NOT EXISTS eventos_utilizadores (\n" +
+                "  idevento INTEGER NOT NULL,\n" +
+                "  username TEXT NOT NULL,\n" +
+                "  PRIMARY KEY (idevento, username),\n" +
+                "  FOREIGN KEY (idevento) REFERENCES eventos (idevento),\n" +
+                "  FOREIGN KEY (username) REFERENCES utilizadores (username)\n" +
+                ");";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute(eventos);
+            stmt.execute(utilizadores);
+            stmt.execute(codigos_registo);
+            stmt.execute(eventos_utilizadores);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -60,13 +120,20 @@ public class DatabaseManager {
     /**
      * This function is meant to clear all tables from the database
      */
-    public static void ClearDatabase(){
+    public static void clearDatabase(){
         //there is no DROP DATABASE, so we have to drop each table manually...
-        String sql = "DROP TABLE IF EXISTS warehouses;";
-
+        String eventos = "DROP TABLE IF EXISTS eventos;";
+        String utilizadores ="DROP TABLE IF EXISTS utilizadores;";
+        String codigos_registo = "DROP TABLE IF EXISTS codigos_registo;";
+        String eventos_utilizadores = "DROP TABLE IF EXISTS eventos_utilizadores;";
+        //eventos, utilizadores, codigos_registo, eventos_utilizadores
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute("DROP TABLE IF EXISTS warehouses");
+            stmt.execute(eventos);
+            stmt.execute(utilizadores);
+            stmt.execute(codigos_registo);
+            stmt.execute(eventos_utilizadores);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -78,7 +145,7 @@ public class DatabaseManager {
      * @param query
      * @return ResultSet
      */
-    public static ResultSet executeQuerry(String query) {
+    public static ResultSet executeQuery(String query) {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             // create a new table

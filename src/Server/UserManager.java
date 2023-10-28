@@ -19,11 +19,11 @@ public class UserManager {
      */
     public static boolean registerUser(Register register) {
         if(!userExists(register.getUsername())){
-            return DatabaseManager.executeUpdate("INSERT INTO USERS (name, id, username, password)" +
-                    " VALUES (" + register.getName()     + ", "
-                                + register.getId()       + ", "
-                                + register.getUsername() + ", "
-                                + register.getPassword() + ");");
+            return DatabaseManager.executeUpdate("INSERT INTO utilizadores (idutilizador, username, password, nome)" +
+                    " VALUES ('" + register.getId()       + "', '"
+                                + register.getUsername() + "', '"
+                                + register.getPassword() + "', '"
+                                + register.getName()     + "');");
         }
         return false;
     }
@@ -36,12 +36,12 @@ public class UserManager {
     public static boolean checkPassword(Login login) {
         //I m doing this check here just because if it doesnt exist why should the program waste time connecting to the database to execute a query for a user that we already know it doesnt exist?
         try{
-            if(!userExists(login.getUsername())){
-                ResultSet rs = DatabaseManager.executeQuerry("SELECT PASSWORD FROM USERS WHERE USERNAME = " + login.getUsername());
+            if(userExists(login.getUsername())){
+                ResultSet rs = DatabaseManager.executeQuery("SELECT password FROM utilizadores WHERE username = '" + login.getUsername() + "';");
                 if(rs==null)
                     return false;
                 while(rs.next()){
-                    String password = rs.getString("PASSWORD");
+                    String password = rs.getString("password");
                     return login.getPassword().equals(password);
                 }
             }
@@ -58,8 +58,10 @@ public class UserManager {
      */
     public static boolean userExists(String username) {
         try{
-            ResultSet rs = DatabaseManager.executeQuerry("SELECT * FROM USERS WHERE USERNAME = " + username);
-            return rs != null ? rs.next() : false;
+            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM utilizadores WHERE username = '" + username + "';");
+            if (rs==null)
+                return false;
+            return rs.next();
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
         }
