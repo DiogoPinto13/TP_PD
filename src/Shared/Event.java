@@ -7,9 +7,9 @@ public class Event implements Serializable {
     private String place;
     private String date;
     private Time time;
-    private long presenceCode;
+    private int presenceCode;
 
-    public Event(String designation, String place, String date, Time time, long presenceCode) {
+    public Event(String designation, String place, String date, Time time, int presenceCode) {
         this.designation = designation;
         this.place = place;
         this.date = date;
@@ -44,7 +44,7 @@ public class Event implements Serializable {
     public long getPresenceCode() {
         return presenceCode;
     }
-    public void setPresenceCode(long presenceCode) {
+    public void setPresenceCode(int presenceCode) {
         this.presenceCode = presenceCode;
     }
 }

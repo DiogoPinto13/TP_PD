@@ -12,6 +12,19 @@ import java.util.Random;
 public class EventManager {
 
 
+    public static boolean registerUserInEvent(Event event, String username, int presenceCode){
+
+        if(!userAlreadyInEvent(event, username) && !checkCode(event, presenceCode)){
+            /* fzr isto dps do stamm fzr a base de dados
+            return DatabaseManager.executeUpdate("INSERT INTO USERS (name, id, username, password)" +
+                    " VALUES (" + register.getName()     + ", "
+                    + register.getId()       + ", "
+                    + register.getUsername() + ", "
+                    + register.getPassword() + ");");*/
+        }
+        return false;
+    }
+
     /**
      * This function will create a new event in the database
      * @param event
@@ -63,7 +76,7 @@ public class EventManager {
     }
     /**
      * This function will search the events that the user has been and will be able to have filters
-     * @param username
+     * @param username,filters
      */
     public static void queryEvents(String username, String filters){
         try{
@@ -137,6 +150,38 @@ public class EventManager {
         try{
             ResultSet rs = DatabaseManager.executeQuerry("SELECT * FROM EVENTS WHERE DESIGNATION = " + designation);
             return rs != null ? rs.next() : false;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return false;
+    }
+
+    /**
+     * this function returns either if a user is already in the event or not
+     * @param event
+     * @param username
+     * @return
+     */
+    public static boolean userAlreadyInEvent(Event event, String username){
+        try{
+            ResultSet rs = DatabaseManager.executeQuerry("SELECT * FROM EVENTS WHERE DESIGNATION = " + event.getDesignation() +
+                    " AND USERNAME TA LA = " + username);
+            return rs != null ? rs.next() : false;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return false;
+    }
+
+    public static boolean checkCode(Event event, int presenceCode){
+        try{
+            ResultSet rs = DatabaseManager.executeQuerry("SELECT PRESENCE_CODE FROM EVENTS WHERE DESIGNATION =  " + event.getDesignation());
+            if(rs == null)
+                return false;
+            while(rs.next()){
+                if(rs.getInt("PRESENCE_CODE") == presenceCode)
+                    return true;
+            }
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
         }
