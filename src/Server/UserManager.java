@@ -16,9 +16,8 @@ public class UserManager {
      * succeed or false if the user already exists or an error occurred
      * @param register
      * @return boolean
-     * @throws SQLException
      */
-    public static boolean registerUser(Register register) throws SQLException {
+    public static boolean registerUser(Register register) {
         if(!userExists(register.getUsername())){
             return DatabaseManager.executeUpdate("INSERT INTO USERS (name, id, username, password)" +
                     " VALUES (" + register.getName()     + ", "
@@ -33,18 +32,21 @@ public class UserManager {
      * This method will return true if the password is correct or otherwise false
      * @param login
      * @return boolean
-     * @throws SQLException
      */
-    public static boolean checkPassword(Login login) throws SQLException {
+    public static boolean checkPassword(Login login) {
         //I m doing this check here just because if it doesnt exist why should the program waste time connecting to the database to execute a query for a user that we already know it doesnt exist?
-        if(!userExists(login.getUsername())){
-            ResultSet rs = DatabaseManager.executeQuerry("SELECT PASSWORD FROM USERS WHERE USERNAME = " + login.getUsername());
-            if(rs==null)
-                return false;
-            while(rs.next()){
-                String password = rs.getString("PASSWORD");
-                return login.getPassword().equals(password);
+        try{
+            if(!userExists(login.getUsername())){
+                ResultSet rs = DatabaseManager.executeQuerry("SELECT PASSWORD FROM USERS WHERE USERNAME = " + login.getUsername());
+                if(rs==null)
+                    return false;
+                while(rs.next()){
+                    String password = rs.getString("PASSWORD");
+                    return login.getPassword().equals(password);
+                }
             }
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
         }
         return false;
     }
@@ -53,10 +55,14 @@ public class UserManager {
      * This method is to check if a user exists in the database or not, returning true or false
      * @param username
      * @return boolean
-     * @throws SQLException
      */
-    public static boolean userExists(String username) throws SQLException {
-        ResultSet rs = DatabaseManager.executeQuerry("SELECT * FROM USERS WHERE USERNAME = " + username);
-        return rs != null ? rs.next() : false;
+    public static boolean userExists(String username) {
+        try{
+            ResultSet rs = DatabaseManager.executeQuerry("SELECT * FROM USERS WHERE USERNAME = " + username);
+            return rs != null ? rs.next() : false;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return false;
     }
 }

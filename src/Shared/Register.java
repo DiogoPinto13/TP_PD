@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 public class Register implements Serializable {
     private String name;
-    private int id;
+    private String id;
     private String username; //AKA email address
     private String password;
 
-    public Register(String name, int id, String username, String password) {
+    public Register(String name, String id, String username, String password) {
         this.name = name;
         this.id = id;
         this.username = username;
@@ -21,10 +21,10 @@ public class Register implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public int getId() {
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     public String getUsername() {

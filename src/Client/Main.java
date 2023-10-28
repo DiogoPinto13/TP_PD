@@ -49,7 +49,7 @@ public class Main {
                 System.out.println("Please introduce the credentials: name,ID,emailAdress,password");
                 String input = scanner.nextLine();
                 parts = input.split(",");
-                register = new Register(parts[0], Integer.parseInt(parts[1]), parts[2], parts[3]);
+                register = new Register(parts[0],parts[1], parts[2], parts[3]);
             }while(parts.length != 4);
 
             //scanner.close();
