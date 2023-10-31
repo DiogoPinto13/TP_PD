@@ -45,8 +45,7 @@ class WaitClient extends Thread{
 }
 class ClientHandler extends Thread{
     private Socket clientSocket;
-    private Login login;
-    private Register register;
+    private String Username;
     private Object receivedObject;
 
     public ClientHandler(Socket socket){
@@ -56,31 +55,36 @@ class ClientHandler extends Thread{
     public void run(){
         try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
-
-            //DatabaseManager.testUser();
-            receivedObject = in.readObject();
-            if(receivedObject == null)
-                return;
-            if(receivedObject instanceof Login) {
-                login = (Login) receivedObject;
-                if(!UserManager.checkPassword(login)){
-                    out.writeObject(ErrorMessages.INVALID_PASSWORD.toString());
-                    out.flush();
+            String response;
+            do{
+                receivedObject = in.readObject();
+                if(receivedObject == null)
+                    return;
+                else if(receivedObject instanceof Login login) {
+                    if(!UserManager.checkPassword(login)){
+                        response = ErrorMessages.INVALID_PASSWORD.toString();
+                    }
+                    else{
+                        response = "Welcome! " + login.getUsername();
+                        Username = login.getUsername();
+                    }
                 }
-            }
-            if(receivedObject instanceof Register) {
-                register = (Register) receivedObject;
-                UserManager.registerUser(register);
-                if(!UserManager.userExists(register.getUsername())){
-                    out.writeObject(ErrorMessages.USERNAME_ALREADY_EXISTS.toString());
-                    out.flush();
+                else if(receivedObject instanceof Register register) {
+                    UserManager.registerUser(register);
+                    if(!UserManager.userExists(register.getUsername())){
+                        response = ErrorMessages.USERNAME_ALREADY_EXISTS.toString();
+                    }
+                    else{
+                        response = "Welcome! " + register.getUsername();
+                        Username = register.getUsername();
+                    }
                 }
-            }
-            String response = "Welcome! " + (login != null ? login.getUsername() : register.getUsername());
-            out.writeObject(response);
-            out.flush();
-
-
+                else{
+                    response = ErrorMessages.INVALID_REQUEST.toString();
+                }
+                out.writeObject(response);
+                out.flush();
+            }while(!clientSocket.isClosed());
         } catch (IOException e) {
             System.out.println("error: IO" + e);
         } catch (ClassNotFoundException e) {
@@ -112,6 +116,7 @@ public class Main {
             rmiManager = new RmiManager("localhost", serverVariable);
             if(!rmiManager.registerService())
                 throw new RemoteException();
+            System.out.println("RMI Service is Online!");
         }catch (RemoteException e) {
            System.out.println("Error while creating the RMI manager: " + e);
            return;

@@ -24,7 +24,7 @@ public class RMI extends java.rmi.server.UnicastRemoteObject implements RmiInter
                 e.printStackTrace();
             }
             //send heartbeat
-            System.out.println("Heartbeat");
+            //System.out.println("Heartbeat");
         }
     }
 }

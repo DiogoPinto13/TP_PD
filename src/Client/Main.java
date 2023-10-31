@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] args) {
 
         if(args.length != 2){
-            System.out.println("error in syntax: java Main IPadress port");
+            System.out.println("error in syntax: java Main IPaddress port");
             return;
         }
 
@@ -46,7 +46,7 @@ public class Main {
         //register
         if(opt == 1){
             do{
-                System.out.println("Please introduce the credentials: name,ID,emailAdress,password");
+                System.out.println("Please introduce the credentials: name,ID,emailAddress,password");
                 String input = scanner.nextLine();
                 parts = input.split(",");
                 register = new Register(parts[0],parts[1], parts[2], parts[3]);

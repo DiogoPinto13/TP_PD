@@ -20,7 +20,6 @@ public class RmiManager {
     public boolean registerService(){
         String registration = "rmi://" + registry + "/RMIService";
         try{
-            System.out.println("Remote location: \n"+RmiService.getRef().remoteToString());
             Naming.rebind(registration, RmiService);
             RmiHeartBeatThread = new Thread(RmiService);
             RmiHeartBeatThread.start();
