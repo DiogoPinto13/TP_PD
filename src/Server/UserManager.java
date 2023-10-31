@@ -39,9 +39,7 @@ public class UserManager {
             if(rs==null)
                 return false;
             while(rs.next()){
-                String password = rs.getString("password");
-                System.out.println(password);
-                return login.getPassword().equals(password);
+                return login.getPassword().equals(rs.getString("password"));
             }
 
         }catch (SQLException sqlException){

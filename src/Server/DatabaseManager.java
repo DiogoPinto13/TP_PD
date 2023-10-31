@@ -227,14 +227,10 @@ public class DatabaseManager {
      * @param query
      * @return ResultSet
      */
-    public static ResultSet executeQuery(String query) {
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()){
-            return stmt.executeQuery(query);
-        } catch (SQLException e) {
-            System.out.println("error while executing the query: " + e.getMessage());
-        }
-        return null;
+    public static ResultSet executeQuery(String query) throws SQLException {
+        Connection conn = DriverManager.getConnection(url);
+        Statement stmt = conn.createStatement();
+        return stmt.executeQuery(query);
     }
     /**
      * this function receives a string, which will be the query we want to execute, and returns
