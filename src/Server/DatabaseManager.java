@@ -206,19 +206,33 @@ public class DatabaseManager {
         }
     }
 
+    public static void testUser(){
+        try (Connection conn = DriverManager.getConnection(url);
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT password FROM utilizadores WHERE username = 'a2020133653@isec.pt';")) {
+            while(rs.next()){
+                System.out.println(
+                        //rs.getInt("idutilizador") + "," +
+                          //      rs.getString("username")   + "," +
+                                rs.getString("password")   + ",");
+                            //    rs.getString("nome"));
+            }
+        } catch (SQLException e) {
+            System.out.println("error while executing the query: " + e.getMessage());
+        }
+    }
     /**
-     * this function receives a string, which will be the query we want to executem and returns
+     * this function receives a string, which will be the query we want to execute and returns
      * a result set
      * @param query
      * @return ResultSet
      */
     public static ResultSet executeQuery(String query) {
         try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            // create a new table
+             Statement stmt = conn.createStatement()){
             return stmt.executeQuery(query);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("error while executing the query: " + e.getMessage());
         }
         return null;
     }
@@ -231,10 +245,9 @@ public class DatabaseManager {
     public static boolean executeUpdate(String query) {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            // create a new table
             return stmt.execute(query);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("error while executing the update: " + e.getMessage());
         }
         return false;
     }

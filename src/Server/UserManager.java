@@ -34,17 +34,16 @@ public class UserManager {
      * @return boolean
      */
     public static boolean checkPassword(Login login) {
-        //I m doing this check here just because if it doesnt exist why should the program waste time connecting to the database to execute a query for a user that we already know it doesnt exist?
         try{
-            if(userExists(login.getUsername())){
-                ResultSet rs = DatabaseManager.executeQuery("SELECT password FROM utilizadores WHERE username = '" + login.getUsername() + "';");
-                if(rs==null)
-                    return false;
-                while(rs.next()){
-                    String password = rs.getString("password");
-                    return login.getPassword().equals(password);
-                }
+            ResultSet rs = DatabaseManager.executeQuery("SELECT password FROM utilizadores WHERE username ='" + login.getUsername() + "';");
+            if(rs==null)
+                return false;
+            while(rs.next()){
+                String password = rs.getString("password");
+                System.out.println(password);
+                return login.getPassword().equals(password);
             }
+
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
         }

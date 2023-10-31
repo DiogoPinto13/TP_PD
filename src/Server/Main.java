@@ -11,6 +11,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 //wait for clients
 class WaitClient extends Thread{
@@ -55,6 +57,7 @@ class ClientHandler extends Thread{
         try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
 
+            //DatabaseManager.testUser();
             receivedObject = in.readObject();
             if(receivedObject == null)
                 return;
@@ -82,8 +85,7 @@ class ClientHandler extends Thread{
             System.out.println("error: IO" + e);
         } catch (ClassNotFoundException e) {
             System.out.println("error while reading/writing the object from/to the server");
-        }
-        finally {
+        } finally {
             try {
                 clientSocket.close();
             } catch (IOException e) {
