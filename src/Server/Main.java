@@ -13,23 +13,26 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 //wait for clients
 class WaitClient extends Thread{
-    private int port;
-    public WaitClient(int port){
+    private final int port;
+    private final AtomicBoolean serverVariable;
+    public WaitClient(int port, AtomicBoolean newServerVariable){
         this.port = port;
+        serverVariable = newServerVariable;
     }
     public void run(){
 
         try(ServerSocket socket = new ServerSocket(port)){
             System.out.println("Main server online in port: "+ socket.getLocalPort());
 
-            while(true){
-
+            while(serverVariable.get()){
                 try{
                     Socket toClientSocket = socket.accept();
-                    ClientHandler clientHandler = new ClientHandler(toClientSocket);
+                    ClientHandler clientHandler = new ClientHandler(toClientSocket, serverVariable);
                     clientHandler.start();
                 }
                 catch (Exception e){
@@ -40,16 +43,17 @@ class WaitClient extends Thread{
         }catch (Exception e){
             System.out.println("Error while creating the ServerSocket...");
         }
-
     }
 }
 class ClientHandler extends Thread{
-    private Socket clientSocket;
+    private final Socket clientSocket;
     private String Username;
     private Object receivedObject;
+    private final AtomicBoolean serverVariable;
 
-    public ClientHandler(Socket socket){
+    public ClientHandler(Socket socket, AtomicBoolean newServerVariable){
         clientSocket = socket;
+        serverVariable = newServerVariable;
     }
 
     public void run(){
@@ -65,8 +69,8 @@ class ClientHandler extends Thread{
                         response = ErrorMessages.INVALID_PASSWORD.toString();
                     }
                     else{
-                        response = "Welcome! " + login.getUsername();
                         Username = login.getUsername();
+                        response = "Welcome! " + Username;
                     }
                 }
                 else if(receivedObject instanceof Register register) {
@@ -75,16 +79,30 @@ class ClientHandler extends Thread{
                         response = ErrorMessages.USERNAME_ALREADY_EXISTS.toString();
                     }
                     else{
-                        response = "Welcome! " + register.getUsername();
                         Username = register.getUsername();
+                        response = "Welcome! " + Username;
+                    }
+                }
+                else if(receivedObject instanceof String request){
+                    //Takes normal string as request, will turn this into enum
+                    switch (request){
+                        case "Close":
+                            clientSocket.close();
+                            return;
+                        default:
+                            response = "Unknown Command.";
+                            break;
                     }
                 }
                 else{
                     response = ErrorMessages.INVALID_REQUEST.toString();
                 }
+                /*if(!serverVariable.get()){
+                    response = close request
+                }*/
                 out.writeObject(response);
                 out.flush();
-            }while(!clientSocket.isClosed());
+            }while(!clientSocket.isClosed() && serverVariable.get());
         } catch (IOException e) {
             System.out.println("error: IO" + e);
         } catch (ClassNotFoundException e) {
@@ -111,9 +129,9 @@ public class Main {
             return;
         }
         RmiManager rmiManager;
-        boolean serverVariable = true;
+        AtomicBoolean serverVariable = new AtomicBoolean(true);
         try {
-            rmiManager = new RmiManager("localhost", serverVariable);
+            rmiManager = new RmiManager("RMIService", serverVariable);
             if(!rmiManager.registerService())
                 throw new RemoteException();
             System.out.println("RMI Service is Online!");
@@ -132,9 +150,15 @@ public class Main {
         //dbManager.connect();
         //dbManager.createNewTable();
 
-        WaitClient waitClient = new WaitClient(Integer.parseInt(args[0]));
+        WaitClient waitClient = new WaitClient(Integer.parseInt(args[0]), serverVariable);
         waitClient.start();
 
+        Scanner scanner = new Scanner(System.in);
+        String input;
         System.out.println("Welcome!");
+        //handles admin commands here
+        do{
+            input = scanner.next();
+        }while(serverVariable.get());
     }
 }
