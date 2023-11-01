@@ -19,11 +19,11 @@ public class EventManager {
      * @return
      */
     public static boolean registerUserInEvent(Event event, String username, int presenceCode){
-
         if(!userAlreadyInEvent(event, username) && checkCode(event, presenceCode)){
             return DatabaseManager.executeUpdate("INSERTO INTO eventos_utilizadores (idevento,username) " +
-                    "VALUES ('");
-                    //+  + "' , '");
+                    "VALUES ('"
+                    + getIdEventByPresenceCode(presenceCode) + "', '"
+                    + username + "');");
         }
         return false;
     }
@@ -36,9 +36,8 @@ public class EventManager {
     public static boolean createEvent(Event event){
 
         if(!eventAlreadyExists(event.getDesignation())){
-            return DatabaseManager.executeUpdate("INSERT INTO eventos (idevento, designacao, place, datetime)" +
+            return DatabaseManager.executeUpdate("INSERT INTO eventos (designacao, place, datetime)" +
                     " VALUES ('"
-                    + 1
                     + event.getDesignation()      + "', '"
                     + event.getPlace()            + "', '"
                     + event.getDate()             + "');");
@@ -74,7 +73,7 @@ public class EventManager {
             stringBuilder.append(filter);
             stringBuilder.append(" AND ");
         }
-        stringBuilder.append(" ;");
+        stringBuilder.append(";");
         return stringBuilder.toString();
     }
     /**
@@ -171,7 +170,7 @@ public class EventManager {
      */
     public static boolean userAlreadyInEvent(Event event, String username){
         try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEvent(event.getDesignation()) + "" +
+            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + "" +
                     " AND username ='" + username + "';");
             return rs != null ? rs.next() : false;
         }catch (SQLException sqlException){
@@ -188,7 +187,7 @@ public class EventManager {
      */
     public static boolean checkCode(Event event, int presenceCode){
         try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT codigo FROM codigos_registo WHERE idevento = " + getIdEvent(event.getDesignation()) + ";");
+            ResultSet rs = DatabaseManager.executeQuery("SELECT codigo FROM codigos_registo WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + ";");
             if(rs == null)
                 return false;
             while(rs.next()){
@@ -207,7 +206,7 @@ public class EventManager {
      * @param designacao
      * @return
      */
-    public static int getIdEvent(String designacao){
+    public static int getIdEventByDesignation(String designacao){
         try{
             ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM eventos WHERE designacao = '" + designacao + "';");
             while(rs.next()){
