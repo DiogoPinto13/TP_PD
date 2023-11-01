@@ -3,6 +3,7 @@ package Server;
 import Server.RMI.RmiManager;
 import Shared.ErrorMessages;
 import Shared.Login;
+import Shared.Messages;
 import Shared.Register;
 
 import java.io.IOException;
@@ -86,11 +87,11 @@ class ClientHandler extends Thread{
                 else if(receivedObject instanceof String request){
                     //Takes normal string as request, will turn this into enum
                     switch (request){
-                        case "Close":
+                        case "close":
                             clientSocket.close();
                             return;
                         default:
-                            response = "Unknown Command.";
+                            response = Messages.UNKNOWN_COMMAND.toString();
                             break;
                     }
                 }

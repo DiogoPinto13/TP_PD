@@ -2,6 +2,7 @@ package Client;
 
 import Shared.ErrorMessages;
 import Shared.Login;
+import Shared.Messages;
 import Shared.Register;
 
 import java.io.IOException;
@@ -133,17 +134,17 @@ public class Main {
                 input = scanner.next();
                 switch (input){
                     case "exit":
-                        oos.writeObject("Close");
+                        oos.writeObject(Messages.CLOSE.toString());
                         socket.close();
                         break;
                     default:
-                        System.out.println("Unknown command.");
+                        System.out.println(Messages.UNKNOWN_COMMAND.toString());
                         break;
                 }
             }while(!socket.isClosed());
         }
         catch(Exception e){
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 }
