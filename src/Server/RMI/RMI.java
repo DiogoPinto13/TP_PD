@@ -1,30 +1,33 @@
 package Server.RMI;
 
-import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.Naming;
-import java.rmi.server.RemoteRef;
+import Server.DatabaseManager;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RMI extends java.rmi.server.UnicastRemoteObject implements RmiInterface, Runnable {
     //variables
-    private final String registry;
-    private boolean serverVariable;
+    private final String serviceName;
+    private final AtomicBoolean serverVariable;
 
-    public RMI(String location, boolean newServerVariable) throws java.rmi.RemoteException{
-        registry = location;
+    public RMI(String newRegistry, AtomicBoolean newServerVariable) throws java.rmi.RemoteException{
+        serviceName = newRegistry;
         serverVariable = newServerVariable;
     }
 
     @Override
     public void run() {
-        while(serverVariable){
+        while(serverVariable.get()){ //THE HEARTBEAT WORKS
+
+            //heartbeat must contain:
+            //porto de escuta do registry, (Registry.REGISTRY_PORT)
+            //nome de registo do seu serviço RMI no registry local (serviceName)
+            //número de versão da base DatabaseManager.executeQuery("query for version");
+            //System.out.println("Heartbeat");
+
             try{
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //send heartbeat
-            System.out.println("Heartbeat");
         }
     }
 }

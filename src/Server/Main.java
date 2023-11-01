@@ -3,6 +3,7 @@ package Server;
 import Server.RMI.RmiManager;
 import Shared.ErrorMessages;
 import Shared.Login;
+import Shared.Messages;
 import Shared.Register;
 
 import java.io.IOException;
@@ -13,23 +14,26 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 //wait for clients
 class WaitClient extends Thread{
-    private int port;
-    public WaitClient(int port){
+    private final int port;
+    private final AtomicBoolean serverVariable;
+    public WaitClient(int port, AtomicBoolean newServerVariable){
         this.port = port;
+        serverVariable = newServerVariable;
     }
     public void run(){
 
         try(ServerSocket socket = new ServerSocket(port)){
             System.out.println("Main server online in port: "+ socket.getLocalPort());
 
-            while(true){
-
+            while(serverVariable.get()){
                 try{
                     Socket toClientSocket = socket.accept();
-                    ClientHandler clientHandler = new ClientHandler(toClientSocket);
+                    ClientHandler clientHandler = new ClientHandler(toClientSocket, serverVariable);
                     clientHandler.start();
                 }
                 catch (Exception e){
@@ -40,47 +44,66 @@ class WaitClient extends Thread{
         }catch (Exception e){
             System.out.println("Error while creating the ServerSocket...");
         }
-
     }
 }
 class ClientHandler extends Thread{
-    private Socket clientSocket;
-    private Login login;
-    private Register register;
+    private final Socket clientSocket;
+    private String Username;
     private Object receivedObject;
+    private final AtomicBoolean serverVariable;
 
-    public ClientHandler(Socket socket){
+    public ClientHandler(Socket socket, AtomicBoolean newServerVariable){
         clientSocket = socket;
+        serverVariable = newServerVariable;
     }
 
     public void run(){
         try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
-
-            //DatabaseManager.testUser();
-            receivedObject = in.readObject();
-            if(receivedObject == null)
-                return;
-            if(receivedObject instanceof Login) {
-                login = (Login) receivedObject;
-                if(!UserManager.checkPassword(login)){
-                    out.writeObject(ErrorMessages.INVALID_PASSWORD.toString());
-                    out.flush();
+            String response;
+            do{
+                receivedObject = in.readObject();
+                if(receivedObject == null)
+                    return;
+                else if(receivedObject instanceof Login login) {
+                    if(!UserManager.checkPassword(login)){
+                        response = ErrorMessages.INVALID_PASSWORD.toString();
+                    }
+                    else{
+                        Username = login.getUsername();
+                        response = "Welcome! " + Username;
+                    }
                 }
-            }
-            if(receivedObject instanceof Register) {
-                register = (Register) receivedObject;
-                UserManager.registerUser(register);
-                if(!UserManager.userExists(register.getUsername())){
-                    out.writeObject(ErrorMessages.USERNAME_ALREADY_EXISTS.toString());
-                    out.flush();
+                else if(receivedObject instanceof Register register) {
+                    UserManager.registerUser(register);
+                    if(!UserManager.userExists(register.getUsername())){
+                        response = ErrorMessages.USERNAME_ALREADY_EXISTS.toString();
+                    }
+                    else{
+                        Username = register.getUsername();
+                        response = "Welcome! " + Username;
+                    }
                 }
-            }
-            String response = "Welcome! " + (login != null ? login.getUsername() : register.getUsername());
-            out.writeObject(response);
-            out.flush();
-
-
+                else if(receivedObject instanceof String request){
+                    //Takes normal string as request, will turn this into enum
+                    switch (request){
+                        case "close":
+                            clientSocket.close();
+                            return;
+                        default:
+                            response = Messages.UNKNOWN_COMMAND.toString();
+                            break;
+                    }
+                }
+                else{
+                    response = ErrorMessages.INVALID_REQUEST.toString();
+                }
+                /*if(!serverVariable.get()){
+                    response = close request
+                }*/
+                out.writeObject(response);
+                out.flush();
+            }while(!clientSocket.isClosed() && serverVariable.get());
         } catch (IOException e) {
             System.out.println("error: IO" + e);
         } catch (ClassNotFoundException e) {
@@ -107,11 +130,12 @@ public class Main {
             return;
         }
         RmiManager rmiManager;
-        boolean serverVariable = true;
+        AtomicBoolean serverVariable = new AtomicBoolean(true);
         try {
-            rmiManager = new RmiManager("localhost", serverVariable);
+            rmiManager = new RmiManager("RMIService", serverVariable);
             if(!rmiManager.registerService())
                 throw new RemoteException();
+            System.out.println("RMI Service is Online!");
         }catch (RemoteException e) {
            System.out.println("Error while creating the RMI manager: " + e);
            return;
@@ -127,9 +151,15 @@ public class Main {
         //dbManager.connect();
         //dbManager.createNewTable();
 
-        WaitClient waitClient = new WaitClient(Integer.parseInt(args[0]));
+        WaitClient waitClient = new WaitClient(Integer.parseInt(args[0]), serverVariable);
         waitClient.start();
 
+        Scanner scanner = new Scanner(System.in);
+        String input;
         System.out.println("Welcome!");
+        //handles admin commands here
+        do{
+            input = scanner.next();
+        }while(serverVariable.get());
     }
 }

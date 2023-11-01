@@ -4,30 +4,29 @@ import java.net.MalformedURLException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.Naming;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RmiManager {
     private final RMI RmiService;
-    private Thread RmiHeartBeatThread;
     private final String registry;
+    private final String rmiServiceName;
 
-    public RmiManager(String location, boolean newServerVariable) throws java.rmi.RemoteException{
+    public RmiManager(String newServiceName, AtomicBoolean newServerVariable) throws java.rmi.RemoteException{
         LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-        registry = location;
-        RmiService = new RMI(location, newServerVariable);
-
+        rmiServiceName = newServiceName;
+        registry = "rmi://localhost/" + rmiServiceName;
+        RmiService = new RMI(rmiServiceName, newServerVariable);
     }
 
     public boolean registerService(){
-        String registration = "rmi://" + registry + "/RMIService";
         try{
-            System.out.println("Remote location: \n"+RmiService.getRef().remoteToString());
-            Naming.rebind(registration, RmiService);
-            RmiHeartBeatThread = new Thread(RmiService);
-            RmiHeartBeatThread.start();
+            Naming.rebind(registry, RmiService);
+            Thread rmiHeartBeatThread = new Thread(RmiService);
+            rmiHeartBeatThread.start();
         }
         catch (MalformedURLException | java.rmi.RemoteException e) {
 
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return false;
         }
         return true;
