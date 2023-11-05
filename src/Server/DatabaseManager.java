@@ -227,7 +227,7 @@ public class DatabaseManager {
      * @param query
      * @return ResultSet
      */
-    public static ResultSet executeQuery(String query) throws SQLException {
+    public static synchronized ResultSet executeQuery(String query) throws SQLException {
         Connection conn = DriverManager.getConnection(url);
         Statement stmt = conn.createStatement();
         return stmt.executeQuery(query);
@@ -238,7 +238,7 @@ public class DatabaseManager {
      * @param query query
      * @return Boolean if success
      */
-    public static boolean executeUpdate(String query) {
+    public static synchronized boolean executeUpdate(String query) {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             return stmt.execute(query);

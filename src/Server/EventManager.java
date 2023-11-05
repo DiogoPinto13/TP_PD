@@ -59,6 +59,28 @@ public class EventManager {
         return Integer.parseInt(randomDigits.toString());
     }
 
+    /**
+     * This function is meant to register a new presence code (in a new event), given a specific idevento
+     * @param presenceCode
+     * @param event
+     * @return
+     */
+    public static boolean registerPresenceCode(int presenceCode, Event event){
+        return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, idevento)" +
+                " VALUES ('"
+                + event.getPresenceCode()                           + "', '"
+                + getIdEventByDesignation(event.getDesignation())   + "');");
+    }
+
+    /**
+     * this function is meant to update the presenceCode associated to a given event
+     * @param presenceCode
+     * @param event
+     * @return
+     */
+    public static boolean updatePresenceCode(int presenceCode, Event event){
+        return DatabaseManager.executeUpdate("UPDATE codigos_registo SET codigo = " + presenceCode + " WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + ";");
+    }
 
     /**
      * this is meant to receive multiple strings that will be our filters, AKA
