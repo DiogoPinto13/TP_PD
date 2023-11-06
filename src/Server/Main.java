@@ -83,21 +83,23 @@ class ClientHandler extends Thread{
                 }
                 else if(receivedObject instanceof Request request){
                     //Takes normal string as request, will turn this into enum
-                    if(request.getTypeMessage().toString().equals(Messages.CLOSE.toString())){
-
-                    }else if(request.getTypeMessage().toString().equals(Messages.EDIT_PROFILE.toString())){
-
-                    }else if(request.getTypeMessage().toString().equals(Messages.REGISTER_PRESENCE_CODE.toString())){
-                        response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage().toString())) ? "successfully registered!" : "invalid code!");
-                    }else if(request.getTypeMessage().toString().equals(Messages.GET_PRESENCES.toString())){
-                        //EventManager.queryEvents(username, null);
-                    }else if(request.getTypeMessage().toString().equals(Messages.GET_CSV_PRESENCES.toString())){
-                        //EventManager.queryToCSV(username, null);
-                        //fuck temos que enviar pro client o ficheiro csv!
-                    }
-                    else{
-                        response = Messages.UNKNOWN_COMMAND.toString();
-                        break;
+                    switch(request.getTypeMessage()){
+                        case CLOSE:
+                            break;
+                        case EDIT_PROFILE:
+                            break;
+                        case REGISTER_PRESENCE_CODE:
+                            response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage().toString())) ? "successfully registered!" : "invalid code!");
+                            break;
+                        case GET_PRESENCES:
+                            //EventManager.queryEvents(username, null);
+                            break;
+                        case GET_CSV_PRESENCES:
+                            //EventManager.queryToCSV(username, null);
+                            //fuck temos que enviar pro client o ficheiro csv!
+                            break;
+                        default:
+                            response = Messages.UNKNOWN_COMMAND.toString();
                     }
                 }
                 else{
