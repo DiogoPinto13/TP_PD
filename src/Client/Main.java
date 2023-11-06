@@ -117,6 +117,8 @@ public class Main {
         System.out.println("Welcome!");
         Scanner scanner = new Scanner(System.in);
         Socket socket = null;
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
         String response;
         String input;
 
@@ -156,12 +158,14 @@ public class Main {
                 return;
         }
         try {
+            boolean flag;
             socket = new Socket(InetAddress.getByName(args[0]), Integer.parseInt(args[1])); //these things cant be here
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
             //socket.setSoTimeout(TIMEOUT*1000);
             out.writeObject(newObject);
             do{
+                flag = false;
                 response = (String) in.readObject();
                 if(response == null){
                     return;
@@ -169,6 +173,7 @@ public class Main {
                 System.out.println(response);
                 //temos que reenviar ao servidor as coisas que nao estavam previamente corretas
                 if(response.equals(ErrorMessages.INVALID_PASSWORD.toString())){
+                    flag = true;
                     System.out.println("Introduce a new valid password: ");
                     input = scanner.nextLine();
                     if(newObject instanceof Register register){
@@ -181,7 +186,10 @@ public class Main {
                         socket.close();
                         return;
                     }
+                    out.writeObject(newObject);
+                    out.flush();
                 } else if(response.equals(ErrorMessages.USERNAME_ALREADY_EXISTS.toString())){
+                    flag = true;
                     System.out.println("the email address already exists");
                     input = scanner.nextLine();
                     if(newObject instanceof Register register){
@@ -194,10 +202,10 @@ public class Main {
                         socket.close();
                         return;
                     }
+                    out.writeObject(newObject);
+                    out.flush();
                 }
-                out.writeObject(newObject);
-                out.flush();
-            }while(response.equals(ErrorMessages.INVALID_PASSWORD.toString()) || response.equals(ErrorMessages.USERNAME_ALREADY_EXISTS.toString()));
+            }while(flag);
         } catch (UnknownHostException e) {
             System.out.println("error: unknown host");
         } catch (SocketTimeoutException e){
@@ -211,8 +219,7 @@ public class Main {
 
         if(socket == null)
             return;
-        try(ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())){
+        try{
             do{
                 //After login menu
                 //get a function to print menu and get option
@@ -226,28 +233,28 @@ public class Main {
                 //muitos destes tem null na message mas será mudado à medida que formos implementando os outros requests.
                 if(input.equals("1")){
                     Request request = new Request(Messages.CLOSE, null);
-                    oos.writeObject(request);
-                    socket.close();
+                    out.writeObject(request);
+                    //socket.close();
                 }else if(input.equals("2")){
                     Request request = new Request(Messages.EDIT_PROFILE, null);
-                    oos.writeObject(request);
-                    socket.close();
+                    out.writeObject(request);
+                    //socket.close();
                 }else if(input.equals("3")){
                     System.out.println("Please type the presence code: ");
                     input = scanner.nextLine();
                     Request request = new Request(Messages.REGISTER_PRESENCE_CODE, input);
-                    oos.writeObject(request);
-                    socket.close();
+                    out.writeObject(request);
+                    //socket.close();
                 }
                 else if(input.equals("4")){
                     Request request = new Request(Messages.GET_PRESENCES, null);
-                    oos.writeObject(request);
-                    socket.close();
+                    out.writeObject(request);
+                    //socket.close();
                 }
                 else if(input.equals("5")){
                     Request request = new Request(Messages.GET_CSV_PRESENCES, null);
-                    oos.writeObject(request);
-                    socket.close();
+                    out.writeObject(request);
+                    //socket.close();
                 }
                 else{
                     System.out.println(Messages.UNKNOWN_COMMAND.toString());
