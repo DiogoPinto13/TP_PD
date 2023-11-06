@@ -179,7 +179,7 @@ public class Main {
             if(input.equals("1")){
                 System.out.println("Introduce the following data: designation,place,date,time,presenceCode");
                 //event = new Event();
-                EventManager.createEvent(event);
+                //EventManager.createEvent(event);
             }else if(input.equals("2")){
 
             }else if(input.equals("3")){
