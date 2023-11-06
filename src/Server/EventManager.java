@@ -13,13 +13,12 @@ public class EventManager {
 
     /**
      * this function is meant to register a user in an event
-     * @param event
      * @param username
      * @param presenceCode
      * @return
      */
-    public static boolean registerUserInEvent(Event event, String username, int presenceCode){
-        if(!userAlreadyInEvent(event, username) && checkCode(event, presenceCode)){
+    public static boolean registerUserInEvent(String username, int presenceCode){
+        if(!userAlreadyInEvent(username) && checkCode(presenceCode)){
             return DatabaseManager.executeUpdate("INSERTO INTO eventos_utilizadores (idevento,username) " +
                     "VALUES ('"
                     + getIdEventByPresenceCode(presenceCode) + "', '"
@@ -61,14 +60,14 @@ public class EventManager {
 
     /**
      * This function is meant to register a new presence code (in a new event), given a specific idevento
-     * @param presenceCode
      * @param event
+     * @param presenceCode
      * @return
      */
-    public static boolean registerPresenceCode(int presenceCode, Event event){
+    public static boolean registerPresenceCode(Event event, int presenceCode){
         return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, idevento)" +
                 " VALUES ('"
-                + event.getPresenceCode()                           + "', '"
+                + presenceCode                           + "', '"
                 + getIdEventByDesignation(event.getDesignation())   + "');");
     }
 
@@ -186,13 +185,12 @@ public class EventManager {
 
     /**
      * this function returns either if a user is already in the event or not
-     * @param event
      * @param username
      * @return
      */
-    public static boolean userAlreadyInEvent(Event event, String username){
+    public static boolean userAlreadyInEvent(String username){
         try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + "" +
+            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByUsername(username) + "" +
                     " AND username ='" + username + "';");
             return rs != null ? rs.next() : false;
         }catch (SQLException sqlException){
@@ -203,13 +201,12 @@ public class EventManager {
 
     /**
      * this function is meant to check if the code the user introduced is valid or not
-     * @param event
      * @param presenceCode
      * @return
      */
-    public static boolean checkCode(Event event, int presenceCode){
+    public static boolean checkCode(int presenceCode){
         try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT codigo FROM codigos_registo WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + ";");
+            ResultSet rs = DatabaseManager.executeQuery("SELECT codigo FROM codigos_registo WHERE idevento = " + getIdEventByPresenceCode(presenceCode) + ";");
             if(rs == null)
                 return false;
             while(rs.next()){
