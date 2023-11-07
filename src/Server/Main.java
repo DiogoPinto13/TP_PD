@@ -176,30 +176,41 @@ public class Main {
             System.out.println("7 - Delete a presence from a user");
             System.out.println("8 - Insert a presence manually");
             System.out.println("9 - Logout");
-            input = scanner.next();
+            int inputMenu = scanner.nextInt();
             Event event;
-            if(input.equals("1")){
-                System.out.println("Introduce the following data: designation,place,date,time,presenceCode");
-                //event = new Event();
-                //EventManager.createEvent(event);
-            }else if(input.equals("2")){
+            switch (inputMenu) {
+                case 1:
+                    System.out.println("Introduce the following data: designation,place,date,time,presenceCode");
+                    //event = new Event();
+                    //EventManager.createEvent(event);
+                    break;
+                case 2:
 
-            }else if(input.equals("3")){
+                    break;
+                case 3:
 
-            }else if(input.equals("4")){
+                    break;
+                case 4:
 
-            }else if(input.equals("5")){
+                    break;
+                case 5:
 
-            }else if(input.equals("6")){
+                    break;
+                case 6:
 
-            }else if(input.equals("7")){
+                    break;
+                case 7:
 
-            }else if(input.equals("8")){
+                    break;
+                case 8:
 
-            }else if(input.equals("9")){
+                    break;
+                case 9:
 
-            }else{
-                System.out.println(Messages.UNKNOWN_COMMAND.toString());
+                    break;
+                default:
+                    System.out.println(Messages.UNKNOWN_COMMAND.toString());
+                    break;
             }
         }while(serverVariable.get());
     }

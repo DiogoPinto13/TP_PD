@@ -229,35 +229,39 @@ public class Main {
                 System.out.println("3 - register presence code");
                 System.out.println("4 - get all presences");
                 System.out.println("5 - get all presences in a csv file");
-                input = scanner.next();
+                int inputMenu = scanner.nextInt();
+                Request request;
                 //muitos destes tem null na message mas será mudado à medida que formos implementando os outros requests.
-                if(input.equals("1")){
-                    Request request = new Request(Messages.CLOSE, null);
-                    out.writeObject(request);
-                    //socket.close();
-                }else if(input.equals("2")){
-                    Request request = new Request(Messages.EDIT_PROFILE, null);
-                    out.writeObject(request);
-                    //socket.close();
-                }else if(input.equals("3")){
-                    System.out.println("Please type the presence code: ");
-                    input = scanner.nextLine();
-                    Request request = new Request(Messages.REGISTER_PRESENCE_CODE, input);
-                    out.writeObject(request);
-                    //socket.close();
-                }
-                else if(input.equals("4")){
-                    Request request = new Request(Messages.GET_PRESENCES, null);
-                    out.writeObject(request);
-                    //socket.close();
-                }
-                else if(input.equals("5")){
-                    Request request = new Request(Messages.GET_CSV_PRESENCES, null);
-                    out.writeObject(request);
-                    //socket.close();
-                }
-                else{
-                    System.out.println(Messages.UNKNOWN_COMMAND.toString());
+                switch (inputMenu){
+                    case 1:
+                        request = new Request(Messages.CLOSE, null);
+                        out.writeObject(request);
+                        //socket.close();
+                        break;
+                    case 2:
+                        request = new Request(Messages.EDIT_PROFILE, null);
+                        out.writeObject(request);
+                        //socket.close();
+                        break;
+                    case 3:
+                        System.out.println("Please type the presence code: ");
+                        input = scanner.nextLine();
+                        request = new Request(Messages.REGISTER_PRESENCE_CODE, input);
+                        out.writeObject(request);
+                        //socket.close();
+                        break;
+                    case 4:
+                        request = new Request(Messages.GET_PRESENCES, null);
+                        out.writeObject(request);
+                        //socket.close();
+                        break;
+                    case 5:
+                        request = new Request(Messages.GET_CSV_PRESENCES, null);
+                        out.writeObject(request);
+                        //socket.close();
+                        break;
+                    default:
+                        System.out.println(Messages.UNKNOWN_COMMAND.toString());
                 }
 
             }while(!socket.isClosed());
