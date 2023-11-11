@@ -65,9 +65,10 @@ public class EventManager {
      * @return
      */
     public static boolean registerPresenceCode(Event event, int presenceCode){
-        return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, idevento)" +
+        return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento)" +
                 " VALUES ('"
                 + presenceCode                           + "', '"
+                + event.getPresenceCodeDuration()        + "', '"
                 + getIdEventByDesignation(event.getDesignation())   + "');");
     }
 
@@ -77,8 +78,8 @@ public class EventManager {
      * @param event
      * @return
      */
-    public static boolean updatePresenceCode(int presenceCode, Event event){
-        return DatabaseManager.executeUpdate("UPDATE codigos_registo SET codigo = " + presenceCode + " WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + ";");
+    public static boolean updatePresenceCode(int presenceCode, int presenceCodeDuration , Event event){
+        return DatabaseManager.executeUpdate("UPDATE codigos_registo SET codigo = " + presenceCode + ", duracao = " + presenceCodeDuration +" WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + ";");
     }
 
     /**
