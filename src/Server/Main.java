@@ -91,7 +91,7 @@ class ClientHandler extends Thread{
                             response = (messages[1].equals("1") ?  UserManager.changeName(Username, messages[1]) : UserManager.changePassword(Username, messages[1])) ? "Successfully changed!" : "an error occurred";
                             break;
                         case REGISTER_PRESENCE_CODE:
-                            response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage().toString())) ? "successfully registered!" : "invalid code!");
+                            response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage())) ? "successfully registered!" : "invalid code!");
                             break;
                         case GET_PRESENCES:
                             response = EventManager.queryEvents(Username, null);
