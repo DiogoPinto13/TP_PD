@@ -162,6 +162,7 @@ public class DatabaseManager {
         String codigos_registo = "CREATE TABLE IF NOT EXISTS codigos_registo (\n" +
                 "  idcodigo_registo INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "  codigo INTEGER NOT NULL,\n" +
+                "  duracao INTEGER NOT NULL,\n" +
                 "  idevento INTEGER NOT NULL,\n" +
                 "  FOREIGN KEY (idevento) REFERENCES eventos (idevento)\n" +
                 ");";
@@ -196,7 +197,7 @@ public class DatabaseManager {
         //eventos, utilizadores, codigos_registo, eventos_utilizadores
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            stmt.execute("DROP TABLE IF EXISTS warehouses");
+            //stmt.execute("DROP TABLE IF EXISTS warehouses");
             stmt.execute(eventos);
             stmt.execute(utilizadores);
             stmt.execute(codigos_registo);

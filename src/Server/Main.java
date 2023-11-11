@@ -148,10 +148,11 @@ public class Main {
            return;
         }
 
-        //DatabaseManager.createNewDatabase();
-        DatabaseManager.connect();
-        //DatabaseManager.createNewTable();
         //DatabaseManager.clearDatabase();
+        //DatabaseManager.createNewDatabase();
+        //DatabaseManager.createNewTable();
+        // DatabaseManager.clearDatabase();
+        DatabaseManager.connect();
 
 
         //dbManager.createNewDatabase();

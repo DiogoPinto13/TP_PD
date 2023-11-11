@@ -3,11 +3,38 @@ package Shared;
 import java.io.Serializable;
 
 public class Time implements Serializable {
-    private int Hour, Minute;
+    private int Hour, Minute, Day, Month, Year;
 
-    public Time(int hour, int minute) {
+    public Time(int hour, int minute, int day, int month, int year) {
         Hour = hour;
         Minute = minute;
+        Day = day;
+        Month = month;
+        Year = year;
+    }
+
+    public int getDay() {
+        return Day;
+    }
+
+    public void setDay(int day) {
+        Day = day;
+    }
+
+    public int getMonth() {
+        return Month;
+    }
+
+    public void setMonth(int month) {
+        Month = month;
+    }
+
+    public int getYear() {
+        return Year;
+    }
+
+    public void setYear(int year) {
+        Year = year;
     }
 
     public int getHour() {
