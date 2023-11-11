@@ -130,6 +130,8 @@ public class DatabaseManager {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
+            conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            conn.setAutoCommit(true);
             System.out.println("Connection to SQLite has been established.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -176,6 +178,7 @@ public class DatabaseManager {
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
+            conn.setAutoCommit(true);
             stmt.execute(eventos);
             stmt.execute(utilizadores);
             stmt.execute(codigos_registo);
@@ -198,6 +201,7 @@ public class DatabaseManager {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             //stmt.execute("DROP TABLE IF EXISTS warehouses");
+            conn.setAutoCommit(true);
             stmt.execute(eventos);
             stmt.execute(utilizadores);
             stmt.execute(codigos_registo);
@@ -207,6 +211,43 @@ public class DatabaseManager {
         }
     }
 
+
+    public static void fillDatabase(){
+
+        String user1 = "INSERT INTO utilizadores (idutilizador, username, password, nome) VALUES ('202013653', 'a2020133653@isec.pt', 'password12345', 'diogo');";
+        String user2 = "INSERT INTO utilizadores(idutilizador, username, password, nome) VALUES ('2021146924', 'a2021146924@isec.pt', 'stammPassword', 'stamm')";
+        String user3 = "INSERT INTO utilizadores(idutilizador, username, password, nome) VALUES ('2021ana', 'a2021ana@isec.pt', 'anaPassword', 'Ana')";
+        String user4 = "INSERT INTO utilizadores (idutilizador, username, password, nome) VALUES ('admin12345', 'admin', 'admin', 'administrator');";
+        String user5 = "INSERT INTO utilizadores (idutilizador, username, password, nome) VALUES ('teste12345', 'test', 'test', 'teste');";
+
+
+        String event1 = "INSERT INTO eventos (designacao, place, datetime) VALUES ('Aula PD T1', 'ISEC', '2019-12-12 12:12:12');";
+        String event2 = "INSERT INTO eventos (designacao, place, datetime) VALUES ('Aula PD P1', 'ISEC', '2021-12-12 12:12:12');";
+        String event3 = "INSERT INTO eventos(designacao, place, datetime) VALUES ('Aula ED T1', 'ISEC', '2021-12-12 12:12:12');";
+
+        String relation1 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (1, 'a2020133653@isec.pt');";
+        String relation2 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (2, 'a2020133653@isec.pt');";
+        String relation3 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (1, 'a2021146924@isec.pt');";
+
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            conn.setAutoCommit(true);
+            stmt.execute(user1);
+            stmt.execute(user2);
+            stmt.execute(user3);
+            stmt.execute(user4);
+            stmt.execute(user5);
+            stmt.execute(event1);
+            stmt.execute(event2);
+            stmt.execute(event3);
+            stmt.execute(relation1);
+            stmt.execute(relation2);
+            stmt.execute(relation3);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
     public static void testUser(){
         try (Connection conn = DriverManager.getConnection(url);
         Statement stmt = conn.createStatement();
@@ -242,6 +283,7 @@ public class DatabaseManager {
     public static synchronized boolean executeUpdate(String query) {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
+            conn.setAutoCommit(true);
             return stmt.execute(query);
         } catch (SQLException e) {
             System.out.println("error while executing the update: " + e.getMessage());
