@@ -87,11 +87,14 @@ class ClientHandler extends Thread{
                         case CLOSE:
                             break;
                         case EDIT_PROFILE:
+                            String[] messages = request.getMessage().split(",");
+                            response = (messages[1].equals("1") ?  UserManager.changeName(Username, messages[1]) : UserManager.changePassword(Username, messages[1])) ? "Successfully changed!" : "an error occurred";
                             break;
                         case REGISTER_PRESENCE_CODE:
                             response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage().toString())) ? "successfully registered!" : "invalid code!");
                             break;
                         case GET_PRESENCES:
+                            response = EventManager.queryEvents(Username, null);
                             //EventManager.queryEvents(username, null);
                             break;
                         case GET_CSV_PRESENCES:

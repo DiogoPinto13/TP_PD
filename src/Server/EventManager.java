@@ -101,30 +101,34 @@ public class EventManager {
     /**
      * This function will search the events that the user has been and will be able to have filters
      * @param username,filters
+     * @return String a string completely filled
      */
-    public static void queryEvents(String username, String filters){
+    public static String queryEvents(String username, String filters){
         try{
+            StringBuilder stringBuilder = new StringBuilder();
             String query = (filters == null ? "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) + "';" : "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) +"'" + filters + ";");
             ResultSet rs = DatabaseManager.executeQuery(query);
             if(rs == null)
-                return;
+                return "NULL";
             ResultSetMetaData metaData = rs.getMetaData();
             int nColunas = metaData.getColumnCount();
             //escreve o nome das colunas na consola pro user saber o que raio está a ver
             for(int i = 1; i <= nColunas; i++){
-                System.out.print(metaData.getColumnName(i) + ",");
+                stringBuilder.append(metaData.getColumnName(i)).append(",");
             }
-            System.out.println();
+            stringBuilder.append("\n");
             //bora escrever as cenas todas
             while(rs.next()){
                 for(int i = 1; i <= nColunas; i++){
-                    System.out.println(rs.getString(i) + ",");
+                    stringBuilder.append(rs.getString(i)).append(",");
                 }
-                System.out.println();
+                stringBuilder.append("\n");
             }
+            return stringBuilder.toString();
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
         }
+        return "NULL";
     }
 
     /**

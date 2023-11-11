@@ -239,7 +239,13 @@ public class Main {
                         //socket.close();
                         break;
                     case 2:
-                        request = new Request(Messages.EDIT_PROFILE, null);
+                        System.out.println("Choose an option: ");
+                        System.out.println("1 - Change the name: ");
+                        System.out.println("2 - Change the password: ");
+                        int inputOp = scanner.nextInt();
+                        System.out.println("Please type the new name/password: ");
+                        String inputOpt =scanner.nextLine();
+                        request = new Request(Messages.EDIT_PROFILE, Integer.toString(inputOp) + "," + inputOpt);
                         out.writeObject(request);
                         //socket.close();
                         break;
