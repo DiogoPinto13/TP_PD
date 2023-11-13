@@ -2,6 +2,18 @@ package Shared;
 
 public enum Messages {
 
+    REQUEST_EDIT_PROFILE{
+        @Override
+        public String toString(){return "Request edit profile";}
+    },
+    EDIT_PROFILE_SUCCESS{
+        @Override
+        public String toString(){return "Successfully changed!";}
+    },
+    EDIT_PROFILE_ERROR{
+        @Override
+        public String toString(){return "an error occurred";}
+    },
     REGISTER_PRESENCE_CODE{
         @Override
         public String toString(){return "Register presence code option";};

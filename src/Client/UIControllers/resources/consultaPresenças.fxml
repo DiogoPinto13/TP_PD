@@ -32,15 +32,19 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.UIControllers.PresentsController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -65,6 +69,22 @@
             <Font size="18.0" />
           </font>
         </Label>
+            <TableView fx:id="tbPresencas" layoutX="39.0" layoutY="98.0" prefHeight="211.0" prefWidth="562.0">
+              <columns>
+                <TableColumn prefWidth="124.66665649414062" text="Designação" />
+                <TableColumn prefWidth="110.0" text="Local" />
+                  <TableColumn prefWidth="101.33331298828125" text="Data" />
+                  <TableColumn prefWidth="116.0" text="Hora Início" />
+                  <TableColumn prefWidth="110.0" text="Hora Fim" />
+              </columns>
+            </TableView>
+            <ComboBox layoutX="453.0" layoutY="52.0" prefWidth="150.0" promptText="Filtros" />
+            <Label layoutX="209.0" layoutY="14.0" text="Consulta de presenças">
+               <font>
+                  <Font name="Times New Roman Bold Italic" size="25.0" />
+               </font>
+            </Label>
+            <Button layoutX="515.0" layoutY="335.0" mnemonicParsing="false" text="Exportar CSV" />
       </children>
     </AnchorPane>
   </children>

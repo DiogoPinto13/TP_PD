@@ -1,8 +1,10 @@
 package Server;
 
+import Shared.ErrorMessages;
 import Shared.Login;
 import Shared.Register;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 /**
@@ -87,5 +89,44 @@ public class UserManager {
      */
     public static boolean changeName(String username, String name){
         return DatabaseManager.executeUpdate("UPDATE utilizadores SET nome = '" + name + "';");
+    }
+
+    /**
+     * this function is meant to edit the profile of an user, given a specific username, returns true or false
+     * if success
+     * @param username
+     * @param name
+     * @param id
+     * @param password
+     * @return
+     */
+    public static boolean editProfile(String username, String name, String id, String password){
+        return DatabaseManager.executeUpdate("UPDATE utilizadores SET idutilizador = '" + id + "', SET password = '" + password + "', SET nome= '" + name+ "' WHERE username = ' " + username + "';");
+    }
+
+    /**
+     * This function is meant to send the profile information of a given username in order to edit whatever the user wants
+     * @param username
+     * @return all data of a given user in one String separated by a Comma.
+     */
+    public static String getProfileForEdition(String username){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM utilizadores WHERE username = '" + username + "';");
+            if (rs == null)
+                return ErrorMessages.SQL_ERROR.toString();
+
+            ResultSetMetaData metaData = rs.getMetaData();
+            int nColunas = metaData.getColumnCount();
+            while(rs.next()) {
+                for (int i = 1; i <= nColunas; i++) {
+                    stringBuilder.append(rs.getString(i)).append(",");
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return stringBuilder.toString();
     }
 }

@@ -1,5 +1,6 @@
 package Client.UIControllers;
 
+import Client.Main;
 import Shared.Login;
 import Shared.Register;
 import javafx.event.ActionEvent;
@@ -48,6 +49,19 @@ public class LoginController {
             return;
 
         Login login = new Login(user.getText(),pass.getText());
+        boolean retorno = Client.Client.setObjectLogin(login);
+
+        if(retorno){
+            Client.Client.setUsername(login.getUsername());
+            Parent root = FXMLLoader.load(getClass().getResource("resources/beginClient.fxml"));
+            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
+        else{
+            errorMessage.setText("Dados incorretos!");
+        }
 
     }
 }

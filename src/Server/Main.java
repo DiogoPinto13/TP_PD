@@ -86,9 +86,13 @@ class ClientHandler extends Thread{
                     switch(request.getTypeMessage()){
                         case CLOSE:
                             break;
+                        case REQUEST_EDIT_PROFILE:
+                            response = UserManager.getProfileForEdition(Username);
+                            break;
                         case EDIT_PROFILE:
                             String[] messages = request.getMessage().split(",");
-                            response = (messages[1].equals("1") ?  UserManager.changeName(Username, messages[1]) : UserManager.changePassword(Username, messages[1])) ? "Successfully changed!" : "an error occurred";
+                            response = (UserManager.editProfile(Username, messages[0], messages[1], messages[2])) ? Messages.EDIT_PROFILE_SUCCESS.toString() : Messages.EDIT_PROFILE_ERROR.toString();
+                            //response = (messages[1].equals("1") ?  UserManager.changeName(Username, messages[1]) : UserManager.changePassword(Username, messages[1])) ? "Successfully changed!" : "an error occurred";
                             break;
                         case REGISTER_PRESENCE_CODE:
                             response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage())) ? "successfully registered!" : "invalid code!");
@@ -151,11 +155,11 @@ public class Main {
            return;
         }
 
-        DatabaseManager.clearDatabase();
+        //DatabaseManager.clearDatabase();
         //DatabaseManager.createNewDatabase();
-        DatabaseManager.createNewTable();
+        //DatabaseManager.createNewTable();
         // DatabaseManager.clearDatabase();
-        DatabaseManager.fillDatabase();
+        //DatabaseManager.fillDatabase();
         DatabaseManager.connect();
 
 
