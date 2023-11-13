@@ -101,7 +101,7 @@ public class UserManager {
      * @return
      */
     public static boolean editProfile(String username, String name, String id, String password){
-        return DatabaseManager.executeUpdate("UPDATE utilizadores SET idutilizador = '" + id + "', SET password = '" + password + "', SET nome= '" + name+ "' WHERE username = ' " + username + "';");
+        return DatabaseManager.executeUpdate("UPDATE utilizadores SET idutilizador = '" + id + "', SET password = '" + password + "', SET nome= '" + name+ "' WHERE username = '" + username + "';");
     }
 
     /**

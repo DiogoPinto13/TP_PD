@@ -44,6 +44,11 @@ public class SendCodController {
 
     public void registCod(ActionEvent actionEvent) throws IOException {
         if(isNumeric(cod.getText())){
+            boolean result = Client.Client.sendCode(cod.getText());
+            if(!result){
+                mensagem.setText("Insira um código válido!");
+                return;
+            }
             Parent root = FXMLLoader.load(getClass().getResource("resources/editarDados.fxml"));
             stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root);

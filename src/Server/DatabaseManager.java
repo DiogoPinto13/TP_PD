@@ -251,7 +251,7 @@ public class DatabaseManager {
     public static void testUser(){
         try (Connection conn = DriverManager.getConnection(url);
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT password FROM utilizadores WHERE username = 'a2020133653@isec.pt';")) {
+        ResultSet rs = stmt.executeQuery("SELECT password FROM utilizadores")) {
             while(rs.next()){
                 System.out.println(
                         //rs.getInt("idutilizador") + "," +

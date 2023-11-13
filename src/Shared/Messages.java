@@ -14,6 +14,14 @@ public enum Messages {
         @Override
         public String toString(){return "an error occurred";}
     },
+    PRESENCE_CODE_REGISTED{
+        @Override
+        public String toString(){return "the presence code was registed";}
+    },
+    INVALID_PRESENCE_CODE{
+      @Override
+      public String toString(){return "the presence code is not valid!";}
+    },
     REGISTER_PRESENCE_CODE{
         @Override
         public String toString(){return "Register presence code option";};

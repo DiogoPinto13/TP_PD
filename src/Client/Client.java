@@ -108,6 +108,21 @@ public class Client {
         return true;
     }
 
+    public static boolean sendCode(String code){
+
+        Request request = new Request(Messages.REGISTER_PRESENCE_CODE, code);
+        try{
+            out.writeObject(request);
+            String response = (String) in.readObject();
+            if(response.equals(Messages.INVALID_PRESENCE_CODE.toString())){
+                return false;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     /*public static void handleMenuAfter(){
         try{
             do{

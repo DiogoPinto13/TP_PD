@@ -35,9 +35,11 @@ public class EditProfileController {
 
     public void saveData(ActionEvent actionEvent) {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(email.getText()).append(",");
+        stringBuilder.append(nome.getText()).append(",");
         stringBuilder.append(nidentificacao.getText()).append(",");
-        stringBuilder.append(pass.getText()).append(",");
-        stringBuilder.append(nome.getText());
+        stringBuilder.append(pass.getText());
+        System.out.println(stringBuilder.toString());
         Client.editProfile(stringBuilder.toString());
 
     }
