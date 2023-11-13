@@ -42,24 +42,32 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.UIControllers.SendCodController">
   <children>
-    <MenuBar VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="Presenças">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Submissão de código" />
-            <MenuItem mnemonicParsing="false" text="Consulta de presenças" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Editar dados utilizador" />
-        <Menu mnemonicParsing="false" text="Sair">
-          <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
+      <MenuBar VBox.vgrow="NEVER">
+          <menus>
+              <Menu mnemonicParsing="false" text="Presenças">
+                  <items>
+                      <!-- You can add multiple menu items inside this menu -->
+                      <MenuItem mnemonicParsing="false" text="Submissão de código" /> <!-- //talvez eliminar-->
+                      <MenuItem mnemonicParsing="false" onAction="#consulPresencas" text="Consulta de presenças" />
+                  </items>
+              </Menu>
+              <Menu mnemonicParsing="false" text="Editar">
+                  <!-- Menu for editing user data -->
+                  <items>
+                      <MenuItem mnemonicParsing="false" onAction="#editProfile" text="Editar dados utilizador" />
+                  </items>
+              </Menu>
+              <Menu mnemonicParsing="false" text="Sair">
+                  <!-- Menu for exiting -->
+                  <items>
+                      <MenuItem mnemonicParsing="false" onAction="#sair" text="Sair" />
+                      <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+                  </items>
+              </Menu>
+          </menus>
+      </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
         <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
@@ -72,13 +80,13 @@
                   <Font name="Times New Roman Bold Italic" size="35.0" />
                </font>
             </Label>
-            <TextField layoutX="235.0" layoutY="176.0" prefWidth="168.0">
+            <TextField fx:id="cod" layoutX="235.0" layoutY="176.0" prefWidth="168.0">
                <font>
                   <Font name="Times New Roman" size="15.0" />
                </font>
             </TextField>
             <Label fx:id="mensagem" layoutX="305.0" layoutY="227.0" text="Label" />
-            <Button layoutX="267.0" layoutY="274.0" mnemonicParsing="false" text="Registar código">
+            <Button fx:id="registCod" onAction="#registCod" layoutX="267.0" layoutY="274.0" mnemonicParsing="false" text="Registar código">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
