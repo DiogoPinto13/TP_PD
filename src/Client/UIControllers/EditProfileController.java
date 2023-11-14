@@ -3,6 +3,7 @@ package Client.UIControllers;
 import Client.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -12,7 +13,7 @@ public class EditProfileController {
     @FXML
     private PasswordField pass;
     @FXML
-    private TextField email;
+    private Label email;
     @FXML
     private TextField nidentificacao;
 
