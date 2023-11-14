@@ -229,6 +229,7 @@ public class DatabaseManager {
         String relation2 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (2, 'a2020133653@isec.pt');";
         String relation3 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (1, 'a2021146924@isec.pt');";
 
+        String codeEvent1 = "INSERT INTO codigos_registo (codigo, duracao, idevento) VALUES(12345, 60, 1;)";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
@@ -244,6 +245,7 @@ public class DatabaseManager {
             stmt.execute(relation1);
             stmt.execute(relation2);
             stmt.execute(relation3);
+            stmt.execute(codeEvent1);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -283,7 +285,7 @@ public class DatabaseManager {
     public static synchronized boolean executeUpdate(String query) {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            conn.setAutoCommit(true);
+            //conn.setAutoCommit(true);
             return stmt.execute(query);
         } catch (SQLException e) {
             System.out.println("error while executing the update: " + e.getMessage());

@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -26,12 +27,20 @@ public class LoginController {
     private PasswordField pass;
     @FXML
     private Label errorMessage;
+    @FXML
+    private Pane background;
 
     private Stage stage;
     private Scene scene;
     private static Scene preScene;
 
-    public void initialize() {}
+    public void initialize() {
+
+        background.setStyle("-fx-background-image: url('resources/background.png'); " +
+                "-fx-background-size: cover;");
+
+
+    }
 
     public void setStage(Stage stage){
         this.stage = stage;
