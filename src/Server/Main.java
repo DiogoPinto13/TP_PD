@@ -63,13 +63,7 @@ class ClientHandler extends Thread{
                 if(receivedObject == null)
                     return;
                 else if(receivedObject instanceof Login login) {
-                    if(!UserManager.checkPassword(login)){
-                        response = ErrorMessages.INVALID_PASSWORD.toString();
-                    }
-                    else{
-                        Username = login.getUsername();
-                        response = "Welcome! " + Username;
-                    }
+                    response = UserManager.checkPassword(login).toString();
                 }
                 else if(receivedObject instanceof Register register) {
                     UserManager.registerUser(register);

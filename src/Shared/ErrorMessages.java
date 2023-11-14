@@ -9,6 +9,14 @@ public enum ErrorMessages {
         @Override
         public String toString() {return "The password is not valid";}
     },
+    LOGIN_NORMAL_USER{
+        @Override
+        public String toString(){return "login normal user";}
+    },
+    LOGIN_ADMIN_USER{
+        @Override
+        public String toString(){return "login admin user";}
+    },
     INVALID_REQUEST{
         @Override
         public String toString(){return "Invalid Request";}

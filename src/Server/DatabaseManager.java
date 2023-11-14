@@ -153,19 +153,22 @@ public class DatabaseManager {
                 "  idevento INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "  designacao TEXT NOT NULL,\n" +
                 "  place TEXT NOT NULL,\n" +
-                "  datetime TEXT NOT NULL\n" +
+                "  horaInicio DATETIME  NOT NULL,\n" +
+                "  horaFim DATETIME NOT NULL\n" +
                 ");";
         String utilizadores = "CREATE TABLE IF NOT EXISTS utilizadores (\n" +
                 "  idutilizador TEXT NOT NULL UNIQUE,\n" +
                 "  username TEXT NOT NULL PRIMARY KEY,\n" +
                 "  password TEXT NOT NULL,\n" +
-                "  nome TEXT NOT NULL\n" +
+                "  nome TEXT NOT NULL,\n" +
+                "  isAdmin BOOLEAN NOT NULL\n" +
                 ");";
         String codigos_registo = "CREATE TABLE IF NOT EXISTS codigos_registo (\n" +
                 "  idcodigo_registo INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "  codigo INTEGER NOT NULL,\n" +
                 "  duracao INTEGER NOT NULL,\n" +
                 "  idevento INTEGER NOT NULL,\n" +
+                "  horaRegisto DATETIME NOT NULL,\n" +
                 "  FOREIGN KEY (idevento) REFERENCES eventos (idevento)\n" +
                 ");";
         String eventos_utilizadores = "CREATE TABLE IF NOT EXISTS eventos_utilizadores (\n" +
@@ -175,7 +178,11 @@ public class DatabaseManager {
                 "  FOREIGN KEY (idevento) REFERENCES eventos (idevento),\n" +
                 "  FOREIGN KEY (username) REFERENCES utilizadores (username)\n" +
                 ");";
-
+        String versao = "CREATE TABLE IF NOT EXISTS versao (\n" +
+                "idversao INTEGER PRIMARY KEY AUTOINCREMENT,\n"  +
+                "versao INTEGER NOT NULL\n" +
+                ");";
+        String iniciaVersao = "INSERT INTO versao(versao) VALUES(1);";
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             conn.setAutoCommit(true);
@@ -183,6 +190,8 @@ public class DatabaseManager {
             stmt.execute(utilizadores);
             stmt.execute(codigos_registo);
             stmt.execute(eventos_utilizadores);
+            stmt.execute(versao);
+            stmt.execute(iniciaVersao);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -214,22 +223,22 @@ public class DatabaseManager {
 
     public static void fillDatabase(){
 
-        String user1 = "INSERT INTO utilizadores (idutilizador, username, password, nome) VALUES ('202013653', 'a2020133653@isec.pt', 'password12345', 'diogo');";
-        String user2 = "INSERT INTO utilizadores(idutilizador, username, password, nome) VALUES ('2021146924', 'a2021146924@isec.pt', 'stammPassword', 'stamm')";
-        String user3 = "INSERT INTO utilizadores(idutilizador, username, password, nome) VALUES ('2021ana', 'a2021ana@isec.pt', 'anaPassword', 'Ana')";
-        String user4 = "INSERT INTO utilizadores (idutilizador, username, password, nome) VALUES ('admin12345', 'admin', 'admin', 'administrator');";
-        String user5 = "INSERT INTO utilizadores (idutilizador, username, password, nome) VALUES ('teste12345', 'test', 'test', 'teste');";
+        String user1 = "INSERT INTO utilizadores (idutilizador, username, password, nome, isAdmin) VALUES ('202013653', 'a2020133653@isec.pt', 'password12345', 'diogo', false);";
+        String user2 = "INSERT INTO utilizadores(idutilizador, username, password, nome, isAdmin) VALUES ('2021146924', 'a2021146924@isec.pt', 'stammPassword', 'stamm', false);";
+        String user3 = "INSERT INTO utilizadores(idutilizador, username, password, nome, isAdmin) VALUES ('2021ana', 'a2021ana@isec.pt', 'anaPassword', 'Ana', false);";
+        String user4 = "INSERT INTO utilizadores (idutilizador, username, password, nome, isAdmin) VALUES ('admin12345', 'admin', 'admin', 'administrator', true);";
+        String user5 = "INSERT INTO utilizadores (idutilizador, username, password, nome, isAdmin) VALUES ('teste12345', 'test', 'test', 'teste', false);";
 
 
-        String event1 = "INSERT INTO eventos (designacao, place, datetime) VALUES ('Aula PD T1', 'ISEC', '2019-12-12 12:12:12');";
-        String event2 = "INSERT INTO eventos (designacao, place, datetime) VALUES ('Aula PD P1', 'ISEC', '2021-12-12 12:12:12');";
-        String event3 = "INSERT INTO eventos(designacao, place, datetime) VALUES ('Aula ED T1', 'ISEC', '2021-12-12 12:12:12');";
+        String event1 = "INSERT INTO eventos (designacao, place, horaInicio, horaFim) VALUES ('Aula PD T1', 'ISEC', '2019-12-12 12:12:12', '2019-12-12 14:12:12');";
+        String event2 = "INSERT INTO eventos (designacao, place, horaInicio, horaFim) VALUES ('Aula PD P1', 'ISEC', '2021-12-12 12:12:12', '2021-12-12 15:12:12');";
+        String event3 = "INSERT INTO eventos(designacao, place, horaInicio, horaFim) VALUES ('Aula ED T1', 'ISEC', '2021-12-12 12:12:12', '2021-12-12 14:12:12');";
 
         String relation1 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (1, 'a2020133653@isec.pt');";
         String relation2 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (2, 'a2020133653@isec.pt');";
         String relation3 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (1, 'a2021146924@isec.pt');";
 
-        String codeEvent1 = "INSERT INTO codigos_registo (codigo, duracao, idevento) VALUES(12345, 60, 1;)";
+        String codeEvent1 = "INSERT INTO codigos_registo (codigo, duracao, idevento, horaRegisto) VALUES(12345, 60, 1, '2021-12-12 12:12:12');";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {

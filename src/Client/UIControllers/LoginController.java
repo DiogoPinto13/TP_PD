@@ -1,6 +1,7 @@
 package Client.UIControllers;
 
 import Client.Main;
+import Shared.ErrorMessages;
 import Shared.Login;
 import Shared.Register;
 import javafx.event.ActionEvent;
@@ -61,11 +62,18 @@ public class LoginController {
             return;
 
         Login login = new Login(user.getText(),pass.getText());
-        boolean retorno = Client.Client.setObjectLogin(login);
+        String retorno = Client.Client.setObjectLogin(login);
 
-        if(retorno){
+        if(retorno.equals(ErrorMessages.LOGIN_NORMAL_USER.toString())){
             Client.Client.setUsername(login.getUsername());
             Parent root = FXMLLoader.load(getClass().getResource("resources/beginClient.fxml"));
+            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } else if(retorno.equals(ErrorMessages.LOGIN_ADMIN_USER.toString())){
+            //
+            Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/beginAdmin.fxml"));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);

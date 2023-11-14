@@ -1,7 +1,6 @@
 package Shared;
 
 public enum Messages {
-
     REQUEST_EDIT_PROFILE{
         @Override
         public String toString(){return "Request edit profile";}

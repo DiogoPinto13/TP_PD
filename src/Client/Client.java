@@ -12,19 +12,22 @@ import java.util.Scanner;
 
 public class Client {
 
+    /**
+     * THIS IS EITHER LOGIN OR REGISTER OBJECT
+     */
     private static Object newObject;
     public static void setObject(Object object){
         Client.newObject = object;
         handle();
     }
 
-    public static boolean setObjectLogin(Object object){
+    public static String setObjectLogin(Object object){
         Client.newObject = object;
         return handleLogin();
     }
     public static boolean setObjectRegister(Object object){
         Client.newObject = object;
-        return handleLogin();
+        return handleRegister();
     }
 
     public static String getUsername(){
@@ -49,22 +52,20 @@ public class Client {
         }
     }
 
-    public static boolean handleLogin(){
+    public static String handleLogin(){
         String response;
         String input;
         boolean flag;
         try {
             out.writeObject(newObject);
             response = (String) in.readObject();
-            if(response.equals(ErrorMessages.INVALID_PASSWORD.toString())){
-                return false;
-            }
+            return response;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return true;
+        return ErrorMessages.INVALID_PASSWORD.toString();
     }
     public static boolean handleRegister(){
         String response;
