@@ -36,7 +36,7 @@ public class LoginController {
 
     public void initialize() {
 
-        background.setStyle("-fx-background-image: url('resources/background.jpg'); " +
+        background.setStyle("-fx-background-image: url('resources/background.png'); " +
                 "-fx-background-size: cover;");
 
 
@@ -65,7 +65,7 @@ public class LoginController {
 
         if(retorno){
             Client.Client.setUsername(login.getUsername());
-            Parent root = FXMLLoader.load(getClass().getResource("resources/editarDados.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("resources/beginClient.fxml"));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);

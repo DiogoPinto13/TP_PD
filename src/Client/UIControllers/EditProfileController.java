@@ -3,9 +3,17 @@ package Client.UIControllers;
 import Client.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class EditProfileController {
     @FXML
@@ -16,6 +24,9 @@ public class EditProfileController {
     private Label email;
     @FXML
     private TextField nidentificacao;
+
+    private Stage stage;
+    private Scene scene;
 
 
     public void initialize() {
@@ -34,14 +45,35 @@ public class EditProfileController {
 
     }
 
-    public void saveData(ActionEvent actionEvent) {
+    public void saveData(ActionEvent actionEvent) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(email.getText()).append(",");
         stringBuilder.append(nome.getText()).append(",");
         stringBuilder.append(nidentificacao.getText()).append(",");
         stringBuilder.append(pass.getText());
         System.out.println(stringBuilder.toString());
-        Client.editProfile(stringBuilder.toString());
 
+        if(!Client.editProfile(stringBuilder.toString())){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERRO!");
+            alert.setHeaderText(null);
+            alert.setContentText("Ocorreu um erro ao atualizar o seu perfil!");
+            alert.showAndWait();
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("ERRO!");
+            alert.setHeaderText(null);
+            alert.setContentText("Perfil atualizado!");
+            alert.showAndWait();
+        }
+    }
+
+    public void back(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("resources/beginClient.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 }

@@ -61,12 +61,12 @@
           </MenuBar>-->
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
             <children>
-                <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+                <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" textAlignment="CENTER" textFill="#9f9f9f" >
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <Button fx:id="registCod" layoutX="266.0" layoutY="164.0" mnemonicParsing="false" onAction="#registCod" text="Registar código">
+                <Button fx:id="registCod" focusTraversable="true" layoutX="266.0" layoutY="164.0" onAction="#registCod" text="Registar código">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
@@ -76,17 +76,17 @@
                         <Font name="Times New Roman Bold Italic" size="25.0" />
                     </font>
                 </Label>
-                <Button layoutX="246.0" layoutY="262.0" mnemonicParsing="false" onAction="#editDados" text="Editar dados utilizador">
+                <Button fx:id="edit" focusTraversable="true" layoutX="246.0" layoutY="262.0" onAction="#editDados" text="Editar dados utilizador">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Button>
-                <Button layoutX="256.0" layoutY="214.0" mnemonicParsing="false" onAction="#consultPresencas" text="Consultar presenças">
+                <Button fx:id="consul" focusTraversable="true" layoutX="256.0" layoutY="214.0" onAction="#consultPresencas" text="Consultar presenças">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Button>
-                <Button layoutX="301.0" layoutY="317.0" mnemonicParsing="false" onAction="#sair" text="Sair">
+                <Button fx:id="sair" focusTraversable="true" layoutX="301.0" layoutY="317.0" onAction="#sair" text="Sair">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
@@ -96,12 +96,6 @@
                         <Font name="Times New Roman" size="19.0" />
                     </font>
                 </Label>
-                <ImageView fx:id="image" fitHeight="400.0" fitWidth="640.0" layoutX="-2.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@background.png" />
-                    </image>
-                </ImageView>
-                <Pane layoutX="133.0" layoutY="45.0" prefHeight="317.0" prefWidth="370.0" />
             </children>
         </AnchorPane>
     </children>
