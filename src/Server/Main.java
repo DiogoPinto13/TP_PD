@@ -1,10 +1,7 @@
 package Server;
 
 import Server.RMI.RmiManager;
-import Shared.ErrorMessages;
-import Shared.Login;
-import Shared.Messages;
-import Shared.Register;
+import Shared.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -60,7 +57,7 @@ class ClientHandler extends Thread{
     public void run(){
         try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
-            String response;
+            String response = null;
             do{
                 receivedObject = in.readObject();
                 if(receivedObject == null)
@@ -84,15 +81,32 @@ class ClientHandler extends Thread{
                         response = "Welcome! " + Username;
                     }
                 }
-                else if(receivedObject instanceof String request){
+                else if(receivedObject instanceof Request request){
                     //Takes normal string as request, will turn this into enum
-                    switch (request){
-                        case "close":
-                            clientSocket.close();
-                            return;
+                    switch(request.getTypeMessage()){
+                        case CLOSE:
+                            break;
+                        case REQUEST_EDIT_PROFILE:
+                            response = UserManager.getProfileForEdition(Username);
+                            break;
+                        case EDIT_PROFILE:
+                            String[] messages = request.getMessage().split(",");
+                            response = (UserManager.editProfile(messages[0], messages[1], messages[2], messages[3])) ? Messages.EDIT_PROFILE_SUCCESS.toString() : Messages.EDIT_PROFILE_ERROR.toString();
+                            //response = (messages[1].equals("1") ?  UserManager.changeName(Username, messages[1]) : UserManager.changePassword(Username, messages[1])) ? "Successfully changed!" : "an error occurred";
+                            break;
+                        case REGISTER_PRESENCE_CODE:
+                            response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage())) ? Messages.PRESENCE_CODE_REGISTED.toString() : Messages.INVALID_PRESENCE_CODE.toString());
+                            break;
+                        case GET_PRESENCES:
+                            response = EventManager.queryEvents(Username, null);
+                            //EventManager.queryEvents(username, null);
+                            break;
+                        case GET_CSV_PRESENCES:
+                            //EventManager.queryToCSV(username, null);
+                            //fuck temos que enviar pro client o ficheiro csv!
+                            break;
                         default:
                             response = Messages.UNKNOWN_COMMAND.toString();
-                            break;
                     }
                 }
                 else{
@@ -141,11 +155,13 @@ public class Main {
            return;
         }
 
-        //DatabaseManager.createNewDatabase();
-        DatabaseManager.connect();
-        //DatabaseManager.createNewTable();
         //DatabaseManager.clearDatabase();
-
+        //DatabaseManager.createNewDatabase();
+        //DatabaseManager.createNewTable();
+        // DatabaseManager.clearDatabase();
+        //DatabaseManager.fillDatabase();
+        DatabaseManager.connect();
+        //DatabaseManager.testUser();
 
         //dbManager.createNewDatabase();
         //dbManager.connect();
@@ -159,7 +175,52 @@ public class Main {
         System.out.println("Welcome!");
         //handles admin commands here
         do{
-            input = scanner.next();
+            System.out.println("Please choose an option: ");
+            System.out.println("1 - Create an event");
+            System.out.println("2 - Edit an event");
+            System.out.println("3 - Delete an event");
+            System.out.println("4 - Query an event");
+            System.out.println("5 - Generate a new presence code");
+            System.out.println("6 - Query presences");
+            System.out.println("7 - Delete a presence from a user");
+            System.out.println("8 - Insert a presence manually");
+            System.out.println("9 - Logout");
+            int inputMenu = scanner.nextInt();
+            Event event;
+            switch (inputMenu) {
+                case 1:
+                    System.out.println("Introduce the following data: designation,place,date,time,presenceCode");
+                    //event = new Event();
+                    //EventManager.createEvent(event);
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+                case 4:
+
+                    break;
+                case 5:
+
+                    break;
+                case 6:
+
+                    break;
+                case 7:
+
+                    break;
+                case 8:
+
+                    break;
+                case 9:
+
+                    break;
+                default:
+                    System.out.println(Messages.UNKNOWN_COMMAND.toString());
+                    break;
+            }
         }while(serverVariable.get());
     }
 }
