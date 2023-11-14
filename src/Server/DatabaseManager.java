@@ -283,7 +283,7 @@ public class DatabaseManager {
     public static synchronized boolean executeUpdate(String query) {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            conn.setAutoCommit(true);
+            //conn.setAutoCommit(true);
             return stmt.execute(query);
         } catch (SQLException e) {
             System.out.println("error while executing the update: " + e.getMessage());

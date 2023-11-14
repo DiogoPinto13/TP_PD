@@ -38,8 +38,7 @@ public class UserManager {
      * @return boolean
      */
     public static boolean checkPassword(Login login) {
-        try {
-            ResultSet rs = DatabaseManager.executeQuery("SELECT password FROM utilizadores WHERE username ='" + login.getUsername() + "';");
+        try (ResultSet rs = DatabaseManager.executeQuery("SELECT password FROM utilizadores WHERE username ='" + login.getUsername() + "';");){
             if (rs == null)
                 return false;
             while (rs.next()) {
@@ -59,8 +58,7 @@ public class UserManager {
      * @return boolean
      */
     public static boolean userExists(String username) {
-        try {
-            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM utilizadores WHERE username = '" + username + "';");
+        try (ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM utilizadores WHERE username = '" + username + "';");){
             if (rs == null)
                 return false;
             return rs.next();
@@ -101,7 +99,7 @@ public class UserManager {
      * @return
      */
     public static boolean editProfile(String username, String name, String id, String password){
-        return DatabaseManager.executeUpdate("UPDATE utilizadores SET idutilizador = '" + id + "', SET password = '" + password + "', SET nome= '" + name+ "' WHERE username = '" + username + "';");
+        return DatabaseManager.executeUpdate("UPDATE utilizadores SET idutilizador = '" + id + "', password = '" + password + "', nome= '" + name+ "' WHERE username = '" + username + "';");
     }
 
     /**
@@ -112,8 +110,7 @@ public class UserManager {
     public static String getProfileForEdition(String username){
         StringBuilder stringBuilder = new StringBuilder();
 
-        try {
-            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM utilizadores WHERE username = '" + username + "';");
+        try (ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM utilizadores WHERE username = '" + username + "';");){
             if (rs == null)
                 return ErrorMessages.SQL_ERROR.toString();
 
