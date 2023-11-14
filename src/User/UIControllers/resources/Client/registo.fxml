@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.UIControllers.RegisterController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="User.UIControllers.RegisterController">
    <children>
       <ImageView fitHeight="394.0" fitWidth="592.0" layoutX="5.0" layoutY="3.0" opacity="0.8" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@background.png" />
+            <Image url="@../background.png" />
          </image>
       </ImageView>
       <Pane layoutX="43.0" layoutY="82.0" prefHeight="237.0" prefWidth="517.0">

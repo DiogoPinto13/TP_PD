@@ -5,26 +5,13 @@ import java.io.Serializable;
 public class Event implements Serializable {
     private String designation;
     private String place;
-    private String date;
-    private Time time;
-    private int presenceCodeDuration; //duration of the presence code
-    private int presenceCode;
+    private Time timeBegin, timeEnd;
 
-    public Event(String designation, String place, String date, Time time, int presenceCode, int presenceCodeDuration) {
+    public Event(String designation, String place, Time timeBegin, Time timeEnd) {
         this.designation = designation;
         this.place = place;
-        this.date = date;
-        this.time = time;
-        this.presenceCode = presenceCode;
-        this.presenceCodeDuration = presenceCodeDuration;
-    }
-
-    public int getPresenceCodeDuration() {
-        return presenceCodeDuration;
-    }
-
-    public void setPresenceCodeDuration(int presenceCodeDuration) {
-        this.presenceCodeDuration = presenceCodeDuration;
+        this.timeBegin = timeBegin;
+        this.timeEnd = timeEnd;
     }
 
     public String getDesignation() {
@@ -39,22 +26,18 @@ public class Event implements Serializable {
     public void setPlace(String place) {
         this.place = place;
     }
-    public String getDate() {
-        return date;
+
+    public Time getTimeBegin() {
+        return timeBegin;
     }
-    public void setDate(String date) {
-        this.date = date;
+    public Time getTimeEnd() {
+        return timeEnd;
     }
-    public Time getTime() {
-        return time;
+    public void setTimeBegin(Time timeBegin) {
+        this.timeBegin = timeBegin;
     }
-    public void setTime(Time time) {
-        this.time = time;
+    public void setTimeEnd(Time timeEnd) {
+        this.timeEnd = timeEnd;
     }
-    public long getPresenceCode() {
-        return presenceCode;
-    }
-    public void setPresenceCode(int presenceCode) {
-        this.presenceCode = presenceCode;
-    }
+
 }

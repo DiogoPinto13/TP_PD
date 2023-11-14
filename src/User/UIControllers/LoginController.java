@@ -1,9 +1,7 @@
-package Client.UIControllers;
+package User.UIControllers;
 
-import Client.Main;
 import Shared.ErrorMessages;
 import Shared.Login;
-import Shared.Register;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,12 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class LoginController {
     @FXML
@@ -48,7 +43,7 @@ public class LoginController {
     }
 
     public void OpenRegisto(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("resources/registo.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Client/registo.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -62,11 +57,11 @@ public class LoginController {
             return;
 
         Login login = new Login(user.getText(),pass.getText());
-        String retorno = Client.Client.setObjectLogin(login);
+        String retorno = User.Client.setObjectLogin(login);
 
         if(retorno.equals(ErrorMessages.LOGIN_NORMAL_USER.toString())){
-            Client.Client.setUsername(login.getUsername());
-            Parent root = FXMLLoader.load(getClass().getResource("resources/beginClient.fxml"));
+            User.Client.setUsername(login.getUsername());
+            Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);

@@ -34,68 +34,68 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.UIControllers.BeginController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="User.UIControllers.EditProfileController">
     <children>
         <!--<MenuBar VBox.vgrow="NEVER">
-              <menus>
-                  <Menu mnemonicParsing="false" text="Presenças">
-                      <items>
-                          <MenuItem mnemonicParsing="false" text="Submissão de código" />
-                          <MenuItem mnemonicParsing="false" text="Consulta de presenças" />
-                      </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Editar dados utilizador" />
-                  <Menu mnemonicParsing="false" onAction="#sair" text="Sair">
-                      <items>
-                          <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
-                      </items>
-                  </Menu>
-              </menus>
-          </MenuBar>-->
+            <menus>
+                <Menu mnemonicParsing="false" text="Presenças">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Submissão de código" />
+                        <MenuItem mnemonicParsing="false" text="Consulta de presenças" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Editar dados utilizador" />
+                <Menu mnemonicParsing="false" onAction="#sair" text="Sair">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>-->
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
             <children>
-                <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" textAlignment="CENTER" textFill="#9f9f9f" >
+                <Label alignment="CENTER" layoutX="152.0" layoutY="213.0" style="&#10;" text="" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <Button fx:id="registCod" focusTraversable="true" layoutX="266.0" layoutY="164.0" onAction="#registCod" text="Registar código">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-                <Label layoutX="162.0" layoutY="58.0" prefHeight="39.0" prefWidth="311.0" text="Sistema Registo de Presenças" textFill="#0b0b0b">
+                <Label layoutX="232.0" layoutY="54.0" text="Editar perfil">
                     <font>
                         <Font name="Times New Roman Bold Italic" size="25.0" />
                     </font>
                 </Label>
-                <Button fx:id="edit" focusTraversable="true" layoutX="246.0" layoutY="262.0" onAction="#editDados" text="Editar dados utilizador">
+                <Label layoutX="59.0" layoutY="139.0" text="Email:">
                     <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-                <Button fx:id="consul" focusTraversable="true" layoutX="256.0" layoutY="214.0" onAction="#consultPresencas" text="Consultar presenças">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-                <Button fx:id="sair" focusTraversable="true" layoutX="301.0" layoutY="317.0" onAction="#sair" text="Sair">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-                <Label layoutX="229.0" layoutY="107.0" prefHeight="39.0" prefWidth="192.0" text="Bem-vindo " textFill="#0b0b0b">
-                    <font>
-                        <Font name="Times New Roman" size="19.0" />
+                        <Font name="Times New Roman Bold" size="14.0" />
                     </font>
                 </Label>
+                <Label fx:id="email" layoutX="106.0" layoutY="139.0" />
+                <Label layoutX="59.0" layoutY="215.0" text="Nome:">
+                    <font>
+                        <Font name="Times New Roman Bold" size="14.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="nome" layoutX="104.0" layoutY="210.0" />
+                <Label layoutX="324.0" layoutY="139.0" text="Nº Identificação:">
+                    <font>
+                        <Font name="Times New Roman Bold" size="14.0" />
+                    </font>
+                </Label>
+                <Label layoutX="324.0" layoutY="215.0" text="Palavra-passe:">
+                    <font>
+                        <Font name="Times New Roman Bold" size="14.0" />
+                    </font>
+                </Label>
+                <Button fx:id="save" layoutX="458.0" layoutY="277.0" mnemonicParsing="false" onAction="#saveData" text="Guardar Dados" />
+                <TextField fx:id="nidentificacao" layoutX="431.0" layoutY="134.0" />
+                <PasswordField fx:id="pass" layoutX="431.0" layoutY="210.0" />
+            <Button fx:id="back" layoutX="79.0" layoutY="277.0" mnemonicParsing="false" onAction="#back" text="Voltar" />
             </children>
         </AnchorPane>
     </children>

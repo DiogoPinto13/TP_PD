@@ -1,6 +1,5 @@
-package Client.UIControllers;
+package User.UIControllers;
 
-import Client.Main;
 import Shared.Register;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,11 +36,11 @@ public class RegisterController {
             return;
         }
         Register register = new Register(user.getText(),nidentificacao.getText(),email.getText(), pass.getText());
-        boolean retorno = Client.Client.setObjectRegister(register);
+        boolean retorno = User.Client.setObjectRegister(register);
 
         if(retorno){
-            Client.Client.setUsername(register.getUsername());
-            Parent root = FXMLLoader.load(getClass().getResource("resources/beginClient.fxml"));
+            User.Client.setUsername(register.getUsername());
+            Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
@@ -55,7 +54,7 @@ public class RegisterController {
 
     public void backLogin(ActionEvent event) throws IOException {
 
-        Parent root = FXMLLoader.load(getClass().getResource("resources/login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Client/login.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);

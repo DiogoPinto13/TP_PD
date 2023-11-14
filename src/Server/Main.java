@@ -91,7 +91,8 @@ class ClientHandler extends Thread{
                             response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage())) ? Messages.PRESENCE_CODE_REGISTED.toString() : Messages.INVALID_PRESENCE_CODE.toString());
                             break;
                         case GET_PRESENCES:
-                            response = EventManager.queryEvents(Username, null);
+                            //response = EventManager.queryEvents(Username, null);
+                            out.writeObject(EventManager.queryEvents(Username, "WHERE idevento = " + EventManager.getIdEventByUsername(Username)));
                             //EventManager.queryEvents(username, null);
                             break;
                         case GET_CSV_PRESENCES:

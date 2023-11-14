@@ -1,4 +1,4 @@
-package Client.UIControllers;
+package User.UIControllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,8 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import javax.swing.text.TableView;
-import java.io.IOException;
+import java.io.*;
 
 public class PresentsController {
     @FXML
@@ -25,7 +24,7 @@ public class PresentsController {
     }
 
     public void back(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("resources/beginClient.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);

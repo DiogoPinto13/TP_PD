@@ -1,4 +1,4 @@
-package Client.UIControllers;
+package User.UIControllers;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -35,7 +35,7 @@ public class SendCodController {
     }
 
     public void editProfile(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("resources/editarDados.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -44,12 +44,12 @@ public class SendCodController {
 
     public void registCod(ActionEvent actionEvent) throws IOException {
         if(isNumeric(cod.getText())){
-            boolean result = Client.Client.sendCode(cod.getText());
-            if(!result){
+            boolean result = User.Client.sendCode(cod.getText());
+            if(result){
                 mensagem.setText("Insira um código válido!");
                 return;
             }
-            Parent root = FXMLLoader.load(getClass().getResource("resources/editarDados.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
             stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
@@ -73,7 +73,7 @@ public class SendCodController {
     }
 
     public void back(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("resources/beginClient.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);

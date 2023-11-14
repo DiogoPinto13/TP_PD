@@ -1,4 +1,4 @@
-package Client;
+package User;
 
 import Shared.*;
 
@@ -124,6 +124,16 @@ public class Client {
         return true;
     }
 
+    public static EventResult getPresences(){
+        Request request = new Request(Messages.GET_PRESENCES, null);
+        try{
+            out.writeObject(request);
+            return (EventResult) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     /*public static void handleMenuAfter(){
         try{
             do{

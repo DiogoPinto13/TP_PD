@@ -1,4 +1,4 @@
-package Client.UIControllers;
+package User.UIControllers;
 
 public class ViewProfileController {
 }

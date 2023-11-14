@@ -1,6 +1,6 @@
-package Client.UIControllers;
+package User.UIControllers;
 
-import Client.Client;
+import User.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -70,7 +70,7 @@ public class EditProfileController {
     }
 
     public void back(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("resources/beginClient.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);

@@ -1,6 +1,7 @@
 package Server;
 
 import Shared.Event;
+import Shared.EventResult;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class EventManager {
      */
     public static boolean registerUserInEvent(String username, int presenceCode){
         if(!userAlreadyInEvent(username) && checkCode(presenceCode)){
-            return DatabaseManager.executeUpdate("INSERTO INTO eventos_utilizadores (idevento,username) " +
+            return DatabaseManager.executeUpdate("INSERT INTO eventos_utilizadores (idevento,username) " +
                     "VALUES ('"
                     + getIdEventByPresenceCode(presenceCode) + "', '"
                     + username + "');");
@@ -35,11 +36,13 @@ public class EventManager {
     public static boolean createEvent(Event event){
 
         if(!eventAlreadyExists(event.getDesignation())){
-            return DatabaseManager.executeUpdate("INSERT INTO eventos (designacao, place, datetime)" +
+            return DatabaseManager.executeUpdate("INSERT INTO eventos (designacao, place, horaInicio, horaFim)" +
                     " VALUES ('"
                     + event.getDesignation()      + "', '"
                     + event.getPlace()            + "', '"
-                    + event.getDate()             + "');");
+                    + event.getTimeBegin()        + "', '"
+                    + event.getTimeEnd()          + "', '"
+                    + "');");
         }
         return false;
     }
@@ -68,7 +71,7 @@ public class EventManager {
         return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento)" +
                 " VALUES ('"
                 + presenceCode                           + "', '"
-                + event.getPresenceCodeDuration()        + "', '"
+                + presenceCode                           + "', '"
                 + getIdEventByDesignation(event.getDesignation())   + "');");
     }
 
@@ -103,31 +106,34 @@ public class EventManager {
      * @param username,filters
      * @return String a string completely filled
      */
-    public static String queryEvents(String username, String filters){
+    public static EventResult queryEvents(String username, String filters){
         StringBuilder stringBuilder = new StringBuilder();
-        String query = (filters == null ? "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) + "';" : "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) +"'" + filters + ";");
+        StringBuilder stringBuilderData = new StringBuilder();
+        String query = (filters == null ? "SELECT * FROM eventos;" : "SELECT * FROM eventos " + filters + ";");
         try(ResultSet rs = DatabaseManager.executeQuery(query)){
             if(rs == null)
-                return "NULL";
+                return null;
             ResultSetMetaData metaData = rs.getMetaData();
             int nColunas = metaData.getColumnCount();
-            //escreve o nome das colunas na consola pro user saber o que raio está a ver
+            //escreve o nome das colunas
             for(int i = 1; i <= nColunas; i++){
                 stringBuilder.append(metaData.getColumnName(i)).append(",");
             }
-            stringBuilder.append("\n");
+            //stringBuilder.append("\n");
             //bora escrever as cenas todas
+            EventResult eventResult = new EventResult(stringBuilder.toString());
+
             while(rs.next()){
                 for(int i = 1; i <= nColunas; i++){
-                    stringBuilder.append(rs.getString(i)).append(",");
+                    stringBuilderData.append(rs.getString(i)).append(",");
                 }
-                stringBuilder.append("\n");
             }
-            return stringBuilder.toString();
+            eventResult.events.add(stringBuilderData.toString());
+            return eventResult;
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
         }
-        return "NULL";
+        return null;
     }
 
     /**

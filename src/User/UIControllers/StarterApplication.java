@@ -1,6 +1,6 @@
-package Client.UIControllers;
+package User.UIControllers;
 
-import Client.Client;
+import User.Client;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -26,7 +26,7 @@ public class StarterApplication extends Application {
 
             Client.prepareClient(getParameters().getRaw().get(0), getParameters().getRaw().get(1));
 
-            FXMLLoader fxmlLoader = new FXMLLoader(StarterApplication.class.getResource("resources/login.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(StarterApplication.class.getResource("resources/Client/login.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
 
 
