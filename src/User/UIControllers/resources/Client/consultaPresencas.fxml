@@ -81,7 +81,7 @@
                         <Font name="Times New Roman Bold Italic" size="25.0" />
                     </font>
                 </Label>
-                <Button layoutX="515.0" layoutY="335.0" mnemonicParsing="false" text="Exportar CSV" />
+                <Button onAction="#ExportCSV" layoutX="515.0" layoutY="335.0" mnemonicParsing="false" text="Exportar CSV" />
             <Button fx:id="back" layoutX="39.0" layoutY="335.0" mnemonicParsing="false" onAction="#back" text="Voltar" />
             </children>
         </AnchorPane>

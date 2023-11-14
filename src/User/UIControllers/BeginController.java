@@ -1,5 +1,6 @@
 package User.UIControllers;
 
+import User.Client;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
