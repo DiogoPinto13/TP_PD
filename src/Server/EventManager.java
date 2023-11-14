@@ -104,10 +104,9 @@ public class EventManager {
      * @return String a string completely filled
      */
     public static String queryEvents(String username, String filters){
-        try{
-            StringBuilder stringBuilder = new StringBuilder();
-            String query = (filters == null ? "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) + "';" : "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) +"'" + filters + ";");
-            ResultSet rs = DatabaseManager.executeQuery(query);
+        StringBuilder stringBuilder = new StringBuilder();
+        String query = (filters == null ? "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) + "';" : "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) +"'" + filters + ";");
+        try(ResultSet rs = DatabaseManager.executeQuery(query)){
             if(rs == null)
                 return "NULL";
             ResultSetMetaData metaData = rs.getMetaData();
@@ -136,8 +135,7 @@ public class EventManager {
      * @param query
      */
     public static void queryToCSV(String query){
-        try{
-            ResultSet rs = DatabaseManager.executeQuery(query);
+        try(ResultSet rs = DatabaseManager.executeQuery(query)){
             if(rs!=null){
                 //para sacar o nome das colunas
                 ResultSetMetaData metaData = rs.getMetaData();
@@ -179,8 +177,7 @@ public class EventManager {
     }
 
     public static boolean eventAlreadyExists(String designation) {
-        try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos WHERE designacao = '" + designation + "';");
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos WHERE designacao = '" + designation + "';")){
             return rs != null ? rs.next() : false;
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
@@ -194,9 +191,8 @@ public class EventManager {
      * @return
      */
     public static boolean userAlreadyInEvent(String username){
-        try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByUsername(username) + "" +
-                    " AND username ='" + username + "';");
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByUsername(username) + "" +
+                " AND username ='" + username + "';")){
             return rs != null ? rs.next() : false;
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
@@ -210,8 +206,7 @@ public class EventManager {
      * @return
      */
     public static boolean checkCode(int presenceCode){
-        try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT codigo FROM codigos_registo WHERE idevento = " + getIdEventByPresenceCode(presenceCode) + ";");
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT codigo FROM codigos_registo WHERE idevento = " + getIdEventByPresenceCode(presenceCode) + ";")){
             if(rs == null)
                 return false;
             while(rs.next()){
@@ -231,8 +226,7 @@ public class EventManager {
      * @return
      */
     public static int getIdEventByDesignation(String designacao){
-        try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM eventos WHERE designacao = '" + designacao + "';");
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM eventos WHERE designacao = '" + designacao + "';")){
             while(rs.next()){
                 return rs.getInt("idevento");
             }
@@ -248,8 +242,7 @@ public class EventManager {
      * @return
      */
     public static int getIdEventByUsername(String username){
-        try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM eventos_utilizadores WHERE username = '" + username + "';");
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM eventos_utilizadores WHERE username = '" + username + "';")){
             while(rs.next()){
                 return rs.getInt("idevento");
             }
@@ -265,8 +258,7 @@ public class EventManager {
      * @return
      */
     public static int getIdEventByPresenceCode(int presenceCode){
-        try{
-            ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM codigos_registo WHERE codigo = '" + presenceCode + "';");
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM codigos_registo WHERE codigo = '" + presenceCode + "';")){
             while(rs.next()){
                 return rs.getInt("idevento");
             }
