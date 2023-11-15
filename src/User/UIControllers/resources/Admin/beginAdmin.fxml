@@ -66,7 +66,7 @@
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <Button fx:id="registCod" focusTraversable="true" layoutX="266.0" layoutY="164.0" onAction="#registCod" text="Registar código">
+                <Button fx:id="listEvents" focusTraversable="true" layoutX="266.0" layoutY="164.0" onAction="#listEvents" text="Eventos">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
