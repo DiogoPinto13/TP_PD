@@ -1,6 +1,10 @@
 package Shared;
 
 public enum ErrorMessages {
+    CREATE_EVENT_FAILED{
+        @Override
+        public String toString(){return "There was a problem creating an event";}
+    },
     INVALID_USER{
         @Override
         public String toString(){return "This user is not valid";}

@@ -97,7 +97,35 @@ class ClientHandler extends Thread{
                             break;
                         case GET_CSV_PRESENCES:
                             //EventManager.queryToCSV(username, null);
-                            //fuck temos que enviar pro client o ficheiro csv!
+                            break;
+                        //admin commands here:
+                        case CREATE_EVENT:
+                            String[] arguments = request.getMessage().split(",");
+                            String[] argumentsTimeBegin = arguments[2].split(":");
+                            String[] argumentsTimeEnd = arguments[3].split(":");
+                            Time timeBegin = new Time(Integer.parseInt(argumentsTimeBegin[0]), Integer.parseInt(argumentsTimeBegin[1]), Integer.parseInt(argumentsTimeBegin[2]), Integer.parseInt(argumentsTimeBegin[3]), Integer.parseInt(argumentsTimeBegin[4]));
+                            Time timeEnd = new Time(Integer.parseInt(argumentsTimeEnd[0]), Integer.parseInt(argumentsTimeEnd[1]), Integer.parseInt(argumentsTimeEnd[2]), Integer.parseInt(argumentsTimeEnd[3]), Integer.parseInt(argumentsTimeEnd[4]));
+
+                            Event event = new Event(arguments[0], arguments[1], timeBegin, timeEnd);
+                            response = (EventManager.createEvent(event)) ? Messages.OK.toString() : ErrorMessages.CREATE_EVENT_FAILED.toString();
+                            break;
+                        case DELETE_EVENT:
+
+                            break;
+                        case GET_EVENTS:
+
+                            break;
+                        case GENERATE_PRESENCE_CODE:
+
+                            break;
+                        case QUERY_EVENTS:
+
+                            break;
+                        case DELETE_PRESENCES:
+
+                            break;
+                        case INSERT_PRESENCES:
+
                             break;
                         default:
                             response = Messages.UNKNOWN_COMMAND.toString();
@@ -167,54 +195,5 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String input;
         System.out.println("Welcome!");
-        //handles admin commands here
-        do{
-            System.out.println("Please choose an option: ");
-            System.out.println("1 - Create an event");
-            System.out.println("2 - Edit an event");
-            System.out.println("3 - Delete an event");
-            System.out.println("4 - Query an event");
-            System.out.println("5 - Generate a new presence code");
-            System.out.println("6 - Query presences");
-            System.out.println("7 - Delete a presence from a user");
-            System.out.println("8 - Insert a presence manually");
-            System.out.println("9 - Logout");
-            int inputMenu = scanner.nextInt();
-            Event event;
-            switch (inputMenu) {
-                case 1:
-                    System.out.println("Introduce the following data: designation,place,date,time,presenceCode");
-                    //event = new Event();
-                    //EventManager.createEvent(event);
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-
-                    break;
-                case 4:
-
-                    break;
-                case 5:
-
-                    break;
-                case 6:
-
-                    break;
-                case 7:
-
-                    break;
-                case 8:
-
-                    break;
-                case 9:
-
-                    break;
-                default:
-                    System.out.println(Messages.UNKNOWN_COMMAND.toString());
-                    break;
-            }
-        }while(serverVariable.get());
     }
 }

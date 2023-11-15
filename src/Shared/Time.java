@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Time implements Serializable {
     private int Hour, Minute, Day, Month, Year;
 
-    public Time(int hour, int minute, int day, int month, int year) {
+    public Time(int day, int month, int year, int hour, int minute) {
         Hour = hour;
         Minute = minute;
         Day = day;
@@ -51,6 +51,12 @@ public class Time implements Serializable {
     }
     @Override
     public String toString() {
-        return Hour + ":" + Minute;
+        return getYear() + "-" + getMonth() + "-" + getDay() + " " + getHour() + ":" + getMinute();
+    }
+    public String toStringHourMinute(){
+        return getHour() + ":" + getMinute();
+    }
+    public String toStringDay(){
+        return getYear() + "-" + getMonth() + "-" + getDay();
     }
 }

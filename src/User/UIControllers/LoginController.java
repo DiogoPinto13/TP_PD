@@ -2,6 +2,8 @@ package User.UIControllers;
 
 import Shared.ErrorMessages;
 import Shared.Login;
+import User.Admin;
+import User.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 public class LoginController {
     @FXML
@@ -67,7 +70,13 @@ public class LoginController {
             stage.setScene(scene);
             stage.show();
         } else if(retorno.equals(ErrorMessages.LOGIN_ADMIN_USER.toString())){
-            //
+            //vamos fechar a connection como client normal
+            InetAddress host = Client.getSocket().getLocalAddress();
+            int port = Client.getSocket().getLocalPort();
+            Client.closeConnection();
+
+            //vamos abrir uma connection especial pro admin
+            Admin.prepareAdmin(host, port);
             Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/beginAdmin.fxml"));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);

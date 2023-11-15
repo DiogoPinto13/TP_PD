@@ -42,6 +42,18 @@ public class Client {
     private static ObjectOutputStream out;
     private static ObjectInputStream in;
 
+    public static Socket getSocket(){
+        return socket;
+    }
+    public static void closeConnection(){
+        try {
+            out.close();
+            in.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static void prepareClient(String ... args){
         try {
             socket = new Socket(args[0], Integer.parseInt(args[1]));

@@ -1,4 +1,4 @@
-package User.UIControllers;
+package User.UIControllers.ClientControllers;
 
 import User.Client;
 import javafx.application.Platform;
@@ -41,6 +41,7 @@ public class BeginController {
     }
 
     public void sair(ActionEvent event) {
+        Client.closeConnection();
         Platform.exit();
     }
 

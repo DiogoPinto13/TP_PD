@@ -38,10 +38,10 @@ public class EventManager {
         if(!eventAlreadyExists(event.getDesignation())){
             return DatabaseManager.executeUpdate("INSERT INTO eventos (designacao, place, horaInicio, horaFim)" +
                     " VALUES ('"
-                    + event.getDesignation()      + "', '"
-                    + event.getPlace()            + "', '"
-                    + event.getTimeBegin()        + "', '"
-                    + event.getTimeEnd()          + "', '"
+                    + event.getDesignation()            + "', '"
+                    + event.getPlace()                  + "', '"
+                    + event.getTimeBegin().toString()   + "', '"
+                    + event.getTimeEnd().toStringDay()  + "', '"
                     + "');");
         }
         return false;

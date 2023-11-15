@@ -1,6 +1,7 @@
-package User.UIControllers;
+package User.UIControllers.ClientControllers;
 
 import User.Client;
+import User.UIControllers.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,6 +26,7 @@ public class StarterApplication extends Application {
             System.out.println("Argumentos fornecidos: " + params.getRaw());*/
 
             Client.prepareClient(getParameters().getRaw().get(0), getParameters().getRaw().get(1));
+            //Admin.prepareAdmin(getParameters().getRaw().get(0), getParameters().getRaw().get(1));
 
             FXMLLoader fxmlLoader = new FXMLLoader(StarterApplication.class.getResource("resources/Client/login.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);

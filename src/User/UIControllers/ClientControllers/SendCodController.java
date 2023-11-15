@@ -1,4 +1,4 @@
-package User.UIControllers;
+package User.UIControllers.ClientControllers;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
