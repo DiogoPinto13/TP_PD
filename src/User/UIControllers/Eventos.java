@@ -1,8 +1,11 @@
 package User.UIControllers;
 
 public class Eventos {
-    int id;
-    String designcao, local, horaInicio, horaFim;
+    public int id;
+    public String designcao;
+    public String local;
+    public String horaInicio;
+    public String horaFim;
 
     public void setID(int id) {
         this.id=id;

@@ -22,15 +22,15 @@ import java.util.ArrayList;
 
 public class PresentsController {
     @FXML
-    public TableView tbPresenca;
+    private TableView tbPresenca;
     @FXML
-    public TableColumn tbDesignacao;
+    private TableColumn<Eventos,String> tbDesignacao;
     @FXML
-    public TableColumn tbLocal;
+    private TableColumn<Eventos,String>  tbLocal;
     @FXML
-    public TableColumn tbInicio;
+    private TableColumn<Eventos,String>  tbInicio;
     @FXML
-    public TableColumn tbFim;
+    private TableColumn<Eventos,String>  tbFim;
 
 
     private Stage stage;
@@ -46,7 +46,7 @@ public class PresentsController {
         //tbPresenca.setItems(observableList);
         ObservableList<Eventos> dataEvents = FXCollections.observableArrayList();
         //pede a lista das presenças e preenche a tabela
-        //ArrayList<String> eventos = eventResult.events;
+        ArrayList<String> eventos = eventResult.events;
         /*TableView<Eventos> tableView = new TableView<>();
         TableColumn<Eventos, String> desCol = new TableColumn<>("Designacao");
         TableColumn<Eventos, String> localCol = new TableColumn<>("Local");
@@ -54,7 +54,8 @@ public class PresentsController {
         TableColumn<Eventos, String> hFim = new TableColumn<>("Hora Fim");
         tableView.getColumns().addAll(desCol, localCol, hIni, hFim);*/
 
-        /*for(String evento : eventos){
+        /*
+        for(String evento : eventos){
             String[] eventoData = evento.split(",");
             Eventos event = new Eventos();
             event.setID(1);
@@ -63,21 +64,24 @@ public class PresentsController {
             event.setHoraInicio(eventoData[3]);
             event.setHoraFim(eventoData[4]);
             dataEvents.add(event);
-        }*/
+        }
+        */
 
-        tbDesignacao.setCellValueFactory(new PropertyValueFactory<Eventos, String>("Designação"));
-        tbLocal.setCellValueFactory(new PropertyValueFactory<Eventos, String>("Local"));
-        tbInicio.setCellValueFactory(new PropertyValueFactory<Eventos, String>("Hora Início"));
-        tbFim.setCellValueFactory(new PropertyValueFactory<Eventos, String>("Hora Fim"));
 
-            Eventos event = new Eventos();
-            //event.setID(1);
-            event.setDesignacao("ba");
-            event.setLocal("ba");
-            event.setHoraInicio("ba");
-            event.setHoraFim("fghj");
+        tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designcao"));
+        tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
+        tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
+        tbFim.setCellValueFactory(new PropertyValueFactory<>("horaFim"));
 
-            dataEvents.add(event);
+        Eventos event = new Eventos();
+        event.setID(1);
+        event.setDesignacao("ba");
+        event.setLocal("ba");
+        event.setHoraInicio("ba");
+        event.setHoraFim("fghj");
+
+        dataEvents.add(event);
+
 
 
         tbPresenca.setItems(dataEvents);
