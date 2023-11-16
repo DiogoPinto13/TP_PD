@@ -142,14 +142,14 @@ public class EventManager {
             EventResult eventResult = new EventResult(stringBuilder.toString());
 
             while(rs.next()){
+                stringBuilderData.setLength(0);
                 for(int i = 1; i <= nColunas; i++){
                     stringBuilderData.append(rs.getString(i));
-                    if(i != nColunas - 1)
-                        stringBuilder.append(",");
+                    stringBuilderData.append(",");
                 }
                 eventResult.events.add(stringBuilderData.toString());
             }
-            eventResult.events.add(stringBuilderData.toString());
+            //eventResult.events.add(stringBuilderData.toString());
             return eventResult;
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
