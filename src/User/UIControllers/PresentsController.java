@@ -11,45 +11,64 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class PresentsController {
     @FXML
     public TableView tbPresenca;
+    @FXML
+    public TableColumn tbDesignacao;
+    @FXML
+    public TableColumn tbLocal;
+    @FXML
+    public TableColumn tbInicio;
+    @FXML
+    public TableColumn tbFim;
 
     private Stage stage;
     private Scene scene;
+    private static Scene preScene;
+
+    private ObservableList<Eventos> dataEventos;
 
     public void initialize() {
 
 
-        EventResult eventResult = Client.getPresences(Client.getUsername());
-        String[] nomeColunas = eventResult.getColumns().split(",");
+        //EventResult eventResult = Client.getPresences(Client.getUsername());
+        //String[] nomeColunas = eventResult.getColumns().split(",");
 
         //ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
         //tbPresenca.setItems(observableList);
-        ObservableList<Eventos> dataEvents = FXCollections.observableArrayList();
         //pede a lista das presenças e preenche a tabela
-        ArrayList<String> eventos = eventResult.events;
-        int size = eventos.size();
+        //ArrayList<String> eventos = eventResult.events;
+        //int size = eventos.size();
 
-        for(String evento : eventos){
-            String[] eventoData = evento.split(",");
-            Eventos event = new Eventos();
-            event.setID(Integer.parseInt(eventoData[0]));
-            event.setDesignacao(eventoData[1]);
-            event.setDesignacao(eventoData[2]);
-            event.setHoraInicio(eventoData[3]);
-            event.setHoraFim(eventoData[4]);
-            dataEvents.add(event);
-        }
+        dataEventos = FXCollections.observableArrayList();
 
-        tbPresenca.setItems(dataEvents);
+        tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designacao"));
+        tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
+        tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
+        tbFim.setCellValueFactory(new PropertyValueFactory<>("horafim"));
+
+
+        Eventos vol = new Eventos();
+        vol.setDesignacao("sitio");
+        vol.setLocal("fgh");
+        vol.setHoraInicio("hora inicio");
+        vol.setHoraFim("hora fim");
+        dataEventos.add(vol);
+
+
+        tbPresenca.setItems(dataEventos);
 
     }
 

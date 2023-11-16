@@ -2,25 +2,37 @@ package User.UIControllers;
 
 public class Eventos {
     int id;
-    String designcao, local, horaInicio, horaFim;
+    String designacao, local, horaInicio, horaFim;
 
     public void setID(int id) {
         this.id=id;
     }
 
     public void setDesignacao(String designacao) {
-        this.designcao=designacao;
+        this.designacao=designacao;
+    }
+    public String getDesignacao() {
+        return designacao;
     }
 
     public void setHoraInicio(String horaInicio) {
         this.horaInicio=horaInicio;
     }
-
-    public void setHoraFim(String h) {
-        horaFim=h;
+    public String getHoraInicio() {
+        return horaInicio;
     }
 
-    public void setPlace(String place){
-        this.local=place;
+    public void setHoraFim(String horaFim) {
+        this.horaFim=horaFim;
+    }
+    public String getHorafim() {
+        return horaFim;
+    }
+
+    public void setLocal(String local){
+        this.local=local;
+    }
+    public String getLocal(){
+        return local;
     }
 }

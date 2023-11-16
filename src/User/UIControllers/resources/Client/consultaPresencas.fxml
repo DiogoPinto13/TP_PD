@@ -68,10 +68,10 @@
                 </Label>
                 <TableView fx:id="tbPresenca" layoutX="39.0" layoutY="98.0" prefHeight="211.0" prefWidth="562.0">
                     <columns>
-                        <TableColumn fx:id="tbDesignacao" prefWidth="124.66665649414062" text="Designação" />
-                        <TableColumn fx:id="tbLocal" prefWidth="110.0" text="Local" />
-                        <TableColumn fx:id="tbInicio" prefWidth="116.0" text="Hora Início" />
-                        <TableColumn fx:id="tbFim" prefWidth="110.0" text="Hora Fim" />
+                        <TableColumn fx:id="tbDesignacao" prefWidth="124.66665649414062" text="designcao" />
+                        <TableColumn fx:id="tbLocal" prefWidth="110.0" text="local" />
+                        <TableColumn fx:id="tbInicio" prefWidth="116.0" text="horaInicio" />
+                        <TableColumn fx:id="tbFim" prefWidth="110.0" text="horaFim" />
                     </columns>
                 </TableView>
                 <ComboBox layoutX="453.0" layoutY="52.0" prefWidth="150.0" promptText="Filtros" />
