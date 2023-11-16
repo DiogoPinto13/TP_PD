@@ -41,14 +41,22 @@ public class UserManager {
      * @return boolean
      */
     public static ErrorMessages checkPassword(Login login) {
+        System.out.println("User: " + login.getUsername() + " Pass: "+login.getPassword() + "\n");
+
         try (ResultSet rs = DatabaseManager.executeQuery("SELECT password, isAdmin FROM utilizadores WHERE username ='" + login.getUsername() + "';")){
             if (rs == null)
                 return ErrorMessages.INVALID_PASSWORD;
             while (rs.next()) {
                 String password = rs.getString("password");
+                System.out.println("Pass obtida: " + password + "\n");
                 boolean isAdmin = rs.getBoolean("isAdmin");
-                return (isAdmin && login.getPassword().equals(password)) ? ErrorMessages.LOGIN_ADMIN_USER : ErrorMessages.LOGIN_NORMAL_USER;
+                System.out.println("É admin? " + isAdmin + "\n");
+                if (isAdmin && login.getPassword().equals(password))
+                    return ErrorMessages.LOGIN_ADMIN_USER;
+                else if(!isAdmin && login.getPassword().equals(password))
+                    return ErrorMessages.LOGIN_NORMAL_USER;
             }
+
 
         } catch (SQLException sqlException) {
             System.out.println("Error with the database: " + sqlException);

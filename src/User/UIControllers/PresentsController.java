@@ -18,73 +18,57 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class PresentsController {
     @FXML
-    private TableView tbPresenca;
+    public TableView tbPresenca;
     @FXML
-    private TableColumn<Eventos,String> tbDesignacao;
+    public TableColumn tbDesignacao;
     @FXML
-    private TableColumn<Eventos,String>  tbLocal;
+    public TableColumn tbLocal;
     @FXML
-    private TableColumn<Eventos,String>  tbInicio;
+    public TableColumn tbInicio;
     @FXML
-    private TableColumn<Eventos,String>  tbFim;
-
+    public TableColumn tbFim;
 
     private Stage stage;
     private Scene scene;
+    private static Scene preScene;
+
+    private ObservableList<Eventos> dataEventos;
 
     public void initialize() {
 
 
-        EventResult eventResult = Client.getPresences(Client.getUsername());
-        String[] nomeColunas = eventResult.getColumns().split(",");
+        //EventResult eventResult = Client.getPresences(Client.getUsername());
+        //String[] nomeColunas = eventResult.getColumns().split(",");
 
         //ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
         //tbPresenca.setItems(observableList);
-        ObservableList<Eventos> dataEvents = FXCollections.observableArrayList();
         //pede a lista das presenças e preenche a tabela
-        ArrayList<String> eventos = eventResult.events;
-        /*TableView<Eventos> tableView = new TableView<>();
-        TableColumn<Eventos, String> desCol = new TableColumn<>("Designacao");
-        TableColumn<Eventos, String> localCol = new TableColumn<>("Local");
-        TableColumn<Eventos, String> hIni = new TableColumn<>("Hora Inicio");
-        TableColumn<Eventos, String> hFim = new TableColumn<>("Hora Fim");
-        tableView.getColumns().addAll(desCol, localCol, hIni, hFim);*/
+        //ArrayList<String> eventos = eventResult.events;
+        //int size = eventos.size();
 
-        /*
-        for(String evento : eventos){
-            String[] eventoData = evento.split(",");
-            Eventos event = new Eventos();
-            event.setID(1);
-            event.setDesignacao(eventoData[1]);
-            event.setLocal(eventoData[2]);
-            event.setHoraInicio(eventoData[3]);
-            event.setHoraFim(eventoData[4]);
-            dataEvents.add(event);
-        }
-        */
+        dataEventos = FXCollections.observableArrayList();
 
-
-        tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designcao"));
+        tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designacao"));
         tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
         tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
-        tbFim.setCellValueFactory(new PropertyValueFactory<>("horaFim"));
-
-        Eventos event = new Eventos();
-        event.setID(1);
-        event.setDesignacao("ba");
-        event.setLocal("ba");
-        event.setHoraInicio("ba");
-        event.setHoraFim("fghj");
-
-        dataEvents.add(event);
+        tbFim.setCellValueFactory(new PropertyValueFactory<>("horafim"));
 
 
+        Eventos vol = new Eventos();
+        vol.setDesignacao("sitio");
+        vol.setLocal("fgh");
+        vol.setHoraInicio("hora inicio");
+        vol.setHoraFim("hora fim");
+        dataEventos.add(vol);
 
-        tbPresenca.setItems(dataEvents);
+
+        tbPresenca.setItems(dataEventos);
 
     }
 
