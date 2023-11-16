@@ -11,7 +11,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -21,6 +23,15 @@ import java.util.ArrayList;
 public class PresentsController {
     @FXML
     public TableView tbPresenca;
+    @FXML
+    public TableColumn tbDesignacao;
+    @FXML
+    public TableColumn tbLocal;
+    @FXML
+    public TableColumn tbInicio;
+    @FXML
+    public TableColumn tbFim;
+
 
     private Stage stage;
     private Scene scene;
@@ -35,15 +46,20 @@ public class PresentsController {
         //tbPresenca.setItems(observableList);
         ObservableList<Eventos> dataEvents = FXCollections.observableArrayList();
         //pede a lista das presenças e preenche a tabela
-        ArrayList<String> eventos = eventResult.events;
-        int size = eventos.size();
+        //ArrayList<String> eventos = eventResult.events;
+        /*TableView<Eventos> tableView = new TableView<>();
+        TableColumn<Eventos, String> desCol = new TableColumn<>("Designacao");
+        TableColumn<Eventos, String> localCol = new TableColumn<>("Local");
+        TableColumn<Eventos, String> hIni = new TableColumn<>("Hora Inicio");
+        TableColumn<Eventos, String> hFim = new TableColumn<>("Hora Fim");
+        tableView.getColumns().addAll(desCol, localCol, hIni, hFim);*/
 
         for(String evento : eventos){
             String[] eventoData = evento.split(",");
             Eventos event = new Eventos();
-            event.setID(Integer.parseInt(eventoData[0]));
+            event.setID(1);
             event.setDesignacao(eventoData[1]);
-            event.setDesignacao(eventoData[2]);
+            event.setLocal(eventoData[2]);
             event.setHoraInicio(eventoData[3]);
             event.setHoraFim(eventoData[4]);
             dataEvents.add(event);

@@ -20,7 +20,7 @@ public class Eventos {
         horaFim=h;
     }
 
-    public void setPlace(String place){
+    public void setLocal(String place){
         this.local=place;
     }
 }
