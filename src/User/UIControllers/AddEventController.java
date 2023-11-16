@@ -1,4 +1,4 @@
-package User.UIControllers.AdminControllers;
+package User.UIControllers;
 
 public class AddEventController {
 

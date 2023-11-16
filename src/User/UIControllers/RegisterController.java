@@ -1,4 +1,4 @@
-package User.UIControllers.ClientControllers;
+package User.UIControllers;
 
 import Shared.Register;
 import javafx.event.ActionEvent;

@@ -1,9 +1,8 @@
-package User.UIControllers.AdminControllers;
+package User.UIControllers;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
 
-public class BeginController {
+public class BeginControllerAdmin {
 
 
 

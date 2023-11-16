@@ -1,4 +1,4 @@
-package User.UIControllers.ClientControllers;
+package User.UIControllers;
 
 import Shared.EventResult;
 import User.Client;
