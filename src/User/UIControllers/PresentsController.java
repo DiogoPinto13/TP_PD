@@ -54,7 +54,7 @@ public class PresentsController {
         TableColumn<Eventos, String> hFim = new TableColumn<>("Hora Fim");
         tableView.getColumns().addAll(desCol, localCol, hIni, hFim);*/
 
-        for(String evento : eventos){
+        /*for(String evento : eventos){
             String[] eventoData = evento.split(",");
             Eventos event = new Eventos();
             event.setID(1);
@@ -63,7 +63,22 @@ public class PresentsController {
             event.setHoraInicio(eventoData[3]);
             event.setHoraFim(eventoData[4]);
             dataEvents.add(event);
-        }
+        }*/
+
+        tbDesignacao.setCellValueFactory(new PropertyValueFactory<Eventos, String>("Designação"));
+        tbLocal.setCellValueFactory(new PropertyValueFactory<Eventos, String>("Local"));
+        tbInicio.setCellValueFactory(new PropertyValueFactory<Eventos, String>("Hora Início"));
+        tbFim.setCellValueFactory(new PropertyValueFactory<Eventos, String>("Hora Fim"));
+
+            Eventos event = new Eventos();
+            //event.setID(1);
+            event.setDesignacao("ba");
+            event.setLocal("ba");
+            event.setHoraInicio("ba");
+            event.setHoraFim("fghj");
+
+            dataEvents.add(event);
+
 
         tbPresenca.setItems(dataEvents);
 
