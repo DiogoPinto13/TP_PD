@@ -1,7 +1,6 @@
-package User.UIControllers.ClientControllers;
+package User.UIControllers;
 
 import User.Client;
-import User.UIControllers.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
