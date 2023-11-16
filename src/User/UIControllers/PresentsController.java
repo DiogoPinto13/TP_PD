@@ -1,7 +1,10 @@
 package User.UIControllers;
 
+import Shared.Event;
 import Shared.EventResult;
 import User.Client;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,10 +16,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class PresentsController {
     @FXML
-    //public TableView tbPresenca;
+    public TableView tbPresenca;
 
     private Stage stage;
     private Scene scene;
@@ -24,14 +28,28 @@ public class PresentsController {
     public void initialize() {
 
 
-       /* EventResult eventResult = Client.getPresences();
+        EventResult eventResult = Client.getPresences(Client.getUsername());
+        String[] nomeColunas = eventResult.getColumns().split(",");
 
-
-        while (eventResult){
-
-        }*/
+        //ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
+        //tbPresenca.setItems(observableList);
+        ObservableList<Eventos> dataEvents = FXCollections.observableArrayList();
         //pede a lista das presenças e preenche a tabela
+        ArrayList<String> eventos = eventResult.events;
+        int size = eventos.size();
 
+        for(String evento : eventos){
+            String[] eventoData = evento.split(",");
+            Eventos event = new Eventos();
+            event.setID(Integer.parseInt(eventoData[0]));
+            event.setDesignacao(eventoData[1]);
+            event.setDesignacao(eventoData[2]);
+            event.setHoraInicio(eventoData[3]);
+            event.setHoraFim(eventoData[4]);
+            dataEvents.add(event);
+        }
+
+        tbPresenca.setItems(dataEvents);
 
     }
 

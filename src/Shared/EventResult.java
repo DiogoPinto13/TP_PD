@@ -1,8 +1,9 @@
 package Shared;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class EventResult {
+public class EventResult implements Serializable {
     private String columns;
     public ArrayList<String> events;
 

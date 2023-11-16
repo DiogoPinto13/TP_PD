@@ -30,7 +30,6 @@ public class EditProfileController {
 
 
     public void initialize() {
-        String user = Client.getUsername();
         String data = Client.getProfileData(Client.getUsername());
         String[] aData = data.split(",");
 

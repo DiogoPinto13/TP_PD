@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class EventManager {
@@ -88,10 +89,27 @@ public class EventManager {
     /**
      * this is meant to receive multiple strings that will be our filters, AKA
      * SQL stuff that will be appended in one string that we can use in our querys
+     * @param ids
+     * @return string with filters
+     */
+    public static String createFilterOr(ArrayList<Integer> ids){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(" WHERE idevento = ");
+        for(int i = 0; i < ids.size(); i++){
+            stringBuilder.append(ids.get(i));
+            if(i != ids.size() - 1)
+                stringBuilder.append(" OR idevento =  ");
+        }
+        stringBuilder.append(";");
+        return stringBuilder.toString();
+    }
+    /**
+     * this is meant to receive multiple strings that will be our filters, AKA
+     * SQL stuff that will be appended in one string that we can use in our querys
      * @param filters
      * @return string with filters
      */
-    public static String createFilter(String ...filters){
+    public static String createFilterAnd(String ...filters){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(" AND ");
         for (String filter : filters) {
@@ -125,8 +143,11 @@ public class EventManager {
 
             while(rs.next()){
                 for(int i = 1; i <= nColunas; i++){
-                    stringBuilderData.append(rs.getString(i)).append(",");
+                    stringBuilderData.append(rs.getString(i));
+                    if(i != nColunas - 1)
+                        stringBuilder.append(",");
                 }
+                eventResult.events.add(stringBuilderData.toString());
             }
             eventResult.events.add(stringBuilderData.toString());
             return eventResult;
@@ -256,6 +277,24 @@ public class EventManager {
             System.out.println("Error with the database: " + sqlException);
         }
         return 0;
+    }
+    /**
+     * this function is meant to return all IDs of all events, given a specific username,
+     * returns null if it didnt find anything.
+     * @param username
+     * @return null
+     */
+    public static ArrayList<Integer> getIdsEventsByUsername(String username){
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM eventos_utilizadores WHERE username = '" + username + "';")){
+            while(rs.next()){
+                ids.add(rs.getInt("idevento"));
+            }
+            return ids;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return null;
     }
     /**
      * this function is meant to return the ID of the event, given a specific presenceCode,

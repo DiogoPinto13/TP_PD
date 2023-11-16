@@ -136,8 +136,8 @@ public class Client {
         return true;
     }
 
-    public static EventResult getPresences(){
-        Request request = new Request(Messages.GET_PRESENCES, null);
+    public static EventResult getPresences(String input){
+        Request request = new Request(Messages.GET_PRESENCES, input);
         try{
             out.writeObject(request);
             return (EventResult) in.readObject();

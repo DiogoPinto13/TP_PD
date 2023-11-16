@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -92,7 +93,9 @@ class ClientHandler extends Thread{
                             break;
                         case GET_PRESENCES:
                             //response = EventManager.queryEvents(Username, null);
-                            out.writeObject(EventManager.queryEvents(Username, "WHERE idevento = " + EventManager.getIdEventByUsername(Username)));
+                            ArrayList<Integer> idsUser = EventManager.getIdsEventsByUsername(request.getMessage());
+                            String filter = EventManager.createFilterOr(idsUser);
+                            out.writeObject(EventManager.queryEvents(Username, filter));
                             //EventManager.queryEvents(username, null);
                             break;
                         case GET_CSV_PRESENCES:
