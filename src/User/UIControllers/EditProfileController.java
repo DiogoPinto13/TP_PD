@@ -30,6 +30,7 @@ public class EditProfileController {
 
 
     public void initialize() {
+        String user = Client.getUsername();
         String data = Client.getProfileData(Client.getUsername());
         String[] aData = data.split(",");
 
@@ -53,7 +54,7 @@ public class EditProfileController {
         stringBuilder.append(pass.getText());
         System.out.println(stringBuilder.toString());
 
-        if(!Client.editProfile(stringBuilder.toString())){
+        if(Client.editProfile(stringBuilder.toString())){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERRO!");
             alert.setHeaderText(null);

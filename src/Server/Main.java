@@ -81,7 +81,7 @@ class ClientHandler extends Thread{
                         case CLOSE:
                             break;
                         case REQUEST_EDIT_PROFILE:
-                            response = UserManager.getProfileForEdition(Username);
+                            response = UserManager.getProfileForEdition(request.getMessage());
                             break;
                         case EDIT_PROFILE:
                             String[] messages = request.getMessage().split(",");
