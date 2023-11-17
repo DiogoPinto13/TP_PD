@@ -65,6 +65,7 @@ class ClientHandler extends Thread{
                     return;
                 else if(receivedObject instanceof Login login) {
                     response = UserManager.checkPassword(login).toString();
+                    //System.out.println(response.toString());
                 }
                 else if(receivedObject instanceof Register register) {
                     UserManager.registerUser(register);
@@ -94,7 +95,11 @@ class ClientHandler extends Thread{
                         case GET_PRESENCES:
                             //response = EventManager.queryEvents(Username, null);
                             ArrayList<Integer> idsUser = EventManager.getIdsEventsByUsername(request.getMessage());
-                            String filter = EventManager.createFilterOr(idsUser);
+                            String filter = null;
+                            if(idsUser.size() == 0){
+                                out.writeObject(null);
+                            }
+                            filter = EventManager.createFilterOr(idsUser);
                             out.writeObject(EventManager.queryEvents(Username, filter));
                             //EventManager.queryEvents(username, null);
                             break;

@@ -43,13 +43,13 @@ public class PresentsController {
     public void initialize() {
 
 
-        //EventResult eventResult = Client.getPresences(Client.getUsername());
-        //String[] nomeColunas = eventResult.getColumns().split(",");
+        EventResult eventResult = Client.getPresences(Client.getUsername());
+        String[] nomeColunas = eventResult.getColumns().split(",");
 
-        //ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
+        ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
         //tbPresenca.setItems(observableList);
         //pede a lista das presenças e preenche a tabela
-        //ArrayList<String> eventos = eventResult.events;
+        ArrayList<String> eventos = eventResult.events;
         //int size = eventos.size();
 
         dataEventos = FXCollections.observableArrayList();
@@ -60,13 +60,16 @@ public class PresentsController {
         tbFim.setCellValueFactory(new PropertyValueFactory<>("horafim"));
 
 
-        Eventos vol = new Eventos();
-        vol.setDesignacao("sitio");
-        vol.setLocal("fgh");
-        vol.setHoraInicio("hora inicio");
-        vol.setHoraFim("hora fim");
-        dataEventos.add(vol);
+        for(String evento : eventos){
+            String[] eventoData = evento.split(",");
+            Eventos event = new Eventos();
 
+            event.setDesignacao(eventoData[1]);
+            event.setLocal(eventoData[2]);
+            event.setHoraInicio(eventoData[3]);
+            event.setHoraFim(eventoData[4]);
+            dataEventos.add(event);
+        }
 
         tbPresenca.setItems(dataEventos);
 
