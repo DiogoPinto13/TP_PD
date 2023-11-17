@@ -123,7 +123,7 @@ public class Client {
 
     public static boolean sendCode(String code){
 
-        Request request = new Request(Messages.REGISTER_PRESENCE_CODE, code);
+        Request request = new Request(Messages.REGISTER_PRESENCE_CODE, code + "," + Client.getUsername());
         try{
             out.writeObject(request);
             String response = (String) in.readObject();

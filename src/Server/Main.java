@@ -91,7 +91,8 @@ class ClientHandler extends Thread{
                             response = (UserManager.editProfile(messages[0], messages[1], messages[2], messages[3])) ? Messages.EDIT_PROFILE_SUCCESS.toString() : Messages.EDIT_PROFILE_ERROR.toString();
                             break;
                         case REGISTER_PRESENCE_CODE:
-                            response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage())) ? Messages.PRESENCE_CODE_REGISTED.toString() : Messages.INVALID_PRESENCE_CODE.toString());
+                            String[] args = request.getMessage().split(",");
+                            response = (EventManager.registerUserInEvent(args[1], Integer.parseInt(args[0])) ? Messages.PRESENCE_CODE_REGISTED.toString() : Messages.INVALID_PRESENCE_CODE.toString());
                             break;
                         case GET_PRESENCES:
                             //response = EventManager.queryEvents(Username, null);
@@ -106,7 +107,7 @@ class ClientHandler extends Thread{
                                 break;
                             }
                             filter = EventManager.createFilterOr(idsUser);
-                            out.writeObject(EventManager.queryEvents(Username, filter));
+                            out.writeObject(EventManager.queryEvents(request.getMessage(), filter));
                             out.flush();
                             //EventManager.queryEvents(username, null);
                             //quero morrer
