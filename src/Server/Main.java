@@ -102,6 +102,7 @@ class ClientHandler extends Thread{
                             filter = EventManager.createFilterOr(idsUser);
                             out.writeObject(EventManager.queryEvents(Username, filter));
                             //EventManager.queryEvents(username, null);
+                            //quero morrer
                             break;
                         case GET_CSV_PRESENCES:
                             //EventManager.queryToCSV(username, null);
