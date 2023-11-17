@@ -1,10 +1,12 @@
 package User;
 
 import Shared.*;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -12,6 +14,9 @@ import java.util.Scanner;
 
 public class Client {
 
+
+    public static int port;
+    public static String adress;
     /**
      * THIS IS EITHER LOGIN OR REGISTER OBJECT
      */
@@ -54,13 +59,22 @@ public class Client {
             e.printStackTrace();
         }
     }
-    public static void prepareClient(String ... args){
+    public static void prepareClient(String ... args) {
         try {
             socket = new Socket(args[0], Integer.parseInt(args[1]));
+            socket.setSoTimeout(2*1000);
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
+            //socket.connect()
+
+        } catch (Exception e) {
+            if (e instanceof java.net.SocketTimeoutException) {
+                System.out.println("Socket timed out!");
+                Platform.exit();
+            } else {
+                System.out.println("exception");
+                e.printStackTrace();
+            }
         }
     }
 

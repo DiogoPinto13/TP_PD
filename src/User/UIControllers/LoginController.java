@@ -38,7 +38,7 @@ public class LoginController {
         background.setStyle("-fx-background-image: url('resources/background.png'); " +
                 "-fx-background-size: cover;");
 
-
+        Client.prepareClient(Client.adress, String.valueOf(Client.port));
     }
 
     public void setStage(Stage stage){

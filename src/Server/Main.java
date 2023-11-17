@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -56,6 +57,11 @@ class ClientHandler extends Thread{
     }
 
     public void run(){
+        try {
+            clientSocket.setSoTimeout(10*1000);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
         try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
             String response = null;

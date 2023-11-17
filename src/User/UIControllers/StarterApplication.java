@@ -24,7 +24,9 @@ public class StarterApplication extends Application {
             Parameters params = getParameters();
             System.out.println("Argumentos fornecidos: " + params.getRaw());*/
 
-            Client.prepareClient(getParameters().getRaw().get(0), getParameters().getRaw().get(1));
+            Client.adress = getParameters().getRaw().get(0);
+            Client.port = Integer.parseInt(getParameters().getRaw().get(1));
+            //Client.prepareClient(getParameters().getRaw().get(0), getParameters().getRaw().get(1));
             //Admin.prepareAdmin(getParameters().getRaw().get(0), getParameters().getRaw().get(1));
 
             FXMLLoader fxmlLoader = new FXMLLoader(StarterApplication.class.getResource("resources/Client/login.fxml"));
