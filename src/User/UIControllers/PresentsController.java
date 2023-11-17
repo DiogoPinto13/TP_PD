@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -23,6 +24,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class PresentsController {
+    @FXML
+    public VBox vbox;
     @FXML
     public TableView tbPresenca;
     @FXML
@@ -97,24 +100,24 @@ public class PresentsController {
                 new FileChooser.ExtensionFilter("CSVs (*.csv)","*.csv"),
                 new FileChooser.ExtensionFilter("All files", "*.*")
         );
-        File file = fileChooser.showSaveDialog(stage.getScene().getWindow());
+        File file = fileChooser.showSaveDialog(vbox.getScene().getWindow());
         if(file != null){
-            //model.exportToCSV();
-            //User.Client.exportToCSVFile(file);
+            try {
+                exportData(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    /*public void writeExcel() throws Exception {
+    public void exportData(File file) throws Exception {
         Writer writer = null;
         try {
-            File file = new File("C:\\Person.csv.");
+            //File file = new File("data.csv");
             writer = new BufferedWriter(new FileWriter(file));
-            for (Person person : data) {
 
-                String text = person.getFirstName() + "," + person.getLastName() + "," + person.getEmail() + "\n";
-
-
-
+            for (Eventos event : dataEventos) {
+                String text = event.getDesignacao() + "," + event.getLocal() + "," + event.getHoraInicio() + "," + event.getHorafim() + "\n";
                 writer.write(text);
             }
         } catch (Exception ex) {
@@ -125,5 +128,5 @@ public class PresentsController {
             writer.flush();
             writer.close();
         }
-    }*/
+    }
 }
