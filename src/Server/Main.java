@@ -59,6 +59,7 @@ class ClientHandler extends Thread{
         try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
             String response = null;
+            boolean flagProtection = false;
             do{
                 receivedObject = in.readObject();
                 if(receivedObject == null)
@@ -94,13 +95,19 @@ class ClientHandler extends Thread{
                             break;
                         case GET_PRESENCES:
                             //response = EventManager.queryEvents(Username, null);
+                            flagProtection = true;
                             ArrayList<Integer> idsUser = EventManager.getIdsEventsByUsername(request.getMessage());
                             String filter = null;
+                            EventResult eventResult = new EventResult(" ");
+                            eventResult.setColumns(" ");
                             if(idsUser.size() == 0){
-                                out.writeObject(null);
+                                out.writeObject(eventResult);
+                                out.flush();
+                                break;
                             }
                             filter = EventManager.createFilterOr(idsUser);
                             out.writeObject(EventManager.queryEvents(Username, filter));
+                            out.flush();
                             //EventManager.queryEvents(username, null);
                             //quero morrer
                             break;
@@ -146,8 +153,11 @@ class ClientHandler extends Thread{
                 /*if(!serverVariable.get()){
                     response = close request
                 }*/
-                out.writeObject(response);
-                out.flush();
+                if(!flagProtection){
+                    out.writeObject(response);
+                    out.flush();
+                }
+                flagProtection = false;
             }while(!clientSocket.isClosed() && serverVariable.get());
         } catch (IOException e) {
             System.out.println("error: IO" + e);

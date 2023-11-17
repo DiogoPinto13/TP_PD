@@ -44,6 +44,11 @@ public class PresentsController {
 
 
         EventResult eventResult = Client.getPresences(Client.getUsername());
+        if(eventResult == null){
+            eventResult = new EventResult(" ");
+            eventResult.setColumns(" ");
+            return;
+        }
         String[] nomeColunas = eventResult.getColumns().split(",");
 
         ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
