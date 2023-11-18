@@ -133,7 +133,7 @@ class ClientHandler extends Thread{
                             response = (EventManager.createEvent(event)) ? Messages.OK.toString() : ErrorMessages.CREATE_EVENT_FAILED.toString();
                             break;
                         case DELETE_EVENT:
-
+                            response = (EventManager.deleteEvent(request.getMessage())) ? Messages.OK.toString() : ErrorMessages.INVALID_EVENT_NAME.toString();
                             break;
                         case GET_EVENTS:
 

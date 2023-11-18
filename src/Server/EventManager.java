@@ -312,4 +312,31 @@ public class EventManager {
         }
         return 0;
     }
+
+    /**
+     * this function returns either if a user is already in the event or not
+     * @param designation
+     * @return
+     */
+    public static boolean usersInEvent(String designation){
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByDesignation(designation) + "';")){
+            return rs != null ? rs.next() : false;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return false;
+    }
+    /**
+     * this function is meant to delete an event, passing the name of the event by argument
+     * returns true or false if success
+     * @param designation
+     * @return
+     */
+    public static boolean deleteEvent(String designation){
+        if(!usersInEvent(designation)){
+            return DatabaseManager.executeUpdate("DELETE FROM eventos_utilizadores WHERE idevento = " +
+                    getIdEventByDesignation(designation) + ";");
+        }
+        return false;
+    }
 }
