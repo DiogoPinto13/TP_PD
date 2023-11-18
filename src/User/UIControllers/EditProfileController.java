@@ -40,11 +40,6 @@ public class EditProfileController {
     }
 
 
-    public void sair(ActionEvent actionEvent) {
-
-
-    }
-
     public void saveData(ActionEvent actionEvent) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(email.getText()).append(",");

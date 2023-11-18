@@ -13,8 +13,6 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Client {
-
-
     public static int port;
     public static String adress;
     /**
@@ -41,7 +39,6 @@ public class Client {
     public static void setUsername(String username){
         Client.username = username;
     }
-
     private static String username;
     private static Socket socket;
     private static ObjectOutputStream out;
@@ -65,10 +62,10 @@ public class Client {
             e.printStackTrace();
         }
     }
-    public static void prepareClient(String ... args) {
+    public static void prepareClient(String... args) {
         try {
             socket = new Socket(args[0], Integer.parseInt(args[1]));
-            socket.setSoTimeout(2*1000);
+            socket.setSoTimeout(1*1000);
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
             //socket.connect()
@@ -76,7 +73,9 @@ public class Client {
         } catch (Exception e) {
             if (e instanceof java.net.SocketTimeoutException) {
                 System.out.println("Socket timed out!");
+                socket=null;
                 Platform.exit();
+
             } else {
                 System.out.println("exception");
                 e.printStackTrace();
@@ -92,11 +91,13 @@ public class Client {
             out.writeObject(newObject);
             response = (String) in.readObject();
             return response;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+
+        } catch (Exception e){
+            socket=null;
+            System.out.println("exception");
+            //e.printStackTrace();
         }
+
         return ErrorMessages.INVALID_PASSWORD.toString();
     }
     public static boolean handleRegister(){

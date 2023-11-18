@@ -51,7 +51,7 @@
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Editar dados utilizador" />
-                <Menu mnemonicParsing="false" onAction="#sair" text="Sair">
+                <Menu mnemonicParsing="false" text="Sair">
                     <items>
                         <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
                     </items>

@@ -5,7 +5,6 @@ import Shared.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 public class Admin {
@@ -59,9 +58,14 @@ public class Admin {
 
         return ErrorMessages.SQL_ERROR.toString();
     }
-    public static EventResult getEvents(){
-
-
+    public static EventResult getEvents(String username){
+        Request request = new Request(Messages.GET_PRESENCES, username);
+        try{
+            out.writeObject(request);
+            return (EventResult) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return null;
     }
     public static String generatePresenceCode(String code){

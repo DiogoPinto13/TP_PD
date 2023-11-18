@@ -4,12 +4,14 @@ import Shared.ErrorMessages;
 import Shared.Login;
 import User.Admin;
 import User.Client;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -61,6 +63,16 @@ public class LoginController {
 
         Login login = new Login(user.getText(),pass.getText());
         String retorno = User.Client.setObjectLogin(login);
+
+        if(Client.getSocket() == null){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("A conexão fechou!");
+            alert.setHeaderText(null);
+            alert.setContentText("A conexão ao servidor fechou!");
+            alert.showAndWait();
+            Platform.exit();
+            return;
+        }
 
         if(retorno.equals(ErrorMessages.LOGIN_NORMAL_USER.toString())){
             User.Client.setUsername(login.getUsername());
