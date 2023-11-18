@@ -37,4 +37,12 @@ public class BeginControllerAdmin {
         Admin.closeConnection();
         Platform.exit();
     }
+
+    public void gerarCod(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/gerarCodigo.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
 }

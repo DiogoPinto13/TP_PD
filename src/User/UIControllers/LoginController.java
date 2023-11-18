@@ -66,9 +66,9 @@ public class LoginController {
 
         if(Client.getSocket() == null){
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("A conexão fechou!");
+            alert.setTitle("Não existe uma conexão!");
             alert.setHeaderText(null);
-            alert.setContentText("A conexão ao servidor fechou!");
+            alert.setContentText("A conexão ao servidor fechou ou não foi criada!");
             alert.showAndWait();
             Platform.exit();
             return;

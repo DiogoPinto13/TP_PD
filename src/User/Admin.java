@@ -68,9 +68,9 @@ public class Admin {
         }
         return null;
     }
-    public static String generatePresenceCode(String code){
+    public static int generatePresenceCode(String code, int duracao){
 
-        return ErrorMessages.SQL_ERROR.toString();
+        return 0;
     }
     public static EventResult queryEvents(){
 
