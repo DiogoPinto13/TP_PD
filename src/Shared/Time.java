@@ -31,6 +31,15 @@ public class Time implements Serializable {
         Minute = calendar.get(Calendar.MINUTE);
     }
 
+    public Time() {
+        Calendar calendar = Calendar.getInstance();
+        Year = calendar.get(Calendar.YEAR);
+        Month = calendar.get(Calendar.MONTH) + 1;
+        Day = calendar.get(Calendar.DAY_OF_MONTH);
+        Hour = calendar.get(Calendar.HOUR_OF_DAY);
+        Minute = calendar.get(Calendar.MINUTE);
+    }
+
     public int getDay() {
         return Day;
     }

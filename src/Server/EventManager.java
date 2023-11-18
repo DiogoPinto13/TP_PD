@@ -1,5 +1,6 @@
 package Server;
 
+import Shared.ErrorMessages;
 import Shared.Event;
 import Shared.EventResult;
 import Shared.Time;
@@ -69,16 +70,18 @@ public class EventManager {
      * @param event
      * @return
      */
-    public static boolean registerPresenceCode(Event event, int duracao, Time atual){
+    public static String registerPresenceCode(Event event, int duracao, Time atual){
+
         if(isBetweenTime(event.getTimeBegin(), event.getTimeEnd(), atual)){
+            int code = generateCode();
             return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento, horaRegisto)" +
                     " VALUES ('"
-                    + generateCode()                                  + "', '"
+                    + code                                            + "', '"
                     + duracao                                         + "', '"
                     + getIdEventByDesignation(event.getDesignation()) + "', '"
-                    + (atual.toString())                              + "');");
+                    + (atual.toString())                              + "');") ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
         }
-        return false;
+        return ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
     }
 
     /**
