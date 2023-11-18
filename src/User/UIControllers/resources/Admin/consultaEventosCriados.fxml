@@ -60,7 +60,7 @@
     </MenuBar>-->
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
           <font>
             <Font size="18.0" />
           </font>
@@ -80,13 +80,16 @@
                   <Font name="Times New Roman Bold Italic" size="25.0" />
                </font>
             </Label>
-            <Button layoutX="480.0" layoutY="335.0" mnemonicParsing="false" text="Consultar presenças" />
-            <Button layoutX="419.0" layoutY="335.0" mnemonicParsing="false" text="Editar" />
-            <Button layoutX="344.0" layoutY="335.0" mnemonicParsing="false" text="Eliminar" />
-            <Button layoutX="286.0" layoutY="335.0" mnemonicParsing="false" text="Criar" />
-            <ComboBox layoutX="202.0" layoutY="52.0" prefWidth="150.0" promptText="Ascendência" />
-            <TextField layoutX="39.0" layoutY="52.0" />
-            <Button layoutX="534.0" layoutY="52.0" mnemonicParsing="false" text="Pesquisar" />
+            <Button layoutX="480.0" onAction="#ConsultPresentsEvent" layoutY="335.0" mnemonicParsing="false" text="Consultar presenças" />
+            <Button layoutX="419.0" onAction="#Edit" layoutY="335.0" mnemonicParsing="false" text="Editar" />
+            <Button layoutX="344.0" onAction="#eliminate" layoutY="335.0" mnemonicParsing="false" text="Eliminar" />
+            <Button layoutX="286.0" onAction="#createEvent" layoutY="335.0" mnemonicParsing="false" text="Criar" />
+            <Button layoutX="39.0" onAction="#voltar" layoutY="335.0" mnemonicParsing="false" text="Voltar" />
+            <ComboBox fx:id="Ascendencia" layoutX="202.0" layoutY="52.0" prefWidth="150.0" promptText="Ascendência" />
+            <TextField fx:id="filtro" layoutX="39.0" layoutY="52.0" />
+
+            <Button onAction="#pesquisa" layoutX="534.0" layoutY="52.0" mnemonicParsing="false"  text="Pesquisar"  />
+
       </children>
     </AnchorPane>
   </children>

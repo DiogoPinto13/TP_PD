@@ -38,6 +38,7 @@ public class Admin {
         setOut(Client.getOut());
     }
 
+
     public static String createEvent(String designation, String place, Time timeBeggining, Time timeEnding){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(designation).append(",").append(place).append(",").append(timeBeggining.toString()).append(",").append(timeEnding.toString()).append(",");
@@ -86,4 +87,13 @@ public class Admin {
         return ErrorMessages.SQL_ERROR.toString();
     }
 
+    public static void closeConnection(){
+        try {
+            out.close();
+            in.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
