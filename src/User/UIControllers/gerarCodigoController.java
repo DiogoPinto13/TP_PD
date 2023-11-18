@@ -1,5 +1,6 @@
 package User.UIControllers;
 
+import Shared.EventResult;
 import User.Admin;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,27 +16,53 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class gerarCodigoController {
     private Stage stage;
     private Scene scene;
     @FXML
-    public ComboBox eventos;
+    public ComboBox evento;
     @FXML
     public TextField duracao;
     @FXML
     public Label code;
+    private ObservableList<Eventos> dataEventos;
 
 
     public void initialize() {
 
-        //getEvents
+        EventResult eventResult = Admin.getEvents(Admin.getUsername());
+        if(eventResult == null){
+            eventResult = new EventResult(" ");
+            return;
+        }
+        ArrayList<String> eventos = eventResult.events;
+        ObservableList<String> values = FXCollections.observableArrayList();
 
-        ObservableList<String> values = FXCollections.observableArrayList("1, 2, 3, 4, 5", " ghjkl");
-        eventos.setItems(values);
+        dataEventos = FXCollections.observableArrayList();
+        /*for(String evento : eventos){
+            String[] eventoData = evento.split(",");
+            Eventos event = new Eventos();
+            event.setDesignacao(eventoData[1]);
+            event.setLocal(eventoData[2]);
+            event.setHoraInicio(eventoData[3]);
+            event.setHoraFim(eventoData[4]);
+            dataEventos.add(event);
+        }*/
+
+        for(int i=0; i<eventos.size() ;i++) {
+            String[] eventoData = eventos.get(i).split(",");
+            if (i != eventos.size() - 1)
+                values.add(eventoData[1] + ",");
+            else
+                values.add(eventoData[1]);
+        }
+
+
+        evento.setItems(values);
 
     }
-
 
     public void Voltar(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/beginAdmin.fxml"));
@@ -47,10 +74,10 @@ public class gerarCodigoController {
 
     public void GerarCod(ActionEvent event) {
 
-        eventos.getValue();
-        int codigoObtido = Admin.generatePresenceCode(eventos.getValue().toString(), Integer.parseInt(duracao.getText()));
-        if(codigoObtido != 0)
-            code.setText(String.valueOf(codigoObtido));
+        evento.getValue();
+        String codigoObtido = Admin.generatePresenceCode(evento.getValue().toString(), Integer.parseInt(duracao.getText()));
+        if(codigoObtido != null)
+            code.setText(codigoObtido);
         else
             code.setText("Erro ao gerar o código!");
 

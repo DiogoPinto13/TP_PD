@@ -68,9 +68,15 @@ public class Admin {
         }
         return null;
     }
-    public static int generatePresenceCode(String code, int duracao){
-
-        return 0;
+    public static String generatePresenceCode(String code, int duracao){
+        Request request = new Request(Messages.GENERATE_PRESENCE_CODE, code + ","+duracao);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     public static EventResult queryEvents(){
 

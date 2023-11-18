@@ -71,27 +71,35 @@ public class EventManager {
      * @return
      */
     public static String registerPresenceCode(Event event, int duracao, Time atual){
-
         if(isBetweenTime(event.getTimeBegin(), event.getTimeEnd(), atual)){
             int code = generateCode();
             return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento, horaRegisto)" +
-                    " VALUES ('"
-                    + code                                            + "', '"
-                    + duracao                                         + "', '"
-                    + getIdEventByDesignation(event.getDesignation()) + "', '"
+                    " VALUES ("
+                    + code                                            + ", "
+                    + duracao                                         + ", "
+                    + getIdEventByDesignation(event.getDesignation()) + ", '"
                     + (atual.toString())                              + "');") ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
         }
         return ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
     }
 
+    public static boolean checkIfCodeAlreadyCreated(String designation){
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT codigo FROM codigos_registo WHERE idevento = " + getIdEventByDesignation(designation) + ";")){
+            return rs != null ? rs.next() : false;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return false;
+    }
     /**
      * this function is meant to update the presenceCode associated to a given event
      * @param presenceCode
-     * @param event
+     * @param presenceCodeDuration
+     * @param designation
      * @return
      */
-    public static boolean updatePresenceCode(int presenceCode, int presenceCodeDuration , Event event){
-        return DatabaseManager.executeUpdate("UPDATE codigos_registo SET codigo = " + presenceCode + ", duracao = " + presenceCodeDuration +" WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + ";");
+    public static boolean updatePresenceCode(int presenceCode, int presenceCodeDuration , String designation){
+        return DatabaseManager.executeUpdate("UPDATE codigos_registo SET codigo = " + presenceCode + ", duracao = " + presenceCodeDuration +" WHERE idevento = " + getIdEventByDesignation(designation) + ";");
     }
 
     /**
@@ -383,10 +391,11 @@ public class EventManager {
      */
     public static String getTime(String designation){
         StringBuilder stringBuilder = new StringBuilder();
-        try(ResultSet rs = DatabaseManager.executeQuery("SELECT horaInicio, horaFim FROM eventos WHERE idevento = " + getIdEventByDesignation(designation) + "';")){
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT horaInicio, horaFim FROM eventos WHERE idevento = '" + getIdEventByDesignation(designation) + "';")){
             while(rs.next()){
-                stringBuilder.append(rs.getTime("horaInicio").toString()).append(",");
-                stringBuilder.append(rs.getTime("horaFim").toString());
+
+                stringBuilder.append(rs.getString("horaInicio").toString()).append(",");
+                stringBuilder.append(rs.getString("horaFim").toString());
             }
             return stringBuilder.toString();
         }catch (SQLException sqlException){

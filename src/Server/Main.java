@@ -58,11 +58,11 @@ class ClientHandler extends Thread{
     }
 
     public void run(){
-        try {
+        /*try {
             clientSocket.setSoTimeout(10*1000);
         } catch (SocketException e) {
             e.printStackTrace();
-        }
+        }*/
         try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
             String response = null;
@@ -147,7 +147,12 @@ class ClientHandler extends Thread{
                             Time timeAtual = new Time();
                             Event event1 = new Event(argsPresence[0],argsPresence[1],timeBeginEvent,timeEndEvent);
 
-                            response = EventManager.registerPresenceCode(event1, Integer.parseInt(argsPresence[2]), timeAtual);
+                            if(!EventManager.checkIfCodeAlreadyCreated(argsPresence[0]))
+                                response = EventManager.registerPresenceCode(event1, Integer.parseInt(argsPresence[1]), timeAtual);
+                            else{
+                                int code = EventManager.generateCode();
+                                response = EventManager.updatePresenceCode(code, Integer.parseInt(argsPresence[1]),argsPresence[0]) ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
+                            }
                             break;
                         case UPDATE_PRESENCE_CODE:
 
