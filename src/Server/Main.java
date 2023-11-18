@@ -144,10 +144,10 @@ class ClientHandler extends Thread{
                             String[] times = EventManager.getTime(argsPresence[0]).split(",");
                             Time timeBeginEvent = new Time(times[0]);
                             Time timeEndEvent = new Time(times[1]);
-                            Time timeAtual = new Time(argsPresence[3]);
+                            Time timeAtual = new Time();
                             Event event1 = new Event(argsPresence[0],argsPresence[1],timeBeginEvent,timeEndEvent);
 
-                            response = (EventManager.registerPresenceCode(event1, Integer.parseInt(argsPresence[2]), timeAtual)) ? Messages.OK.toString() : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
+                            response = EventManager.registerPresenceCode(event1, Integer.parseInt(argsPresence[2]), timeAtual);
                             break;
                         case UPDATE_PRESENCE_CODE:
 
