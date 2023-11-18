@@ -1,6 +1,10 @@
 package Shared;
 
 public enum ErrorMessages {
+    FAIL_REGISTER_PRESENCE_CODE{
+        @Override
+        public String toString(){return "failed register presence code";}
+    },
     INVALID_EVENT_NAME{
         @Override
         public String toString(){return "Invalid event name";}

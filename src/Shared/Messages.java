@@ -21,6 +21,10 @@ public enum Messages {
         @Override
         public String toString(){return "Request generate presence code";}
     },
+    UPDATE_PRESENCE_CODE{
+        @Override
+        public String toString(){return "Request update presence code";}
+    },
     QUERY_EVENTS{
         @Override
         public String toString(){return "Request query events";}

@@ -14,6 +14,8 @@ public class Event implements Serializable {
         this.timeEnd = timeEnd;
     }
 
+
+
     public String getDesignation() {
         return designation;
     }

@@ -1,16 +1,34 @@
 package Shared;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Time implements Serializable {
     private int Hour, Minute, Day, Month, Year;
 
-    public Time(int day, int month, int year, int hour, int minute) {
+    public Time(int year, int month, int day, int hour, int minute) {
         Hour = hour;
         Minute = minute;
         Day = day;
         Month = month;
         Year = year;
+    }
+
+    public Time(String dateString) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-d HH:mm:ss");
+        Date date = dateFormat.parse(dateString);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        Year = calendar.get(Calendar.YEAR);
+        Month = calendar.get(Calendar.MONTH) + 1;
+        Day = calendar.get(Calendar.DAY_OF_MONTH);
+        Hour = calendar.get(Calendar.HOUR_OF_DAY);
+        Minute = calendar.get(Calendar.MINUTE);
     }
 
     public int getDay() {
@@ -51,7 +69,7 @@ public class Time implements Serializable {
     }
     @Override
     public String toString() {
-        return getYear() + "-" + getMonth() + "-" + getDay() + " " + getHour() + ":" + getMinute();
+        return getYear() + "-" + getMonth() + "-" + getDay() + " " + getHour() + ":" + getMinute() + ":00";
     }
     public String toStringHourMinute(){
         return getHour() + ":" + getMinute();

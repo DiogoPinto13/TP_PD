@@ -2,12 +2,14 @@ package Server;
 
 import Shared.Event;
 import Shared.EventResult;
+import Shared.Time;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -65,15 +67,18 @@ public class EventManager {
     /**
      * This function is meant to register a new presence code (in a new event), given a specific idevento
      * @param event
-     * @param presenceCode
      * @return
      */
-    public static boolean registerPresenceCode(Event event, int presenceCode){
-        return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento)" +
-                " VALUES ('"
-                + presenceCode                           + "', '"
-                + presenceCode                           + "', '"
-                + getIdEventByDesignation(event.getDesignation())   + "');");
+    public static boolean registerPresenceCode(Event event, int duracao, Time atual){
+        if(isBetweenTime(event.getTimeBegin(), event.getTimeEnd(), atual)){
+            return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento, horaRegisto)" +
+                    " VALUES ('"
+                    + generateCode()                                  + "', '"
+                    + duracao                                         + "', '"
+                    + getIdEventByDesignation(event.getDesignation()) + "', '"
+                    + (atual.toString())                              + "');");
+        }
+        return false;
     }
 
     /**
@@ -338,5 +343,52 @@ public class EventManager {
                     getIdEventByDesignation(designation) + ";");
         }
         return false;
+    }
+
+    /**
+     * this function is meant to delete manually a user from a event
+     * @param eventDesignation
+     * @param username
+     * @return
+     */
+    public static boolean deleteManualPresences(String eventDesignation, String username){
+        if(usersInEvent(eventDesignation)){
+            return DatabaseManager.executeUpdate("DELETE from eventos_utilizadores WHERE idevento = " +
+                    getIdEventByDesignation(eventDesignation) + " AND username = '" + username + "';");
+        }
+        return false;
+    }
+
+    /**
+     * this function is meant to verify if a date is between the begginng and the end date
+     * @param inicio
+     * @param fim
+     * @param atual
+     * @return
+     */
+    public static boolean isBetweenTime(Time inicio, Time fim, Time atual) {
+        LocalDateTime inicioLocalDateTime = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDay(), inicio.getHour(), inicio.getMinute());
+        LocalDateTime fimLocalDateTime = LocalDateTime.of(fim.getYear(), fim.getMonth(), fim.getDay(), fim.getHour(), fim.getMinute());
+        LocalDateTime atualLocalDateTime = LocalDateTime.of(atual.getYear(), atual.getMonth(), atual.getDay(), atual.getHour(), atual.getMinute());
+        return atualLocalDateTime.isAfter(inicioLocalDateTime) && atualLocalDateTime.isBefore(fimLocalDateTime);
+    }
+
+    /**
+     * this function is meant to get the time as a string to be used in other functions, it receives the designation of the event
+     * @param designation
+     * @return
+     */
+    public static String getTime(String designation){
+        StringBuilder stringBuilder = new StringBuilder();
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT horaInicio, horaFim FROM eventos WHERE idevento = " + getIdEventByDesignation(designation) + "';")){
+            while(rs.next()){
+                stringBuilder.append(rs.getTime("horaInicio").toString()).append(",");
+                stringBuilder.append(rs.getTime("horaFim").toString());
+            }
+            return stringBuilder.toString();
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return "NULL";
     }
 }

@@ -12,6 +12,7 @@ import java.net.SocketException;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -139,6 +140,16 @@ class ClientHandler extends Thread{
 
                             break;
                         case GENERATE_PRESENCE_CODE:
+                            String[] argsPresence = request.getMessage().split(",");
+                            String[] times = EventManager.getTime(argsPresence[0]).split(",");
+                            Time timeBeginEvent = new Time(times[0]);
+                            Time timeEndEvent = new Time(times[1]);
+                            Time timeAtual = new Time(argsPresence[3]);
+                            Event event1 = new Event(argsPresence[0],argsPresence[1],timeBeginEvent,timeEndEvent);
+
+                            response = (EventManager.registerPresenceCode(event1, Integer.parseInt(argsPresence[2]), timeAtual)) ? Messages.OK.toString() : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
+                            break;
+                        case UPDATE_PRESENCE_CODE:
 
                             break;
                         case QUERY_EVENTS:
@@ -170,6 +181,8 @@ class ClientHandler extends Thread{
             System.out.println("error: IO" + e);
         } catch (ClassNotFoundException e) {
             System.out.println("error while reading/writing the object from/to the server");
+        } catch (ParseException e) {
+            e.printStackTrace();
         } finally {
             try {
                 clientSocket.close();
