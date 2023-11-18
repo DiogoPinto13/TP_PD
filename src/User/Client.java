@@ -50,6 +50,12 @@ public class Client {
     public static Socket getSocket(){
         return socket;
     }
+    public static ObjectOutputStream getOut(){
+        return out;
+    }
+    public static ObjectInputStream getIn(){
+        return in;
+    }
     public static void closeConnection(){
         try {
             out.close();

@@ -22,14 +22,20 @@ public class Admin {
     private static ObjectOutputStream out;
     private static ObjectInputStream in;
 
-    public static void prepareAdmin(InetAddress adress, int port){
-        try {
-            socket = new Socket(adress, port);
-            in = new ObjectInputStream(socket.getInputStream());
-            out = new ObjectOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void setSocket(Socket s){
+        socket = s;
+    }
+    public static void setIn(ObjectInputStream i){
+        in = i;
+    }
+    public static void setOut(ObjectOutputStream o){
+        out = o;
+    }
+
+    public static void prepareAdmin(){
+        setSocket(Client.getSocket());
+        setIn(Client.getIn());
+        setOut(Client.getOut());
     }
 
     public static String createEvent(String designation, String place, Time timeBeggining, Time timeEnding){

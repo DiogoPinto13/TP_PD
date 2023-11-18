@@ -71,12 +71,12 @@ public class LoginController {
             stage.show();
         } else if(retorno.equals(ErrorMessages.LOGIN_ADMIN_USER.toString())){
             //vamos fechar a connection como client normal
-            InetAddress host = Client.getSocket().getLocalAddress();
-            int port = Client.getSocket().getLocalPort();
-            Client.closeConnection();
+            //InetAddress host = Client.getSocket().getLocalAddress();
+            //int port = Client.getSocket().getLocalPort();
+            //Client.closeConnection();
 
             //vamos abrir uma connection especial pro admin
-            Admin.prepareAdmin(host, port);
+            Admin.prepareAdmin();
             Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/beginAdmin.fxml"));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);

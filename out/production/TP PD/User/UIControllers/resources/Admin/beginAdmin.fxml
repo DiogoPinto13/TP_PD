@@ -66,7 +66,7 @@
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <Button fx:id="listEvents" focusTraversable="true" layoutX="266.0" layoutY="164.0" onAction="#listEvents" text="Eventos">
+                <Button fx:id="listEvents" focusTraversable="true" layoutX="266.0" layoutY="164.0" onAction="#Events" text="Eventos">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
@@ -76,22 +76,22 @@
                         <Font name="Times New Roman Bold Italic" size="25.0" />
                     </font>
                 </Label>
-                <Button fx:id="edit" focusTraversable="true" layoutX="246.0" layoutY="262.0" onAction="#editDados" text="Editar dados utilizador">
+                <!--<Button fx:id="edit" focusTraversable="true" layoutX="246.0" layoutY="262.0" text="Editar dados utilizador">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Button>
-                <Button fx:id="consul" focusTraversable="true" layoutX="256.0" layoutY="214.0" onAction="#consultPresencas" text="Consultar presenças">
+                <Button fx:id="consul" focusTraversable="true" layoutX="256.0" layoutY="214.0" text="Consultar presenças">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Button>-->
+                <Button fx:id="sair" onAction="#sair" focusTraversable="true" layoutX="301.0" layoutY="317.0" text="Sair">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Button>
-                <Button fx:id="sair" focusTraversable="true" layoutX="301.0" layoutY="317.0" onAction="#sair" text="Sair">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-                <Label layoutX="229.0" layoutY="107.0" prefHeight="39.0" prefWidth="192.0" text="Bem-vindo " textFill="#0b0b0b">
+                <Label fx:id="welcome" layoutX="229.0" layoutY="107.0" prefHeight="39.0" prefWidth="192.0" text="Bem-vindo " textFill="#0b0b0b">
                     <font>
                         <Font name="Times New Roman" size="19.0" />
                     </font>
