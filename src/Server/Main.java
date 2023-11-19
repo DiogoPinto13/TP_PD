@@ -124,10 +124,12 @@ class ClientHandler extends Thread{
                         //admin commands here:
                         case CREATE_EVENT:
                             String[] arguments = request.getMessage().split(",");
-                            String[] argumentsTimeBegin = arguments[2].split(":");
-                            String[] argumentsTimeEnd = arguments[3].split(":");
-                            Time timeBegin = new Time(Integer.parseInt(argumentsTimeBegin[0]), Integer.parseInt(argumentsTimeBegin[1]), Integer.parseInt(argumentsTimeBegin[2]), Integer.parseInt(argumentsTimeBegin[3]), Integer.parseInt(argumentsTimeBegin[4]));
-                            Time timeEnd = new Time(Integer.parseInt(argumentsTimeEnd[0]), Integer.parseInt(argumentsTimeEnd[1]), Integer.parseInt(argumentsTimeEnd[2]), Integer.parseInt(argumentsTimeEnd[3]), Integer.parseInt(argumentsTimeEnd[4]));
+                            //String[] argumentsTimeBegin = arguments[2].split(":");
+                            //String[] argumentsTimeEnd = arguments[3].split(":");
+                            Time timeBegin = new Time(arguments[2]);
+                            Time timeEnd = new Time(arguments[3]);
+                            //Time timeBegin = new Time(Integer.parseInt(argumentsTimeBegin[0]), Integer.parseInt(argumentsTimeBegin[1]), Integer.parseInt(argumentsTimeBegin[2]), Integer.parseInt(argumentsTimeBegin[3]), Integer.parseInt(argumentsTimeBegin[4]));
+                            //Time timeEnd = new Time(Integer.parseInt(argumentsTimeEnd[0]), Integer.parseInt(argumentsTimeEnd[1]), Integer.parseInt(argumentsTimeEnd[2]), Integer.parseInt(argumentsTimeEnd[3]), Integer.parseInt(argumentsTimeEnd[4]));
 
                             Event event = new Event(arguments[0], arguments[1], timeBegin, timeEnd);
                             response = (EventManager.createEvent(event)) ? Messages.OK.toString() : ErrorMessages.CREATE_EVENT_FAILED.toString();

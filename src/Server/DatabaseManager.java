@@ -182,7 +182,7 @@ public class DatabaseManager {
                 "idversao INTEGER PRIMARY KEY AUTOINCREMENT,\n"  +
                 "versao INTEGER NOT NULL\n" +
                 ");";
-        String iniciaVersao = "INSERT INTO versao(versao) VALUES(1);";
+        String iniciaVersao = "INSERT INTO versao(versao) VALUES(0);";
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             conn.setAutoCommit(true);
@@ -238,7 +238,7 @@ public class DatabaseManager {
         String relation2 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (2, 'a2020133653@isec.pt');";
         String relation3 = "INSERT INTO eventos_utilizadores (idevento, username) VALUES (1, 'a2021146924@isec.pt');";
 
-        String codeEvent1 = "INSERT INTO codigos_registo (codigo, duracao, idevento, horaRegisto) VALUES(12345, 60, 1, '2021-12-12 12:12:12');";
+        //String codeEvent1 = "INSERT INTO codigos_registo (codigo, duracao, idevento, horaRegisto) VALUES(12345, 60, 1, '2021-12-12 12:12:12');";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
@@ -254,7 +254,7 @@ public class DatabaseManager {
             stmt.execute(relation1);
             stmt.execute(relation2);
             stmt.execute(relation3);
-            stmt.execute(codeEvent1);
+            //stmt.execute(codeEvent1);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

@@ -45,8 +45,7 @@ public class EventManager {
                     + event.getDesignation()            + "', '"
                     + event.getPlace()                  + "', '"
                     + event.getTimeBegin().toString()   + "', '"
-                    + event.getTimeEnd().toStringDay()  + "', '"
-                    + "');");
+                    + event.getTimeEnd().toString()     + "');");
         }
         return false;
     }
@@ -78,7 +77,7 @@ public class EventManager {
                     + code                                            + ", "
                     + duracao                                         + ", "
                     + getIdEventByDesignation(event.getDesignation()) + ", '"
-                    + (atual.toString())                              + "');") ? ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString() : String.valueOf(code);
+                    + (atual.toString())                              + "');") ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
         }
         return ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
     }

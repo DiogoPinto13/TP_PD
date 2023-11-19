@@ -38,7 +38,6 @@ public class ConsultEventsController {
     private ObservableList<Eventos> dataEventos;
 
     public void initialize(){
-
         EventResult eventResult = Admin.getEvents(Admin.getUsername());
         if(eventResult == null){
             eventResult = new EventResult(" ");

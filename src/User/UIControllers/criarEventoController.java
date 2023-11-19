@@ -48,7 +48,7 @@ public class criarEventoController {
         int ano = dataSelecionada.getYear();
 
 
-        Admin.createEvent(nome.getText(), local.getText(), new Time(ano,mes,dia, horaInicio.getValue(), minutosInicio.getValue()), new Time(dia,mes,ano, horaFim.getValue(), minutosFim.getValue()) );
+        Admin.createEvent(nome.getText(), local.getText(), new Time(ano,mes,dia, horaInicio.getValue(), minutosInicio.getValue()), new Time(ano,mes,dia, horaFim.getValue(), minutosFim.getValue()) );
 
 
     }

@@ -40,7 +40,7 @@ public class Admin {
 
     public static String createEvent(String designation, String place, Time timeBeggining, Time timeEnding){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(designation).append(",").append(place).append(",").append(timeBeggining.toString()).append(",").append(timeEnding.toString()).append(",");
+        stringBuilder.append(designation).append(",").append(place).append(",").append(timeBeggining.toString()).append(",").append(timeEnding.toString());
         Request request = new Request(Messages.CREATE_EVENT, stringBuilder.toString());
         try {
             out.writeObject(request);
