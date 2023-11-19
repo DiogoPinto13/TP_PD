@@ -117,7 +117,6 @@ class ClientHandler extends Thread{
                             out.writeObject(EventManager.queryEvents(request.getMessage(), filter));
                             out.flush();
                             //EventManager.queryEvents(username, null);
-                            //quero morrer
                             break;
                         case GET_CSV_PRESENCES:
                             //EventManager.queryToCSV(username, null);
@@ -137,7 +136,12 @@ class ClientHandler extends Thread{
                             response = (EventManager.deleteEvent(request.getMessage())) ? Messages.OK.toString() : ErrorMessages.INVALID_EVENT_NAME.toString();
                             break;
                         case GET_EVENTS:
+                            flagProtection = true;
+                            EventResult eventResult1 = new EventResult(" ");
+                            eventResult1.setColumns(" ");
 
+                            out.writeObject(EventManager.queryEvents(null, null));
+                            out.flush();
                             break;
                         case GENERATE_PRESENCE_CODE:
                             String[] argsPresence = request.getMessage().split(",");
@@ -151,7 +155,7 @@ class ClientHandler extends Thread{
                                 response = EventManager.registerPresenceCode(event1, Integer.parseInt(argsPresence[1]), timeAtual);
                             else{
                                 int code = EventManager.generateCode();
-                                response = EventManager.updatePresenceCode(code, Integer.parseInt(argsPresence[1]),argsPresence[0]) ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
+                                response = EventManager.updatePresenceCode(code, Integer.parseInt(argsPresence[1]),argsPresence[0]) ? ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString() : String.valueOf(code) ;
                             }
                             break;
                         case UPDATE_PRESENCE_CODE:

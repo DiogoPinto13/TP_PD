@@ -78,7 +78,7 @@ public class EventManager {
                     + code                                            + ", "
                     + duracao                                         + ", "
                     + getIdEventByDesignation(event.getDesignation()) + ", '"
-                    + (atual.toString())                              + "');") ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
+                    + (atual.toString())                              + "');") ? ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString() : String.valueOf(code);
         }
         return ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
     }
@@ -143,7 +143,7 @@ public class EventManager {
     public static EventResult queryEvents(String username, String filters){
         StringBuilder stringBuilder = new StringBuilder();
         StringBuilder stringBuilderData = new StringBuilder();
-        String query = (filters == null ? "SELECT * FROM eventos;" : "SELECT * FROM eventos " + filters + ";");
+        String query = (filters == null || username == null ? "SELECT * FROM eventos;" : "SELECT * FROM eventos " + filters + ";");
         try(ResultSet rs = DatabaseManager.executeQuery(query)){
             if(rs == null)
                 return null;

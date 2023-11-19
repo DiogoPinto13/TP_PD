@@ -59,7 +59,7 @@ public class Admin {
         return ErrorMessages.SQL_ERROR.toString();
     }
     public static EventResult getEvents(String username){
-        Request request = new Request(Messages.GET_PRESENCES, username);
+        Request request = new Request(Messages.GET_EVENTS, username);
         try{
             out.writeObject(request);
             return (EventResult) in.readObject();
@@ -69,7 +69,7 @@ public class Admin {
         return null;
     }
     public static String generatePresenceCode(String code, int duracao){
-        Request request = new Request(Messages.GENERATE_PRESENCE_CODE, code + ","+duracao);
+        Request request = new Request(Messages.GENERATE_PRESENCE_CODE, code + "," + duracao);
         try{
             out.writeObject(request);
             return (String) in.readObject();

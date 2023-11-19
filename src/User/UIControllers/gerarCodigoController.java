@@ -53,10 +53,7 @@ public class gerarCodigoController {
 
         for(int i=0; i<eventos.size() ;i++) {
             String[] eventoData = eventos.get(i).split(",");
-            if (i != eventos.size() - 1)
-                values.add(eventoData[1] + ",");
-            else
-                values.add(eventoData[1]);
+            values.add(eventoData[1]);
         }
 
 
