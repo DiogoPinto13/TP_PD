@@ -2,19 +2,22 @@ package User;
 
 import Shared.*;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Scanner;
 
 public class Client {
-    public static int port;
-    public static String adress;
+    private static final int timeoutTime = 1;
+    private static int port;
+    //public static int getPort(){ return port; }
+    public static void setPort(int newPort){port = newPort;}
+    private static String address;
+    //public static String getAddress(){ return address; }
+    public static void setAddress(String newAddress){address = newAddress;}
     /**
      * THIS IS EITHER LOGIN OR REGISTER OBJECT
      */
@@ -62,24 +65,32 @@ public class Client {
             e.printStackTrace();
         }
     }
-    public static void prepareClient(String... args) {
+    public static void prepareClient() {
         try {
-            socket = new Socket(args[0], Integer.parseInt(args[1]));
-            socket.setSoTimeout(1*1000);
+            socket = new Socket(address, port);
+            socket.setSoTimeout(timeoutTime*1000);
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
             //socket.connect()
 
-        } catch (Exception e) {
-            if (e instanceof java.net.SocketTimeoutException) {
-                System.out.println("Socket timed out!");
-                socket=null;
-                Platform.exit();
-
-            } else {
-                System.out.println("exception");
-                e.printStackTrace();
-            }
+        }
+        catch (ConnectException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Server not Found or Offline.");
+            alert.setContentText("The requested Server could not be found or is offline.");
+            alert.showAndWait();
+            Platform.exit();
+        }
+        catch (SocketTimeoutException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Request Timeout");
+            alert.setContentText("The request to the server timed out.");
+            alert.showAndWait();
+            Platform.exit();
+        }
+        catch (Exception e) {
+            System.out.println("exception");
+            e.printStackTrace();
         }
     }
 

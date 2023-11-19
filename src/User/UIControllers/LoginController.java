@@ -35,12 +35,13 @@ public class LoginController {
     private Scene scene;
     private static Scene preScene;
 
-    public void initialize() {
+    public LoginController(){
+        Client.prepareClient();
+    }
 
+    public void initialize() {
         background.setStyle("-fx-background-image: url('resources/background.png'); " +
                 "-fx-background-size: cover;");
-
-        Client.prepareClient(Client.adress, String.valueOf(Client.port));
     }
 
     public void setStage(Stage stage){
