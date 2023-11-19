@@ -30,7 +30,6 @@ public class LoginController {
     private Label errorMessage;
     @FXML
     private Pane background;
-
     private Stage stage;
     private Scene scene;
     private static Scene preScene;
@@ -99,6 +98,5 @@ public class LoginController {
         else{
             errorMessage.setText("Dados incorretos!");
         }
-
     }
 }

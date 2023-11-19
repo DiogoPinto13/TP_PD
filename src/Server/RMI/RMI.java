@@ -1,16 +1,24 @@
 package Server.RMI;
 
 import Server.DatabaseManager;
+
+import java.net.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RMI extends java.rmi.server.UnicastRemoteObject implements RmiInterface, Runnable {
     //variables
     private final String serviceName;
     private final AtomicBoolean serverVariable;
+    private static final MulticastSocket socket = null; //Gonna try to figure out how multicast works
 
     public RMI(String newRegistry, AtomicBoolean newServerVariable) throws java.rmi.RemoteException{
         serviceName = newRegistry;
         serverVariable = newServerVariable;
+        //MulticastSocket socket = new MulticastSocket(4444, InetAddress.getByName("230.44.44.44"));
+    }
+
+    public static void sendHeartbeat(){
+
     }
 
     @Override
