@@ -8,5 +8,17 @@
       <jdbc-url>jdbc:sqlite:C:\Users\Kingcraft12\Desktop\TP PD\TP_PD\Database\tp.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="tp [2]" uuid="be1a008d-cab4-4359-a80e-4cf2c4821302">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\pinto\OneDrive\Ambiente de Trabalho\Universidade\Licenciatura\4º ano\PD\P\TP PD\Database\tp.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+      <libraries>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.43.0/org/xerial/sqlite-jdbc/3.43.0.0/sqlite-jdbc-3.43.0.0.jar</url>
+        </library>
+      </libraries>
+    </data-source>
   </component>
 </project>
