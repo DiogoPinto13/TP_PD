@@ -18,7 +18,7 @@ public class Time implements Serializable {
     }
 
     public Time(String dateString) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-d HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-d H:m:s");
         Date date = dateFormat.parse(dateString);
 
         Calendar calendar = Calendar.getInstance();
