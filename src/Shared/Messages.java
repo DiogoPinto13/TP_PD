@@ -80,6 +80,10 @@ public enum Messages {
     UNKNOWN_COMMAND {
         @Override
         public String toString(){return "Unknown command.";}
+    },
+    CHECK_PRESENCES {
+        @Override
+        public String toString(){return "Check if an event have presences registered.";}
     };
     @Override
     public abstract String toString();

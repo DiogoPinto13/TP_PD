@@ -50,12 +50,18 @@ public class Admin {
         }
         return ErrorMessages.SQL_ERROR.toString();
     }
-    public static String editEvent(){
+    public static String editEvent(String designacao, Time hInicio, Time hFim){
 
         return ErrorMessages.SQL_ERROR.toString();
     }
-    public static String deleteEvent(){
-
+    public static String deleteEvent(String designacao){
+        Request request = new Request(Messages.DELETE_EVENT, designacao);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return ErrorMessages.SQL_ERROR.toString();
     }
     public static EventResult getEvents(String username){
@@ -96,7 +102,17 @@ public class Admin {
 
         return ErrorMessages.SQL_ERROR.toString();
     }
-
+    public static String CheckPresences(String designacao) {
+        //caso tenha presenças registadas ou não seja possivel encontrar o evento return true
+        Request request = new Request(Messages.CHECK_PRESENCES, designacao);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static void closeConnection(){
         try {
             out.close();

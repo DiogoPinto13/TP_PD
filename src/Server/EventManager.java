@@ -334,8 +334,8 @@ public class EventManager {
      * @return
      */
     public static boolean usersInEvent(String designation){
-        try(ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByDesignation(designation) + "';")){
-            return rs != null ? rs.next() : false;
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByDesignation(designation) + ";")){
+            return rs != null && rs.next();
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
         }
@@ -349,7 +349,7 @@ public class EventManager {
      */
     public static boolean deleteEvent(String designation){
         if(!usersInEvent(designation)){
-            return DatabaseManager.executeUpdate("DELETE FROM eventos_utilizadores WHERE idevento = " +
+            return DatabaseManager.executeUpdate("DELETE FROM eventos WHERE idevento = " +
                     getIdEventByDesignation(designation) + ";");
         }
         return false;
@@ -401,5 +401,9 @@ public class EventManager {
             System.out.println("Error with the database: " + sqlException);
         }
         return "NULL";
+    }
+
+    public static boolean checkPresences(String designation){
+        return usersInEvent(designation);
     }
 }

@@ -1,6 +1,5 @@
 package User.UIControllers;
 
-import Shared.Event;
 import Shared.EventResult;
 import User.Client;
 import javafx.collections.FXCollections;
@@ -19,11 +18,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class PresentsController {
+public class PresencesController {
     @FXML
     public VBox vbox;
     @FXML

@@ -160,6 +160,9 @@ class ClientHandler extends Thread{
                                 response = EventManager.updatePresenceCode(code, Integer.parseInt(argsPresence[1]),argsPresence[0]) ? ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString() : String.valueOf(code) ;
                             }
                             break;
+                        case CHECK_PRESENCES:
+                            response = (EventManager.checkPresences(request.getMessage())) ? Messages.OK.toString() : ErrorMessages.INVALID_REQUEST.toString();
+                            break;
                         case UPDATE_PRESENCE_CODE:
 
                             break;
