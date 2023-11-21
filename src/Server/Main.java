@@ -223,8 +223,11 @@ public class Main {
                 throw new RemoteException();
             System.out.println("RMI Service is Online!");
         }catch (RemoteException e) {
-           System.out.println("Error while creating the RMI manager: " + e);
-           return;
+            System.out.println("Error while creating the RMI manager: " + e);
+            return;
+        } catch (SocketException e) {
+            System.out.println("Error while connecting socket to Multicast Group." + e);
+            return;
         }
 
         //DatabaseManager.clearDatabase();
