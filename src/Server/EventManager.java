@@ -1,12 +1,17 @@
 package Server;
 
+import Shared.ErrorMessages;
 import Shared.Event;
+import Shared.EventResult;
+import Shared.Time;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class EventManager {
@@ -19,9 +24,9 @@ public class EventManager {
      */
     public static boolean registerUserInEvent(String username, int presenceCode){
         if(!userAlreadyInEvent(username) && checkCode(presenceCode)){
-            return DatabaseManager.executeUpdate("INSERTO INTO eventos_utilizadores (idevento,username) " +
-                    "VALUES ('"
-                    + getIdEventByPresenceCode(presenceCode) + "', '"
+            return DatabaseManager.executeUpdate("INSERT INTO eventos_utilizadores (idevento,username) " +
+                    "VALUES ("
+                    + getIdEventByPresenceCode(presenceCode) + ", '"
                     + username + "');");
         }
         return false;
@@ -35,11 +40,12 @@ public class EventManager {
     public static boolean createEvent(Event event){
 
         if(!eventAlreadyExists(event.getDesignation())){
-            return DatabaseManager.executeUpdate("INSERT INTO eventos (designacao, place, datetime)" +
+            return DatabaseManager.executeUpdate("INSERT INTO eventos (designacao, place, horaInicio, horaFim)" +
                     " VALUES ('"
-                    + event.getDesignation()      + "', '"
-                    + event.getPlace()            + "', '"
-                    + event.getDate()             + "');");
+                    + event.getDesignation()            + "', '"
+                    + event.getPlace()                  + "', '"
+                    + event.getTimeBegin().toString()   + "', '"
+                    + event.getTimeEnd().toString()     + "');");
         }
         return false;
     }
@@ -61,34 +67,64 @@ public class EventManager {
     /**
      * This function is meant to register a new presence code (in a new event), given a specific idevento
      * @param event
-     * @param presenceCode
      * @return
      */
-    public static boolean registerPresenceCode(Event event, int presenceCode){
-        return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento)" +
-                " VALUES ('"
-                + presenceCode                           + "', '"
-                + event.getPresenceCodeDuration()        + "', '"
-                + getIdEventByDesignation(event.getDesignation())   + "');");
+    public static String registerPresenceCode(Event event, int duracao, Time atual){
+        if(isBetweenTime(event.getTimeBegin(), event.getTimeEnd(), atual)){
+            int code = generateCode();
+            return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento, horaRegisto)" +
+                    " VALUES ("
+                    + code                                            + ", "
+                    + duracao                                         + ", "
+                    + getIdEventByDesignation(event.getDesignation()) + ", '"
+                    + (atual.toString())                              + "');") ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
+        }
+        return ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
     }
 
+    public static boolean checkIfCodeAlreadyCreated(String designation){
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT codigo FROM codigos_registo WHERE idevento = " + getIdEventByDesignation(designation) + ";")){
+            return rs != null ? rs.next() : false;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return false;
+    }
     /**
      * this function is meant to update the presenceCode associated to a given event
      * @param presenceCode
-     * @param event
+     * @param presenceCodeDuration
+     * @param designation
      * @return
      */
-    public static boolean updatePresenceCode(int presenceCode, int presenceCodeDuration , Event event){
-        return DatabaseManager.executeUpdate("UPDATE codigos_registo SET codigo = " + presenceCode + ", duracao = " + presenceCodeDuration +" WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + ";");
+    public static boolean updatePresenceCode(int presenceCode, int presenceCodeDuration , String designation){
+        return DatabaseManager.executeUpdate("UPDATE codigos_registo SET codigo = " + presenceCode + ", duracao = " + presenceCodeDuration +" WHERE idevento = " + getIdEventByDesignation(designation) + ";");
     }
 
+    /**
+     * this is meant to receive multiple strings that will be our filters, AKA
+     * SQL stuff that will be appended in one string that we can use in our querys
+     * @param ids
+     * @return string with filters
+     */
+    public static String createFilterOr(ArrayList<Integer> ids){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(" WHERE idevento = ");
+        for(int i = 0; i < ids.size(); i++){
+            stringBuilder.append(ids.get(i));
+            if(i != ids.size() - 1)
+                stringBuilder.append(" OR idevento =  ");
+        }
+        stringBuilder.append(";");
+        return stringBuilder.toString();
+    }
     /**
      * this is meant to receive multiple strings that will be our filters, AKA
      * SQL stuff that will be appended in one string that we can use in our querys
      * @param filters
      * @return string with filters
      */
-    public static String createFilter(String ...filters){
+    public static String createFilterAnd(String ...filters){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(" AND ");
         for (String filter : filters) {
@@ -103,31 +139,37 @@ public class EventManager {
      * @param username,filters
      * @return String a string completely filled
      */
-    public static String queryEvents(String username, String filters){
+    public static EventResult queryEvents(String username, String filters){
         StringBuilder stringBuilder = new StringBuilder();
-        String query = (filters == null ? "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) + "';" : "SELECT * FROM eventos WHERE idevento = '" + getIdEventByUsername(username) +"'" + filters + ";");
+        StringBuilder stringBuilderData = new StringBuilder();
+        String query = (filters == null || username == null ? "SELECT * FROM eventos;" : "SELECT * FROM eventos " + filters + ";");
         try(ResultSet rs = DatabaseManager.executeQuery(query)){
             if(rs == null)
-                return "NULL";
+                return null;
             ResultSetMetaData metaData = rs.getMetaData();
             int nColunas = metaData.getColumnCount();
-            //escreve o nome das colunas na consola pro user saber o que raio está a ver
+            //escreve o nome das colunas
             for(int i = 1; i <= nColunas; i++){
                 stringBuilder.append(metaData.getColumnName(i)).append(",");
             }
-            stringBuilder.append("\n");
+            //stringBuilder.append("\n");
             //bora escrever as cenas todas
+            EventResult eventResult = new EventResult(stringBuilder.toString());
+
             while(rs.next()){
+                stringBuilderData.setLength(0);
                 for(int i = 1; i <= nColunas; i++){
-                    stringBuilder.append(rs.getString(i)).append(",");
+                    stringBuilderData.append(rs.getString(i));
+                    stringBuilderData.append(",");
                 }
-                stringBuilder.append("\n");
+                eventResult.events.add(stringBuilderData.toString());
             }
-            return stringBuilder.toString();
+            //eventResult.events.add(stringBuilderData.toString());
+            return eventResult;
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
         }
-        return "NULL";
+        return null;
     }
 
     /**
@@ -191,7 +233,7 @@ public class EventManager {
      * @return
      */
     public static boolean userAlreadyInEvent(String username){
-        try(ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByUsername(username) + "" +
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByUsername(username) +
                 " AND username ='" + username + "';")){
             return rs != null ? rs.next() : false;
         }catch (SQLException sqlException){
@@ -252,6 +294,24 @@ public class EventManager {
         return 0;
     }
     /**
+     * this function is meant to return all IDs of all events, given a specific username,
+     * returns null if it didnt find anything.
+     * @param username
+     * @return null
+     */
+    public static ArrayList<Integer> getIdsEventsByUsername(String username){
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT idevento FROM eventos_utilizadores WHERE username = '" + username + "';")){
+            while(rs.next()){
+                ids.add(rs.getInt("idevento"));
+            }
+            return ids;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return null;
+    }
+    /**
      * this function is meant to return the ID of the event, given a specific presenceCode,
      * returns 0 if it didnt find anything.
      * @param presenceCode
@@ -266,5 +326,80 @@ public class EventManager {
             System.out.println("Error with the database: " + sqlException);
         }
         return 0;
+    }
+
+    /**
+     * this function returns either if a user is already in the event or not
+     * @param designation
+     * @return
+     */
+    public static boolean usersInEvent(String designation){
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByDesignation(designation) + "';")){
+            return rs != null ? rs.next() : false;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return false;
+    }
+    /**
+     * this function is meant to delete an event, passing the name of the event by argument
+     * returns true or false if success
+     * @param designation
+     * @return
+     */
+    public static boolean deleteEvent(String designation){
+        if(!usersInEvent(designation)){
+            return DatabaseManager.executeUpdate("DELETE FROM eventos_utilizadores WHERE idevento = " +
+                    getIdEventByDesignation(designation) + ";");
+        }
+        return false;
+    }
+
+    /**
+     * this function is meant to delete manually a user from a event
+     * @param eventDesignation
+     * @param username
+     * @return
+     */
+    public static boolean deleteManualPresences(String eventDesignation, String username){
+        if(usersInEvent(eventDesignation)){
+            return DatabaseManager.executeUpdate("DELETE from eventos_utilizadores WHERE idevento = " +
+                    getIdEventByDesignation(eventDesignation) + " AND username = '" + username + "';");
+        }
+        return false;
+    }
+
+    /**
+     * this function is meant to verify if a date is between the begginng and the end date
+     * @param inicio
+     * @param fim
+     * @param atual
+     * @return
+     */
+    public static boolean isBetweenTime(Time inicio, Time fim, Time atual) {
+        LocalDateTime inicioLocalDateTime = LocalDateTime.of(inicio.getYear(), inicio.getMonth(), inicio.getDay(), inicio.getHour(), inicio.getMinute());
+        LocalDateTime fimLocalDateTime = LocalDateTime.of(fim.getYear(), fim.getMonth(), fim.getDay(), fim.getHour(), fim.getMinute());
+        LocalDateTime atualLocalDateTime = LocalDateTime.of(atual.getYear(), atual.getMonth(), atual.getDay(), atual.getHour(), atual.getMinute());
+        return atualLocalDateTime.isAfter(inicioLocalDateTime) && atualLocalDateTime.isBefore(fimLocalDateTime);
+    }
+
+    /**
+     * this function is meant to get the time as a string to be used in other functions, it receives the designation of the event
+     * @param designation
+     * @return
+     */
+    public static String getTime(String designation){
+        StringBuilder stringBuilder = new StringBuilder();
+        try(ResultSet rs = DatabaseManager.executeQuery("SELECT horaInicio, horaFim FROM eventos WHERE idevento = '" + getIdEventByDesignation(designation) + "';")){
+            while(rs.next()){
+
+                stringBuilder.append(rs.getString("horaInicio").toString()).append(",");
+                stringBuilder.append(rs.getString("horaFim").toString());
+            }
+            return stringBuilder.toString();
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return "NULL";
     }
 }

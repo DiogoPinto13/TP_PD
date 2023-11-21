@@ -2,6 +2,7 @@ package Server;
 
 import Shared.ErrorMessages;
 import Shared.Login;
+import Shared.Messages;
 import Shared.Register;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -22,11 +23,13 @@ public class UserManager {
      */
     public static boolean registerUser(Register register) {
         if (!userExists(register.getUsername())) {
-            return DatabaseManager.executeUpdate("INSERT INTO utilizadores (idutilizador, username, password, nome)" +
+            return DatabaseManager.executeUpdate("INSERT INTO utilizadores (idutilizador, username, password, nome, isAdmin)" +
                     " VALUES ('" + register.getId() + "', '"
                     + register.getUsername() + "', '"
                     + register.getPassword() + "', '"
-                    + register.getName() + "');");
+                    + register.getName() + "', '"
+                    + false +
+                    "');");
         }
         return false;
     }
@@ -37,18 +40,29 @@ public class UserManager {
      * @param login
      * @return boolean
      */
-    public static boolean checkPassword(Login login) {
-        try (ResultSet rs = DatabaseManager.executeQuery("SELECT password FROM utilizadores WHERE username ='" + login.getUsername() + "';");){
+    public static ErrorMessages checkPassword(Login login) {
+        //System.out.println("User: " + login.getUsername() + " Pass: "+login.getPassword() + "\n");
+
+        try (ResultSet rs = DatabaseManager.executeQuery("SELECT password, isAdmin FROM utilizadores WHERE username ='" + login.getUsername() + "';")){
             if (rs == null)
-                return false;
+                return ErrorMessages.INVALID_PASSWORD;
             while (rs.next()) {
-                return login.getPassword().equals(rs.getString("password"));
+                String password = rs.getString("password");
+                //System.out.println("Pass obtida: " + password + "\n");
+                boolean isAdmin = rs.getBoolean("isAdmin");
+                //System.out.println("É admin? " + isAdmin + "\n");
+                if(login.getPassword().equals(password) && isAdmin)
+                    return ErrorMessages.LOGIN_ADMIN_USER;
+                else if(login.getPassword().equals(password) && !isAdmin)
+                    return ErrorMessages.LOGIN_NORMAL_USER;
+                else
+                    return ErrorMessages.INVALID_PASSWORD;
             }
 
         } catch (SQLException sqlException) {
             System.out.println("Error with the database: " + sqlException);
         }
-        return false;
+        return ErrorMessages.INVALID_PASSWORD;
     }
 
     /**

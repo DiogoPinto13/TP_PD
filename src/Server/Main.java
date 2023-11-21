@@ -8,9 +8,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -55,21 +58,22 @@ class ClientHandler extends Thread{
     }
 
     public void run(){
+        /*try {
+            clientSocket.setSoTimeout(10*1000);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }*/
         try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
             String response = null;
+            boolean flagProtection = false;
             do{
                 receivedObject = in.readObject();
                 if(receivedObject == null)
                     return;
                 else if(receivedObject instanceof Login login) {
-                    if(!UserManager.checkPassword(login)){
-                        response = ErrorMessages.INVALID_PASSWORD.toString();
-                    }
-                    else{
-                        Username = login.getUsername();
-                        response = "Welcome! " + Username;
-                    }
+                    response = UserManager.checkPassword(login).toString();
+                    //System.out.println(response.toString());
                 }
                 else if(receivedObject instanceof Register register) {
                     UserManager.registerUser(register);
@@ -87,23 +91,86 @@ class ClientHandler extends Thread{
                         case CLOSE:
                             break;
                         case REQUEST_EDIT_PROFILE:
-                            response = UserManager.getProfileForEdition(Username);
+                            response = UserManager.getProfileForEdition(request.getMessage());
                             break;
                         case EDIT_PROFILE:
                             String[] messages = request.getMessage().split(",");
                             response = (UserManager.editProfile(messages[0], messages[1], messages[2], messages[3])) ? Messages.EDIT_PROFILE_SUCCESS.toString() : Messages.EDIT_PROFILE_ERROR.toString();
-                            //response = (messages[1].equals("1") ?  UserManager.changeName(Username, messages[1]) : UserManager.changePassword(Username, messages[1])) ? "Successfully changed!" : "an error occurred";
                             break;
                         case REGISTER_PRESENCE_CODE:
-                            response = (EventManager.registerUserInEvent(Username, Integer.parseInt(request.getMessage())) ? Messages.PRESENCE_CODE_REGISTED.toString() : Messages.INVALID_PRESENCE_CODE.toString());
+                            String[] args = request.getMessage().split(",");
+                            response = (EventManager.registerUserInEvent(args[1], Integer.parseInt(args[0])) ? Messages.PRESENCE_CODE_REGISTED.toString() : Messages.INVALID_PRESENCE_CODE.toString());
                             break;
                         case GET_PRESENCES:
-                            response = EventManager.queryEvents(Username, null);
+                            //response = EventManager.queryEvents(Username, null);
+                            flagProtection = true;
+                            ArrayList<Integer> idsUser = EventManager.getIdsEventsByUsername(request.getMessage());
+                            String filter = null;
+                            EventResult eventResult = new EventResult(" ");
+                            eventResult.setColumns(" ");
+                            if(idsUser.size() == 0){
+                                out.writeObject(eventResult);
+                                out.flush();
+                                break;
+                            }
+                            filter = EventManager.createFilterOr(idsUser);
+                            out.writeObject(EventManager.queryEvents(request.getMessage(), filter));
+                            out.flush();
                             //EventManager.queryEvents(username, null);
                             break;
                         case GET_CSV_PRESENCES:
                             //EventManager.queryToCSV(username, null);
-                            //fuck temos que enviar pro client o ficheiro csv!
+                            break;
+                        //admin commands here:
+                        case CREATE_EVENT:
+                            String[] arguments = request.getMessage().split(",");
+                            //String[] argumentsTimeBegin = arguments[2].split(":");
+                            //String[] argumentsTimeEnd = arguments[3].split(":");
+                            Time timeBegin = new Time(arguments[2]);
+                            Time timeEnd = new Time(arguments[3]);
+                            //Time timeBegin = new Time(Integer.parseInt(argumentsTimeBegin[0]), Integer.parseInt(argumentsTimeBegin[1]), Integer.parseInt(argumentsTimeBegin[2]), Integer.parseInt(argumentsTimeBegin[3]), Integer.parseInt(argumentsTimeBegin[4]));
+                            //Time timeEnd = new Time(Integer.parseInt(argumentsTimeEnd[0]), Integer.parseInt(argumentsTimeEnd[1]), Integer.parseInt(argumentsTimeEnd[2]), Integer.parseInt(argumentsTimeEnd[3]), Integer.parseInt(argumentsTimeEnd[4]));
+
+                            Event event = new Event(arguments[0], arguments[1], timeBegin, timeEnd);
+                            response = (EventManager.createEvent(event)) ? Messages.OK.toString() : ErrorMessages.CREATE_EVENT_FAILED.toString();
+                            break;
+                        case DELETE_EVENT:
+                            response = (EventManager.deleteEvent(request.getMessage())) ? Messages.OK.toString() : ErrorMessages.INVALID_EVENT_NAME.toString();
+                            break;
+                        case GET_EVENTS:
+                            flagProtection = true;
+                            EventResult eventResult1 = new EventResult(" ");
+                            eventResult1.setColumns(" ");
+
+                            out.writeObject(EventManager.queryEvents(null, null));
+                            out.flush();
+                            break;
+                        case GENERATE_PRESENCE_CODE:
+                            String[] argsPresence = request.getMessage().split(",");
+                            String[] times = EventManager.getTime(argsPresence[0]).split(",");
+                            Time timeBeginEvent = new Time(times[0]);
+                            Time timeEndEvent = new Time(times[1]);
+                            Time timeAtual = new Time();
+                            Event event1 = new Event(argsPresence[0],argsPresence[1],timeBeginEvent,timeEndEvent);
+
+                            if(!EventManager.checkIfCodeAlreadyCreated(argsPresence[0]))
+                                response = EventManager.registerPresenceCode(event1, Integer.parseInt(argsPresence[1]), timeAtual);
+                            else{
+                                int code = EventManager.generateCode();
+                                response = EventManager.updatePresenceCode(code, Integer.parseInt(argsPresence[1]),argsPresence[0]) ? ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString() : String.valueOf(code) ;
+                            }
+                            break;
+                        case UPDATE_PRESENCE_CODE:
+
+                            break;
+                        case QUERY_EVENTS:
+
+                            break;
+                        case DELETE_PRESENCES:
+
+                            break;
+                        case INSERT_PRESENCES:
+
                             break;
                         default:
                             response = Messages.UNKNOWN_COMMAND.toString();
@@ -115,13 +182,18 @@ class ClientHandler extends Thread{
                 /*if(!serverVariable.get()){
                     response = close request
                 }*/
-                out.writeObject(response);
-                out.flush();
+                if(!flagProtection){
+                    out.writeObject(response);
+                    out.flush();
+                }
+                flagProtection = false;
             }while(!clientSocket.isClosed() && serverVariable.get());
         } catch (IOException e) {
             System.out.println("error: IO" + e);
         } catch (ClassNotFoundException e) {
             System.out.println("error while reading/writing the object from/to the server");
+        } catch (ParseException e) {
+            e.printStackTrace();
         } finally {
             try {
                 clientSocket.close();
@@ -173,54 +245,5 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String input;
         System.out.println("Welcome!");
-        //handles admin commands here
-        do{
-            System.out.println("Please choose an option: ");
-            System.out.println("1 - Create an event");
-            System.out.println("2 - Edit an event");
-            System.out.println("3 - Delete an event");
-            System.out.println("4 - Query an event");
-            System.out.println("5 - Generate a new presence code");
-            System.out.println("6 - Query presences");
-            System.out.println("7 - Delete a presence from a user");
-            System.out.println("8 - Insert a presence manually");
-            System.out.println("9 - Logout");
-            int inputMenu = scanner.nextInt();
-            Event event;
-            switch (inputMenu) {
-                case 1:
-                    System.out.println("Introduce the following data: designation,place,date,time,presenceCode");
-                    //event = new Event();
-                    //EventManager.createEvent(event);
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-
-                    break;
-                case 4:
-
-                    break;
-                case 5:
-
-                    break;
-                case 6:
-
-                    break;
-                case 7:
-
-                    break;
-                case 8:
-
-                    break;
-                case 9:
-
-                    break;
-                default:
-                    System.out.println(Messages.UNKNOWN_COMMAND.toString());
-                    break;
-            }
-        }while(serverVariable.get());
     }
 }

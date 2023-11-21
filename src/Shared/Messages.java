@@ -1,7 +1,42 @@
 package Shared;
 
 public enum Messages {
-
+    OK{
+        @Override
+        public String toString(){return "code 201";}
+    },
+    CREATE_EVENT{
+        @Override
+        public String toString(){return "Request create event";}
+    },
+    DELETE_EVENT{
+        @Override
+        public String toString(){return "Request delete event";}
+    },
+    GET_EVENTS{
+        @Override
+        public String toString(){return "Request get events";}
+    },
+    GENERATE_PRESENCE_CODE{
+        @Override
+        public String toString(){return "Request generate presence code";}
+    },
+    UPDATE_PRESENCE_CODE{
+        @Override
+        public String toString(){return "Request update presence code";}
+    },
+    QUERY_EVENTS{
+        @Override
+        public String toString(){return "Request query events";}
+    },
+    DELETE_PRESENCES{
+        @Override
+        public String toString(){return "Request delete presences";}
+    },
+    INSERT_PRESENCES{
+        @Override
+        public String toString(){return "Request insert presences";}
+    },
     REQUEST_EDIT_PROFILE{
         @Override
         public String toString(){return "Request edit profile";}
