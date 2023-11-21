@@ -72,12 +72,12 @@ public class EventManager {
     public static String registerPresenceCode(Event event, int duracao, Time atual){
         if(isBetweenTime(event.getTimeBegin(), event.getTimeEnd(), atual)){
             int code = generateCode();
-            return DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento, horaRegisto)" +
+            return (!DatabaseManager.executeUpdate("INSERT INTO codigos_registo (codigo, duracao, idevento, horaRegisto)" +
                     " VALUES ("
                     + code                                            + ", "
                     + duracao                                         + ", "
                     + getIdEventByDesignation(event.getDesignation()) + ", '"
-                    + (atual.toString())                              + "');") ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
+                    + (atual.toString())                              + "');")) ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
         }
         return ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString();
     }
