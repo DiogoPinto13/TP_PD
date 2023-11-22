@@ -51,7 +51,15 @@ public class Admin {
         return ErrorMessages.SQL_ERROR.toString();
     }
     public static String editEvent(String designacao, Time hInicio, Time hFim){
-
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(designacao).append(",").append(hInicio.toString()).append(",").append(hFim.toString());
+        Request request = new Request(Messages.EDIT_EVENT, stringBuilder.toString());
+        try {
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return ErrorMessages.SQL_ERROR.toString();
     }
     public static String deleteEvent(String designacao){
@@ -113,6 +121,17 @@ public class Admin {
         }
         return null;
     }
+    public static String GetInfoAboutEvent(String designacao) {
+
+        Request request = new Request(Messages.GET_INFO_EVENT, designacao);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static void closeConnection(){
         try {
             out.close();
@@ -121,5 +140,17 @@ public class Admin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static EventResult getPresencesEvent(String designacao) {
+        Request request = new Request(Messages.GET_PRESENCES_EVENT, designacao);
+        try{
+            out.writeObject(request);
+            return (EventResult) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 }

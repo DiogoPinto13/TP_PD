@@ -46,6 +46,8 @@ public class ConsultEventsController {
     public TableColumn tbFim;
     @FXML
     public Button pesquisa;
+    private static Scene preScene;
+
 
     private ObservableList<Eventos> dataEventos;
 
@@ -95,104 +97,177 @@ public class ConsultEventsController {
 
     }
 
-    public void ConsultPresentsEvent(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/consultaPresençasEvento.fxml"));
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
+    public void ConsultPresentsEvent(ActionEvent actionEvent) {
 
-    public void Edit(ActionEvent actionEvent) throws IOException {
+
+
         int i = tbEvento.getSelectionModel().getSelectedIndex();
-        Eventos eventos = (Eventos) tbEvento.getItems().get(i);
 
-        //verifica se o evento tem alguma presença registada
+        if(i != -1) {
+            Eventos eventos = (Eventos) tbEvento.getItems().get(i);
 
-        if(Admin.CheckPresences(eventos.getDesignacao()) != ErrorMessages.INVALID_REQUEST.toString()) {
-            new EditEventController(eventos.getDesignacao());
-            Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/editarEvento.fxml"));
+            Parent root = null;
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/Admin/consultaPresencasEvento.fxml"));
+
+                loader.setControllerFactory(controllerClass -> {
+                    if (controllerClass == ConsultPresencesUserController.class) {
+                        return new ConsultPresencesUserController(eventos.getDesignacao());
+                    } else {
+                        try {
+                            return controllerClass.newInstance();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+
+                root = loader.load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            preScene = stage.getScene();
+
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         }
-        else{
+        else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("O evento não é alterável");
+            alert.setTitle("Selecione um evento");
             alert.setHeaderText(null);
-            alert.setContentText("Não é possível alterar o evento ou ocorreu um erro e não foi encontrado!");
+            alert.setContentText("Selecione uma linha da tabela!");
+            alert.showAndWait();
+        }
+    }
+
+    public void Edit(ActionEvent actionEvent) throws IOException {
+        int i = tbEvento.getSelectionModel().getSelectedIndex();
+
+        if(i!=-1) {
+            Eventos eventos = (Eventos) tbEvento.getItems().get(i);
+            //verifica se o evento tem alguma presença registada
+            if (Objects.equals(Admin.CheckPresences(eventos.getDesignacao()), ErrorMessages.INVALID_REQUEST.toString())) {
+                Parent root = null;
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/Admin/editarEvento.fxml"));
+
+                    loader.setControllerFactory(controllerClass -> {
+                        if (controllerClass == EditEventController.class) {
+                            return new EditEventController(eventos.getDesignacao());
+                        } else {
+                            try {
+                                return controllerClass.newInstance();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+
+                    root = loader.load();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                preScene = stage.getScene();
+
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("O evento não é alterável");
+                alert.setHeaderText(null);
+                alert.setContentText("Não é possível alterar o evento ou ocorreu um erro e não foi encontrado!");
+                alert.showAndWait();
+            }
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Selecione um evento");
+            alert.setHeaderText(null);
+            alert.setContentText("Selecione uma linha da tabela!");
             alert.showAndWait();
         }
     }
 
     public void eliminate(ActionEvent actionEvent) {
         int i = tbEvento.getSelectionModel().getSelectedIndex();
-        Eventos eventos = (Eventos) tbEvento.getItems().get(i);
+
+        if(i!=-1) {
+            Eventos eventos = (Eventos) tbEvento.getItems().get(i);
 
 
-        if(Objects.equals(Admin.CheckPresences(eventos.getDesignacao()), ErrorMessages.INVALID_REQUEST.toString())) {
+            if (Objects.equals(Admin.CheckPresences(eventos.getDesignacao()), ErrorMessages.INVALID_REQUEST.toString())) {
 
-            if(Admin.deleteEvent(eventos.getDesignacao()).equals(ErrorMessages.INVALID_EVENT_NAME.toString())){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Evento eliminado!");
-                alert.setHeaderText(null);
-                alert.setContentText("O evento foi eliminado!");
-                alert.showAndWait();
+                if (Admin.deleteEvent(eventos.getDesignacao()).equals(ErrorMessages.INVALID_EVENT_NAME.toString())) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Evento eliminado!");
+                    alert.setHeaderText(null);
+                    alert.setContentText("O evento foi eliminado!");
+                    alert.showAndWait();
 
 
-                //buscar os novos eventos para mostrar na tabela!
-                dataEventos.clear();
+                    //buscar os novos eventos para mostrar na tabela!
+                    dataEventos.clear();
 
-                EventResult eventResult = Admin.getEvents(Admin.getUsername());
-                if(eventResult == null){
-                    eventResult = new EventResult(" ");
-                    eventResult.setColumns(" ");
-                    return;
+                    EventResult eventResult = Admin.getEvents(Admin.getUsername());
+                    if (eventResult == null) {
+                        eventResult = new EventResult(" ");
+                        eventResult.setColumns(" ");
+                        return;
+                    }
+                    String[] nomeColunas = eventResult.getColumns().split(",");
+
+                    ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
+                    //tbPresenca.setItems(observableList);
+                    //pede a lista das presenças e preenche a tabela
+                    ArrayList<String> eventosNovos = eventResult.events;
+                    //int size = eventos.size();
+
+                    dataEventos = FXCollections.observableArrayList();
+
+                    tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designacao"));
+                    tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
+                    tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
+                    tbFim.setCellValueFactory(new PropertyValueFactory<>("horafim"));
+
+
+                    for (String evento : eventosNovos) {
+                        String[] eventoData = evento.split(",");
+                        Eventos event = new Eventos();
+
+                        event.setDesignacao(eventoData[1]);
+                        event.setLocal(eventoData[2]);
+                        event.setHoraInicio(eventoData[3]);
+                        event.setHoraFim(eventoData[4]);
+                        dataEventos.add(event);
+                    }
+
+                    tbEvento.setItems(dataEventos);
+
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Ocorreu um erro!");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Ocorreu um erro a eliminar o evento!");
+                    alert.showAndWait();
                 }
-                String[] nomeColunas = eventResult.getColumns().split(",");
-
-                ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
-                //tbPresenca.setItems(observableList);
-                //pede a lista das presenças e preenche a tabela
-                ArrayList<String> eventosNovos = eventResult.events;
-                //int size = eventos.size();
-
-                dataEventos = FXCollections.observableArrayList();
-
-                tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designacao"));
-                tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
-                tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
-                tbFim.setCellValueFactory(new PropertyValueFactory<>("horafim"));
-
-
-                for(String evento : eventosNovos){
-                    String[] eventoData = evento.split(",");
-                    Eventos event = new Eventos();
-
-                    event.setDesignacao(eventoData[1]);
-                    event.setLocal(eventoData[2]);
-                    event.setHoraInicio(eventoData[3]);
-                    event.setHoraFim(eventoData[4]);
-                    dataEventos.add(event);
-                }
-
-                tbEvento.setItems(dataEventos);
-
-            }
-            else{
+            } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Ocorreu um erro!");
+                alert.setTitle("Não é possivel eliminar o evento!");
                 alert.setHeaderText(null);
-                alert.setContentText("Ocorreu um erro a eliminar o evento!");
+                alert.setContentText("Não é possível eliminar o evento ou ocorreu um erro e não foi encontrado!");
                 alert.showAndWait();
             }
         }
         else{
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Não é possivel eliminar o evento!");
+            alert.setTitle("Selecione um evento");
             alert.setHeaderText(null);
-            alert.setContentText("Não é possível eliminar o evento ou ocorreu um erro e não foi encontrado!");
+            alert.setContentText("Selecione uma linha da tabela!");
             alert.showAndWait();
         }
 

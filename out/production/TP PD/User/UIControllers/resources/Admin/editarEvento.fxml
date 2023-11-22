@@ -41,7 +41,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Server.UIControllers.editarEventoController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="User.UIControllers.EditEventController">
   <children>
     <!--<MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -70,13 +70,13 @@
                   <Font name="Times New Roman Bold" size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="nome" layoutX="104.0" layoutY="134.0" />
+            <Label fx:id="nome" layoutX="104.0" layoutY="134.0" />
             <Label layoutX="59.0" layoutY="215.0" text="Local:">
                <font>
                   <Font name="Times New Roman Bold" size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="local" layoutX="104.0" layoutY="210.0" />
+            <Label fx:id="local" layoutX="104.0" layoutY="210.0" />
             <Label layoutX="330.0" layoutY="139.0" text="Hora Início:">
                <font>
                   <Font name="Times New Roman Bold" size="14.0" />
@@ -87,20 +87,20 @@
                   <Font name="Times New Roman Bold" size="14.0" />
                </font>
             </Label>
-            <Button fx:id="save" layoutX="516.0" layoutY="277.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="64.0" text="Editar" textFill="#569f3d">
+            <Button fx:id="save" onAction="#EditarEvento" layoutX="516.0" layoutY="277.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="64.0" text="Editar" textFill="#569f3d">
                <font>
                   <Font name="Times New Roman Bold" size="14.0" />
                </font></Button>
-            <Spinner fx:id="hInicio" layoutX="412.0" layoutY="134.0" prefHeight="25.0" prefWidth="64.0" />
-            <Spinner fx:id="hFim" layoutX="412.0" layoutY="210.0" prefHeight="25.0" prefWidth="64.0" />
+            <Spinner fx:id="hInicio" min="0" max="23" initialValue="12" layoutX="412.0" layoutY="134.0" prefHeight="25.0" prefWidth="64.0" />
+            <Spinner fx:id="hFim" min="0" max="23" initialValue="12" layoutX="412.0" layoutY="210.0" prefHeight="25.0" prefWidth="64.0" />
             <Label layoutX="61.0" layoutY="282.0" text="Data:">
                <font>
                   <Font name="Times New Roman Bold" size="14.0" />
                </font>
             </Label>
             <DatePicker fx:id="data" layoutX="98.0" layoutY="277.0" prefHeight="25.0" prefWidth="149.0" />
-            <Spinner fx:id="mInicio" layoutX="497.0" layoutY="134.0" prefHeight="25.0" prefWidth="64.0" />
-            <Spinner fx:id="mFim" layoutX="497.0" layoutY="210.0" prefHeight="25.0" prefWidth="64.0" />
+            <Spinner fx:id="mInicio" min="00" max="59" initialValue="00" layoutX="497.0" layoutY="134.0" prefHeight="25.0" prefWidth="64.0" />
+            <Spinner fx:id="mFim" min="00" max="59" initialValue="00" layoutX="497.0" layoutY="210.0" prefHeight="25.0" prefWidth="64.0" />
             <Label layoutX="483.0" layoutY="139.0" prefHeight="16.0" prefWidth="7.0" text="h">
                <font>
                   <Font name="Times New Roman Bold" size="14.0" />
@@ -111,7 +111,7 @@
                   <Font name="Times New Roman Bold" size="14.0" />
                </font>
             </Label>
-            <Button fx:id="voltar" layoutX="516.0" layoutY="332.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="64.0" text="Voltar" textAlignment="CENTER" textFill="#9e3f3e" textOverrun="WORD_ELLIPSIS">
+            <Button fx:id="voltar" onAction="#Voltar" layoutX="516.0" layoutY="332.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="64.0" text="Voltar" textAlignment="CENTER" textFill="#9e3f3e" textOverrun="WORD_ELLIPSIS">
                <font>
                   <Font name="Times New Roman Bold" size="14.0" />
                </font>
