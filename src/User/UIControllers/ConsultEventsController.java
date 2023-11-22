@@ -147,16 +147,35 @@ public class ConsultEventsController {
 
         if(i!=-1) {
             Eventos eventos = (Eventos) tbEvento.getItems().get(i);
-
             //verifica se o evento tem alguma presença registada
+            if (Objects.equals(Admin.CheckPresences(eventos.getDesignacao()), ErrorMessages.INVALID_REQUEST.toString())) {
+                Parent root = null;
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/Admin/editarEvento.fxml"));
 
-            if (Admin.CheckPresences(eventos.getDesignacao()) != ErrorMessages.INVALID_REQUEST.toString()) {
-                new EditEventController(eventos.getDesignacao());
-                Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/editarEvento.fxml"));
+                    loader.setControllerFactory(controllerClass -> {
+                        if (controllerClass == EditEventController.class) {
+                            return new EditEventController(eventos.getDesignacao());
+                        } else {
+                            try {
+                                return controllerClass.newInstance();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+
+                    root = loader.load();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                preScene = stage.getScene();
+
                 scene = new Scene(root);
                 stage.setScene(scene);
                 stage.show();
+
             } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("O evento não é alterável");

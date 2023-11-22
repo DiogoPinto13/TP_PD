@@ -134,6 +134,14 @@ class ClientHandler extends Thread{
                             Event event = new Event(arguments[0], arguments[1], timeBegin, timeEnd);
                             response = (EventManager.createEvent(event)) ? Messages.OK.toString() : ErrorMessages.CREATE_EVENT_FAILED.toString();
                             break;
+                        case EDIT_EVENT:
+                            String[] arg = request.getMessage().split(",");
+                            Time timeBeginEdit = new Time(arg[1]);
+                            Time timeEndEdit = new Time(arg[2]);
+
+                            event = new Event(arg[0], "", timeBeginEdit, timeEndEdit);
+                            response = (EventManager.editEvent(event)) ? ErrorMessages.CREATE_EVENT_FAILED.toString() : Messages.OK.toString() ;
+                            break;
                         case DELETE_EVENT:
                             response = (EventManager.deleteEvent(request.getMessage())) ? Messages.OK.toString() : ErrorMessages.INVALID_EVENT_NAME.toString();
                             break;

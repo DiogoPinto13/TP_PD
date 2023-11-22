@@ -90,6 +90,9 @@ public enum Messages {
     }, GET_PRESENCES_EVENT{
         @Override
         public String toString(){return "Request get presences event.";}
+    }, EDIT_EVENT{
+        @Override
+        public String toString(){return "Request edit event.";}
     };
     @Override
     public abstract String toString();

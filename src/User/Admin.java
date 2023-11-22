@@ -51,7 +51,15 @@ public class Admin {
         return ErrorMessages.SQL_ERROR.toString();
     }
     public static String editEvent(String designacao, Time hInicio, Time hFim){
-
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(designacao).append(",").append(hInicio.toString()).append(",").append(hFim.toString());
+        Request request = new Request(Messages.EDIT_EVENT, stringBuilder.toString());
+        try {
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return ErrorMessages.SQL_ERROR.toString();
     }
     public static String deleteEvent(String designacao){

@@ -467,4 +467,8 @@ public class EventManager {
         }
         return null;
     }
+
+    public static boolean editEvent(Event event) {
+        return DatabaseManager.executeUpdate("UPDATE eventos SET horaInicio = '" + event.getTimeBegin().toString() + "', horaFim = '" + event.getTimeEnd().toString() +"' WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + ";");
+    }
 }
