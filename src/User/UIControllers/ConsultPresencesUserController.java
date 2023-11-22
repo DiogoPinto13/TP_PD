@@ -8,12 +8,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableColumn;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 
+import java.io.*;
 import java.util.ArrayList;
 
 public class ConsultPresencesUserController {
@@ -25,6 +34,8 @@ public class ConsultPresencesUserController {
     public Label hInicio;
     @FXML
     public Label hFim;
+    @FXML
+    public VBox consultPresences;
 
     @FXML
     public TableColumn nome1;
@@ -36,9 +47,10 @@ public class ConsultPresencesUserController {
     public TableView tbpresencas;
 
     private ObservableList<Eventos> dataPresences;
-
-
     String designacao;
+
+    private Stage stage;
+    private Scene scene;
 
     public ConsultPresencesUserController(String d){designacao = d;}
 
@@ -62,13 +74,9 @@ public class ConsultPresencesUserController {
             eventResult.setColumns(" ");
             return;
         }
-        String[] nomeColunas = eventResult.getColumns().split(",");
 
-        ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
-        //tbPresenca.setItems(observableList);
-        //pede a lista das presenças e preenche a tabela
         ArrayList<String> eventos = eventResult.events;
-        //int size = eventos.size();
+
 
         dataPresences = FXCollections.observableArrayList();
 
@@ -80,9 +88,9 @@ public class ConsultPresencesUserController {
         for(String evento : eventos){
             String[] eventoData = evento.split(",");
             Eventos event = new Eventos();
-            event.setDesignacao(eventoData[1]);
-            event.setLocal(eventoData[2]);
-            event.setHoraInicio(eventoData[3]);
+            event.setDesignacao(eventoData[0]);
+            event.setLocal(eventoData[1]);
+            event.setHoraInicio(eventoData[2]);
             dataPresences.add(event);
         }
 
@@ -93,15 +101,81 @@ public class ConsultPresencesUserController {
     }
 
 
-    public void Voltar(ActionEvent event) {
+    public void Voltar(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/consultaEventosCriados.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void exportarCSV(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("File save...");
+        fileChooser.setInitialDirectory(new File("."));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("CSVs (*.csv)","*.csv"),
+                new FileChooser.ExtensionFilter("All files", "*.*")
+        );
+        File file = fileChooser.showSaveDialog(consultPresences.getScene().getWindow());
+        if(file != null){
+            try {
+                exportData(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void exportData(File file) throws IOException {
+        Writer writer = null;
+        try {
+            //File file = new File("data.csv");
+            writer = new BufferedWriter(new FileWriter(file));
+
+            for (Eventos event : dataPresences) {
+                String text = event.getDesignacao() + "," + event.getLocal() + "," + event.getHoraInicio() + "," + event.getHorafim() + "\n";
+                writer.write(text);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        finally {
+            writer.flush();
+            writer.close();
+        }
     }
 
     public void eliminarPresenca(ActionEvent event) {
+
+
+        int i = tbpresencas.getSelectionModel().getSelectedIndex();
+
+        if(i != -1) {
+            Eventos eventos = (Eventos) tbpresencas.getItems().get(i);
+
+        }else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Selecione uma presença");
+            alert.setHeaderText(null);
+            alert.setContentText("Selecione uma linha da tabela!");
+            alert.showAndWait();
+        }
+
+
+
     }
 
-    public void inserirPresenca(ActionEvent event) {
+    public void inserirPresenca(ActionEvent event) throws IOException {
+
+
+        new InsertPresence(nome.getText());
+
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/InserirPresencaEvento.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+
     }
 }

@@ -40,7 +40,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="User.UIControllers.ConsultPresencesUserController">
+<VBox fx:id="consultPresences" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="User.UIControllers.ConsultPresencesUserController">
   <children>
     <!--<MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -67,9 +67,9 @@
         </Label>
             <TableView fx:id="tbpresencas" layoutX="39.0" layoutY="119.0" prefHeight="190.0" prefWidth="562.0">
               <columns>
-                  <TableColumn fx:id="username" prefWidth="164.66665649414062" text="Nome de utilizador (email)" />
+                  <TableColumn fx:id="username" prefWidth="164.66665649414062" text="Número de Identificação" />
                   <TableColumn fx:id="nome1" prefWidth="188.66668701171875" text="Nome" />
-                  <TableColumn fx:id="hRegisto" prefWidth="207.99993896484375" text="Hora de registo" />
+                  <TableColumn fx:id="hRegisto" prefWidth="207.99993896484375" text="Email" />
               </columns>
             </TableView>
             <Label layoutX="151.0" layoutY="14.0" text="Consulta de presenças no evento">

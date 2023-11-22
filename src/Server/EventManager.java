@@ -435,10 +435,9 @@ public class EventManager {
 
     public static EventResult getPresencesEvent(String designation) {
         StringBuilder stringBuilder = new StringBuilder();
-        String query =  "SELECT utilizadores.username, utilizadores.nome, codigos_registo.horaRegisto " +
-                "FROM utilizadores , codigos_registo, eventos_utilizadores  " +
+        String query =  "SELECT utilizadores.nome, utilizadores.idutilizador, utilizadores.username " +
+                "FROM utilizadores, eventos_utilizadores  " +
                 "WHERE utilizadores.username = eventos_utilizadores.username" +
-                " AND codigos_registo.idevento = eventos_utilizadores.idevento" +
                 " AND eventos_utilizadores.idevento = " + getIdEventByDesignation(designation) +";";
         try(ResultSet rs = DatabaseManager.executeQuery(query)){
             if(rs == null)
