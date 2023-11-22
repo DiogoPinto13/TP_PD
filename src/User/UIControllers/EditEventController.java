@@ -47,9 +47,15 @@ public class EditEventController {
     public EditEventController(String s){designacao=s;}
 
     public void initialize(){
+        String[] info = Admin.GetInfoAboutEvent(designacao).split(",");
+        nome.setText(info[0]);
+        local.setText(info[1]);
 
-        Admin.GetInfoAboutEvent(designacao);
-
+        try{
+            Time dataInicio = new Time(info[2]);
+            Time dataFim = new Time(info[3]);
+            System.out.println(dataInicio.toStringDay());
+            data.setValue(LocalDate.parse(dataInicio.toStringDay()));
 
             hFim.getValueFactory().setValue(dataFim.getHour());
             mFim.getValueFactory().setValue(dataFim.getMinute());
