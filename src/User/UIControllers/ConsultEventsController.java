@@ -46,6 +46,8 @@ public class ConsultEventsController {
     public TableColumn tbFim;
     @FXML
     public Button pesquisa;
+    private static Scene preScene;
+
 
     private ObservableList<Eventos> dataEventos;
 
@@ -95,12 +97,41 @@ public class ConsultEventsController {
 
     }
 
-    public void ConsultPresentsEvent(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/consultaPresençasEvento.fxml"));
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+    public void ConsultPresentsEvent(ActionEvent actionEvent) {
+
+        int i = tbEvento.getSelectionModel().getSelectedIndex();
+        Eventos eventos = (Eventos) tbEvento.getItems().get(i);
+
+        Parent root = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/Admin/consultaPresencasEvento.fxml"));
+
+            loader.setControllerFactory(controllerClass -> {
+                if (controllerClass == ConsultPresencesUserController.class) {
+                    return new ConsultPresencesUserController(eventos.getDesignacao());
+                } else {
+                    try {
+                        return controllerClass.newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        preScene = stage.getScene();
+
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+
+
+
+
     }
 
     public void Edit(ActionEvent actionEvent) throws IOException {

@@ -173,6 +173,31 @@ public class EventManager {
     }
 
     /**
+     * this function is meant to retrieve the information of an event, given a specific designation
+     * to fill info in the UI
+     * @param designation
+     * @return
+     */
+    public static String getEventInfo(String designation){
+        StringBuilder stringBuilder = new StringBuilder();
+        String query =  "SELECT designacao, place, horaInicio, horaFim FROM eventos WHERE idevento = " + getIdEventByDesignation(designation) +";";
+        try(ResultSet rs = DatabaseManager.executeQuery(query)) {
+            if(rs == null)
+                return ErrorMessages.INVALID_EVENT_NAME.toString();
+
+            while(rs.next()){
+                stringBuilder.append(rs.getString("designacao")).append(",");
+                stringBuilder.append(rs.getString("place")).append(",");
+                stringBuilder.append(rs.getString("horaInicio")).append(",");
+                stringBuilder.append(rs.getString("horaFim"));
+            }
+            return stringBuilder.toString();
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return ErrorMessages.INVALID_EVENT_NAME.toString();
+    }
+    /**
      * this function is meant to execute a query and store the result in a CSV file
      * @param query
      */
@@ -406,5 +431,41 @@ public class EventManager {
 
     public static boolean checkPresences(String designation){
         return usersInEvent(designation);
+    }
+
+    public static EventResult getPresencesEvent(String designation) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String query =  "SELECT utilizadores.username, utilizadores.nome, codigos_registo.horaRegisto " +
+                "FROM utilizadores , codigos_registo, eventos_utilizadores  " +
+                "WHERE utilizadores.username = eventos_utilizadores.username" +
+                " AND codigos_registo.idevento = eventos_utilizadores.idevento" +
+                " AND eventos_utilizadores.idevento = " + getIdEventByDesignation(designation) +";";
+        try(ResultSet rs = DatabaseManager.executeQuery(query)){
+            if(rs == null)
+                return null;
+            ResultSetMetaData metaData = rs.getMetaData();
+            int nColunas = metaData.getColumnCount();
+            //escreve o nome das colunas
+            for(int i = 1; i <= nColunas; i++){
+                stringBuilder.append(metaData.getColumnName(i)).append(",");
+            }
+            //stringBuilder.append("\n");
+            //bora escrever as cenas todas
+            EventResult eventResult = new EventResult(stringBuilder.toString());
+
+            while(rs.next()){
+                stringBuilder.setLength(0);
+                for(int i = 1; i <= nColunas; i++){
+                    stringBuilder.append(rs.getString(i));
+                    stringBuilder.append(",");
+                }
+                eventResult.events.add(stringBuilder.toString());
+            }
+            //eventResult.events.add(stringBuilderData.toString());
+            return eventResult;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return null;
     }
 }

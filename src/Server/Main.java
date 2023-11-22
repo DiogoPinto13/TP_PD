@@ -163,11 +163,17 @@ class ClientHandler extends Thread{
                         case CHECK_PRESENCES:
                             response = (EventManager.checkPresences(request.getMessage())) ? Messages.OK.toString() : ErrorMessages.INVALID_REQUEST.toString();
                             break;
-                        case UPDATE_PRESENCE_CODE:
-
+                        case GET_INFO_EVENT:
+                            response = (EventManager.getEventInfo(request.getMessage()));
                             break;
                         case QUERY_EVENTS:
 
+
+                            break;
+                        case GET_PRESENCES_EVENT:
+                            flagProtection = true;
+                            out.writeObject(EventManager.getPresencesEvent(request.getMessage()));
+                            out.flush();
                             break;
                         case DELETE_PRESENCES:
 

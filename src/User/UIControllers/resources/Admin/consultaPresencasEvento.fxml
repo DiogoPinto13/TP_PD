@@ -34,16 +34,13 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="User.UIControllers.ConsultPresencesUserController">
   <children>
     <!--<MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -68,13 +65,11 @@
             <Font size="18.0" />
           </font>
         </Label>
-            <TableView layoutX="39.0" layoutY="119.0" prefHeight="190.0" prefWidth="562.0">
+            <TableView fx:id="tbpresencas" layoutX="39.0" layoutY="119.0" prefHeight="190.0" prefWidth="562.0">
               <columns>
-                <TableColumn prefWidth="124.66665649414062" text="Designação" />
-                <TableColumn prefWidth="110.0" text="Local" />
-                  <TableColumn prefWidth="101.33331298828125" text="Data" />
-                  <TableColumn prefWidth="116.0" text="Hora Início" />
-                  <TableColumn prefWidth="110.0" text="Hora Fim" />
+                  <TableColumn fx:id="username" prefWidth="164.66665649414062" text="Nome de utilizador (email)" />
+                  <TableColumn fx:id="nome1" prefWidth="188.66668701171875" text="Nome" />
+                  <TableColumn fx:id="hRegisto" prefWidth="207.99993896484375" text="Hora de registo" />
               </columns>
             </TableView>
             <Label layoutX="151.0" layoutY="14.0" text="Consulta de presenças no evento">
@@ -82,7 +77,10 @@
                   <Font name="Times New Roman Bold Italic" size="25.0" />
                </font>
             </Label>
-            <Button layoutX="515.0" layoutY="335.0" mnemonicParsing="false" text="Exportar CSV" />
+            <Button layoutX="515.0" layoutY="335.0" mnemonicParsing="false" onAction="#exportarCSV" text="Exportar CSV">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font></Button>
             <Label layoutX="39.0" layoutY="54.0" text="Nome:">
                <font>
                   <Font name="Times New Roman" size="12.0" />
@@ -93,9 +91,45 @@
                   <Font name="Times New Roman" size="12.0" />
                </font>
             </Label>
-            <Button layoutX="437.0" layoutY="335.0" mnemonicParsing="false" text="Eliminar" />
-            <Button layoutX="320.0" layoutY="335.0" mnemonicParsing="false" text="Inserir presença" />
-            <Label layoutX="39.0" layoutY="96.0" text="..........">
+            <Button layoutX="437.0" layoutY="335.0" mnemonicParsing="false" onAction="#eliminarPresenca" text="Eliminar">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font></Button>
+            <Button layoutX="320.0" layoutY="335.0" mnemonicParsing="false" onAction="#inserirPresenca" text="Inserir presença">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font></Button>
+            <Label fx:id="nome" layoutX="82.0" layoutY="54.0" prefHeight="14.0" prefWidth="201.0" text="..........">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="local" layoutX="82.0" layoutY="75.0" prefHeight="14.0" prefWidth="201.0" text="..........">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font>
+            </Label>
+            <Button layoutX="39.0" layoutY="335.0" mnemonicParsing="false" onAction="#Voltar" text="Voltar">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font>
+            </Button>
+            <Label layoutX="304.0" layoutY="58.0" text="Data/Hora Início:">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font>
+            </Label>
+            <Label layoutX="304.0" layoutY="79.0" text="Data/Hora Fim:">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="hInicio" layoutX="394.0" layoutY="58.0" prefHeight="14.0" prefWidth="201.0" text="..........">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="hFim" layoutX="394.0" layoutY="79.0" prefHeight="14.0" prefWidth="201.0" text="..........">
                <font>
                   <Font name="Times New Roman" size="12.0" />
                </font>
