@@ -111,8 +111,8 @@ public class DatabaseManager {
     private static String url = "jdbc:sqlite:./";
     private static String databaseFile = "tp.db";
 
-    public static void createNewDatabase() {
-
+    public static void createNewDatabase(String filePath) {
+        url = url + filePath + "/" + databaseFile;
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();

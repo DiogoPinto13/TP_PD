@@ -269,6 +269,13 @@ public class Main {
             return;
         }
 
+        //DatabaseManager.clearDatabase();
+        //DatabaseManager.createNewDatabase();
+        //DatabaseManager.createNewTable();
+        // DatabaseManager.clearDatabase();
+        //DatabaseManager.fillDatabase();
+        //DatabaseManager.connect(args[1]);
+        //DatabaseManager.testUser();
         DatabaseManager.connect(args[1]);
 
         RmiManager rmiManager;
