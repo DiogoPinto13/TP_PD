@@ -47,7 +47,7 @@ public class BeginControllerAdmin {
     }
 
     public void PresencesUser(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/gerarCodigo.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/consultaEventosUser.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
