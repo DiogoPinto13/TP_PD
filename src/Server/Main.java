@@ -124,9 +124,6 @@ class ClientHandler extends Thread{
                             out.flush();
                             //EventManager.queryEvents(username, null);
                             break;
-                        case GET_CSV_PRESENCES:
-                            //EventManager.queryToCSV(username, null);
-                            break;
                         //admin commands here:
                         case CREATE_EVENT:
                             String[] arguments = request.getMessage().split(",");
@@ -139,6 +136,14 @@ class ClientHandler extends Thread{
 
                             Event event = new Event(arguments[0], arguments[1], timeBegin, timeEnd);
                             response = (EventManager.createEvent(event)) ? Messages.OK.toString() : ErrorMessages.CREATE_EVENT_FAILED.toString();
+                            break;
+                        case EDIT_EVENT:
+                            String[] arg = request.getMessage().split(",");
+                            Time timeBeginEdit = new Time(arg[1]);
+                            Time timeEndEdit = new Time(arg[2]);
+
+                            event = new Event(arg[0], "", timeBeginEdit, timeEndEdit);
+                            response = (EventManager.editEvent(event)) ? ErrorMessages.CREATE_EVENT_FAILED.toString() : Messages.OK.toString() ;
                             break;
                         case DELETE_EVENT:
                             response = (EventManager.deleteEvent(request.getMessage())) ? Messages.OK.toString() : ErrorMessages.INVALID_EVENT_NAME.toString();
@@ -166,17 +171,33 @@ class ClientHandler extends Thread{
                                 response = (!EventManager.updatePresenceCode(code, Integer.parseInt(argsPresence[1]), argsPresence[0])) ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString() ;
                             }
                             break;
-                        case UPDATE_PRESENCE_CODE:
-
+                        case CHECK_PRESENCES:
+                            response = (EventManager.checkPresences(request.getMessage())) ? Messages.OK.toString() : ErrorMessages.INVALID_REQUEST.toString();
+                            break;
+                        case GET_INFO_EVENT:
+                            response = (EventManager.getEventInfo(request.getMessage()));
                             break;
                         case QUERY_EVENTS:
+                            flagProtection = true;
+                            String[] argsQuery = request.getMessage().split(",");
+                            EventResult eventResult2 = new EventResult(" ");
+                            eventResult2.setColumns(" ");
 
+                            out.writeObject(EventManager.queryEventsFilters(argsQuery[0], argsQuery[1]));
+                            out.flush();
+                            break;
+                        case GET_PRESENCES_EVENT:
+                            flagProtection = true;
+                            out.writeObject(EventManager.getPresencesEvent(request.getMessage()));
+                            out.flush();
                             break;
                         case DELETE_PRESENCES:
-
-                            break;
+                            String[] arg1 = request.getMessage().split(",");
+                            response = (EventManager.deleteManualPresences(arg1[0],arg1[1])) ? ErrorMessages.INVALID_REQUEST.toString() : Messages.OK.toString() ;
+                        break;
                         case INSERT_PRESENCES:
-
+                            String[] arg2 = request.getMessage().split(",");
+                            response = (EventManager.insertPresence(arg2[0],arg2[1]));
                             break;
                         default:
                             response = Messages.UNKNOWN_COMMAND.toString();

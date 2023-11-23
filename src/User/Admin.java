@@ -50,12 +50,26 @@ public class Admin {
         }
         return ErrorMessages.SQL_ERROR.toString();
     }
-    public static String editEvent(){
-
+    public static String editEvent(String designacao, Time hInicio, Time hFim){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(designacao).append(",").append(hInicio.toString()).append(",").append(hFim.toString());
+        Request request = new Request(Messages.EDIT_EVENT, stringBuilder.toString());
+        try {
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return ErrorMessages.SQL_ERROR.toString();
     }
-    public static String deleteEvent(){
-
+    public static String deleteEvent(String designacao){
+        Request request = new Request(Messages.DELETE_EVENT, designacao);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return ErrorMessages.SQL_ERROR.toString();
     }
     public static EventResult getEvents(String username){
@@ -78,25 +92,48 @@ public class Admin {
         }
         return null;
     }
-    public static EventResult queryEvents(){
-
-
+    public static EventResult queryEvents(String column, String text ){
+        Request request = new Request(Messages.QUERY_EVENTS, column+","+ text);
+        try{
+            out.writeObject(request);
+            return (EventResult) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return null;
-    }
-    public static EventResult queryEventsToCSV(){
-
-        return null;
-    }
-    public static String deletePresences(String eventDesignation, String clientName){
-
-        return ErrorMessages.SQL_ERROR.toString();
     }
     public static String registerPresence(String eventDesignation, String clientName){
-
-
-        return ErrorMessages.SQL_ERROR.toString();
+        Request request = new Request(Messages.INSERT_PRESENCES, eventDesignation+","+ clientName);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
+    public static String CheckPresences(String designacao) {
+        //caso tenha presenças registadas ou não seja possivel encontrar o evento return true
+        Request request = new Request(Messages.CHECK_PRESENCES, designacao);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String GetInfoAboutEvent(String designacao) {
 
+        Request request = new Request(Messages.GET_INFO_EVENT, designacao);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static void closeConnection(){
         try {
             out.close();
@@ -105,5 +142,29 @@ public class Admin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static EventResult getPresencesEvent(String designacao) {
+        Request request = new Request(Messages.GET_PRESENCES_EVENT, designacao);
+        try{
+            out.writeObject(request);
+            return (EventResult) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public static String EliminatePresenceinEvent(String designacao, String username) {
+        Request request = new Request(Messages.DELETE_PRESENCES, designacao+","+ username);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 }

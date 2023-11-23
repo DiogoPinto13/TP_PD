@@ -34,72 +34,61 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="consultEvents" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="User.UIControllers.ConsultEventsFromUserController">
   <children>
     <!--<MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="Eventos">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Submissão de código" />
-            <MenuItem mnemonicParsing="false" text="Consulta de presenças" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Gerar código para registo de presenças" />
-        <Menu mnemonicParsing="false" text="Sair">
+        <Menu mnemonicParsing="false" text="Eventos" />
+        <Menu mnemonicParsing="false" text="Gerar código de registo de presenças">
           <items>
             <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
           </items>
         </Menu>
+            <Menu mnemonicParsing="false" text="Sair" />
       </menus>
     </MenuBar>-->
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
           <font>
             <Font size="18.0" />
           </font>
         </Label>
-            <TableView layoutX="39.0" layoutY="119.0" prefHeight="190.0" prefWidth="562.0">
+            <TableView fx:id="tbEvento" layoutX="39.0" layoutY="98.0" prefHeight="211.0" prefWidth="562.0">
               <columns>
-                <TableColumn prefWidth="124.66665649414062" text="Designação" />
-                <TableColumn prefWidth="110.0" text="Local" />
-                  <TableColumn prefWidth="101.33331298828125" text="Data" />
-                  <TableColumn prefWidth="116.0" text="Hora Início" />
-                  <TableColumn prefWidth="110.0" text="Hora Fim" />
+                  <TableColumn fx:id="tbDesignacao" prefWidth="184.0" text="Designação" />
+                  <TableColumn fx:id="tbLocal" prefWidth="189.99996948242188" text="Local" />
+                  <TableColumn fx:id="tbInicio" prefWidth="182.0" text="Data - Hora Início" />
               </columns>
             </TableView>
-            <Label layoutX="151.0" layoutY="14.0" text="Consulta de presenças no evento">
+            <Label layoutX="152.0" layoutY="14.0" text="Consulta de presencas utilizador">
                <font>
                   <Font name="Times New Roman Bold Italic" size="25.0" />
                </font>
             </Label>
-            <Button layoutX="515.0" layoutY="335.0" mnemonicParsing="false" text="Exportar CSV" />
-            <Label layoutX="39.0" layoutY="54.0" text="Nome:">
+            <Button layoutX="39.0" layoutY="335.0" mnemonicParsing="false" onAction="#voltar" text="Voltar" />
+
+            <TextField fx:id="filtro" layoutX="349.0" layoutY="52.0" prefHeight="25.0" prefWidth="157.0" promptText="Email" />
+
+            <Button fx:id="pesquisa" layoutX="542.0" layoutY="52.0" mnemonicParsing="false" onAction="#pesquisa" text="" />
+            <Label layoutX="39.0" layoutY="56.0" text="Email:">
                <font>
                   <Font name="Times New Roman" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="39.0" layoutY="75.0" text="Local:">
+            <Label layoutX="79.0" layoutY="56.0" text="(insira email)">
                <font>
                   <Font name="Times New Roman" size="12.0" />
                </font>
             </Label>
-            <Button layoutX="437.0" layoutY="335.0" mnemonicParsing="false" text="Eliminar" />
-            <Button layoutX="320.0" layoutY="335.0" mnemonicParsing="false" text="Inserir presença" />
-            <Label layoutX="39.0" layoutY="96.0" text="..........">
-               <font>
-                  <Font name="Times New Roman" size="12.0" />
-               </font>
-            </Label>
+
       </children>
     </AnchorPane>
   </children>

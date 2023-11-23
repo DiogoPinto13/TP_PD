@@ -5,7 +5,7 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\Kingcraft12\Desktop\TP PD\TP_PD\Database\tp.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/Database/tp.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
     <data-source source="LOCAL" name="tp [2]" uuid="be1a008d-cab4-4359-a80e-4cf2c4821302">

@@ -93,7 +93,12 @@
                         <Font name="Times New Roman" size="19.0" />
                     </font>
                 </Label>
-            <Button fx:id="gerarCod" focusTraversable="true" layoutX="203.0" layoutY="240.0" onAction="#gerarCod" text="Gerar código para registo de preseças">
+            <Button fx:id="gerarCod" focusTraversable="true" layoutX="205.0" layoutY="257.0" onAction="#gerarCod" text="Gerar código para registo de preseças">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="listPresencesUser" focusTraversable="true" layoutX="212.0" layoutY="217.0" onAction="#PresencesUser" text="Consulta de presenças utilizadores">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
