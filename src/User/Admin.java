@@ -106,9 +106,14 @@ public class Admin {
         return ErrorMessages.SQL_ERROR.toString();
     }
     public static String registerPresence(String eventDesignation, String clientName){
-
-
-        return ErrorMessages.SQL_ERROR.toString();
+        Request request = new Request(Messages.INSERT_PRESENCES, eventDesignation+","+ clientName);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     public static String CheckPresences(String designacao) {
         //caso tenha presenças registadas ou não seja possivel encontrar o evento return true

@@ -218,8 +218,8 @@ public class ConsultPresencesUserController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/Admin/inserirPresenca.fxml"));
 
             loader.setControllerFactory(controllerClass -> {
-                if (controllerClass == InsertPresence.class) {
-                    return new InsertPresence(nome.getText());
+                if (controllerClass == InsertPresenceController.class) {
+                    return new InsertPresenceController(nome.getText());
                 } else {
                     try {
                         return controllerClass.newInstance();

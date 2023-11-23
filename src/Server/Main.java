@@ -188,7 +188,8 @@ class ClientHandler extends Thread{
                             response = (EventManager.deleteManualPresences(arg1[0],arg1[1])) ? ErrorMessages.INVALID_REQUEST.toString() : Messages.OK.toString() ;
                         break;
                         case INSERT_PRESENCES:
-
+                            String[] arg2 = request.getMessage().split(",");
+                            response = (EventManager.insertPresence(arg2[0],arg2[1]));
                             break;
                         default:
                             response = Messages.UNKNOWN_COMMAND.toString();

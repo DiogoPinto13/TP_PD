@@ -1,9 +1,6 @@
 package Server;
 
-import Shared.ErrorMessages;
-import Shared.Event;
-import Shared.EventResult;
-import Shared.Time;
+import Shared.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -48,6 +45,15 @@ public class EventManager {
                     + event.getTimeEnd().toString()     + "');");
         }
         return false;
+    }
+    public static String insertPresence(String designacao, String username){
+        if(UserManager.userExists(username)){
+            return DatabaseManager.executeUpdate("INSERT INTO eventos_utilizadores (idevento, username)" +
+                    " VALUES ("
+                    + getIdEventByDesignation(designacao) + ", '"
+                    + username                            + "');") ? ErrorMessages.INVALID_USERNAME.toString() : Messages.OK.toString();
+        }
+        return ErrorMessages.INVALID_USERNAME.toString();
     }
 
     /**
