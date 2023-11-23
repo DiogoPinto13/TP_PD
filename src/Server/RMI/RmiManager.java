@@ -1,6 +1,8 @@
 package Server.RMI;
 
+import java.io.File;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.Naming;
@@ -10,18 +12,21 @@ public class RmiManager {
     private final RMI RmiService;
     private final String registry;
     private final String rmiServiceName;
+    private Thread rmiHeartBeatThread;
 
-    public RmiManager(String newServiceName, AtomicBoolean newServerVariable) throws java.rmi.RemoteException{
-        LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+    public RmiManager(String newServiceName, File databaseLocation, int RegistryPort, AtomicBoolean newServerVariable) throws java.rmi.RemoteException, SocketException {
+        LocateRegistry.createRegistry(RegistryPort);
         rmiServiceName = newServiceName;
         registry = "rmi://localhost/" + rmiServiceName;
-        RmiService = new RMI(rmiServiceName, newServerVariable);
+        RmiService = new RMI(rmiServiceName, databaseLocation, newServerVariable);
     }
+
+    public Thread getRmiHeartBeatThread() {return rmiHeartBeatThread;}
 
     public boolean registerService(){
         try{
             Naming.rebind(registry, RmiService);
-            Thread rmiHeartBeatThread = new Thread(RmiService);
+            rmiHeartBeatThread = new Thread(RmiService);
             rmiHeartBeatThread.start();
         }
         catch (MalformedURLException | java.rmi.RemoteException e) {
