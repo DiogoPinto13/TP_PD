@@ -1,9 +1,6 @@
 package Server;
 
-import Shared.ErrorMessages;
-import Shared.Event;
-import Shared.EventResult;
-import Shared.Time;
+import Shared.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -48,6 +45,15 @@ public class EventManager {
                     + event.getTimeEnd().toString()     + "');");
         }
         return false;
+    }
+    public static String insertPresence(String designacao, String username){
+        if(UserManager.userExists(username)){
+            return DatabaseManager.executeUpdate("INSERT INTO eventos_utilizadores (idevento, username)" +
+                    " VALUES ("
+                    + getIdEventByDesignation(designacao) + ", '"
+                    + username                            + "');") ? ErrorMessages.INVALID_USERNAME.toString() : Messages.OK.toString();
+        }
+        return ErrorMessages.INVALID_USERNAME.toString();
     }
 
     /**
@@ -196,51 +202,6 @@ public class EventManager {
             System.out.println("Error with the database: " + sqlException);
         }
         return ErrorMessages.INVALID_EVENT_NAME.toString();
-    }
-    /**
-     * this function is meant to execute a query and store the result in a CSV file
-     * @param query
-     */
-    public static void queryToCSV(String query){
-        try(ResultSet rs = DatabaseManager.executeQuery(query)){
-            if(rs!=null){
-                //para sacar o nome das colunas
-                ResultSetMetaData metaData = rs.getMetaData();
-                int nColunas = metaData.getColumnCount();
-                FileWriter csv = new FileWriter("result.csv");
-
-                // Write the column headers to the CSV file isto era do chatgpt lmao e adaptei dps tenho que testar
-                /*for (int i = 1; i <= columnCount; i++) {
-                    csvWriter.append(metaData.getColumnName(i));
-                    if (i < columnCount) {
-                        csvWriter.append(",");
-                    } else {
-                        csvWriter.append("\n");
-                    }
-                }*/
-                //vamos escrever o nome das colunas no csv (talvez seja necessario nem sei)
-                //começa no 1 pq a primeira cena é o 1, consultar a documentação do getColumnName
-                for(int i = 1; i <= nColunas; i++){
-                    csv.append(metaData.getColumnName(i));
-                    csv.append(",");
-                }
-                csv.append("\n");
-                //vamos escrever as cenas
-                while(rs.next()){
-                    for(int i = 1; i <= nColunas; i++){
-                        csv.append(rs.getString(i));
-                        csv.append(",");
-                    }
-                    csv.append("\n");
-                }
-                csv.close();
-            }
-
-        }catch (SQLException sqlException){
-            System.out.println("Error with the database: " + sqlException);
-        } catch (IOException e) {
-            System.out.println("Error the IO: " + e);
-        }
     }
 
     public static boolean eventAlreadyExists(String designation) {
@@ -470,5 +431,35 @@ public class EventManager {
 
     public static boolean editEvent(Event event) {
         return DatabaseManager.executeUpdate("UPDATE eventos SET horaInicio = '" + event.getTimeBegin().toString() + "', horaFim = '" + event.getTimeEnd().toString() +"' WHERE idevento = " + getIdEventByDesignation(event.getDesignation()) + ";");
+    }
+
+    public static EventResult queryEventsFilters(String s, String s1) {
+        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilderData = new StringBuilder();
+        String query = "SELECT * FROM eventos WHERE "+s+" like '%"+s1+"%';" ;
+        try(ResultSet rs = DatabaseManager.executeQuery(query)){
+            if(rs == null)
+                return null;
+            ResultSetMetaData metaData = rs.getMetaData();
+            int nColunas = metaData.getColumnCount();
+            //escreve o nome das colunas
+            for(int i = 1; i <= nColunas; i++){
+                stringBuilder.append(metaData.getColumnName(i)).append(",");
+            }
+            EventResult eventResult = new EventResult(stringBuilder.toString());
+            while(rs.next()){
+                stringBuilderData.setLength(0);
+                for(int i = 1; i <= nColunas; i++){
+                    stringBuilderData.append(rs.getString(i));
+                    stringBuilderData.append(",");
+                }
+                eventResult.events.add(stringBuilderData.toString());
+            }
+            return eventResult;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return null;
+
     }
 }
