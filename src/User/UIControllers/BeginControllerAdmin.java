@@ -22,7 +22,7 @@ public class BeginControllerAdmin {
     private Scene scene;
 
     public void initialize(){
-        welcome.setText("Bem vindo "+Admin.getUsername());
+        welcome.setText("Bem vindo "+"Admin");
     }
 
     public void Events(ActionEvent actionEvent) throws IOException {
