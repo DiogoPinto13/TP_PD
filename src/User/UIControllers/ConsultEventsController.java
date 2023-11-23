@@ -13,18 +13,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.scene.control.TableView;
-
-import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -46,12 +42,23 @@ public class ConsultEventsController {
     public TableColumn tbFim;
     @FXML
     public Button pesquisa;
+    @FXML
+    public TextField filtro;
+    @FXML
+    public ComboBox<String> filtros;
+
     private static Scene preScene;
 
 
     private ObservableList<Eventos> dataEventos;
 
     public void initialize(){
+
+        ObservableList<String> options = FXCollections.observableArrayList("Designação","Local", "Inicio", "Fim", "Todos");
+        filtros.setItems(options);
+        filtros.getSelectionModel().selectLast();
+
+
         Image imageDecline = new Image(getClass().getResourceAsStream("resources/lupa2.gif"));
         //Image imagem = new Image(getClass().getResourceAsStream("resources/lupa1.png")); // 1
         ImageView visualizadorImagem = new ImageView(imageDecline); // 2
@@ -282,6 +289,43 @@ public class ConsultEventsController {
     }
 
     public void pesquisa(ActionEvent actionEvent) {
+
+        String selectedType = filtros.getSelectionModel().getSelectedItem().toString();
+
+        if(selectedType.equals("Todos")){
+            dataEventos.clear();
+            EventResult eventResult = Admin.getEvents(Admin.getUsername());
+            preencheTabela(eventResult);
+        }
+        else {
+            if(!filtro.getText().equals("")) {
+                if (selectedType.equals("Designação")) {
+                    dataEventos.clear();
+                    EventResult eventResult = Admin.queryEvents("designacao", filtro.getText());
+                    preencheTabela(eventResult);
+                } else if (selectedType.equals("Local")) {
+                    dataEventos.clear();
+                    EventResult eventResult = Admin.queryEvents("place", filtro.getText());
+                    preencheTabela(eventResult);
+                } else if (selectedType.equals("Inicio")) {
+                    dataEventos.clear();
+                    EventResult eventResult = Admin.queryEvents("horaInicio", filtro.getText());
+                    preencheTabela(eventResult);
+                } else if (selectedType.equals("Fim")) {
+                    dataEventos.clear();
+                    EventResult eventResult = Admin.queryEvents("horaFim", filtro.getText());
+                    preencheTabela(eventResult);
+                }
+            }
+            else{
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Pesquisa");
+                alert.setHeaderText(null);
+                alert.setContentText("Indique o que pesquisar");
+                alert.showAndWait();
+            }
+        }
+
     }
 
     public void voltar(ActionEvent actionEvent) throws IOException {
@@ -328,5 +372,36 @@ public class ConsultEventsController {
             writer.flush();
             writer.close();
         }
+    }
+
+    public void preencheTabela(EventResult eventResult){
+        if (eventResult == null) {
+            eventResult = new EventResult(" ");
+            eventResult.setColumns(" ");
+            return;
+        }
+
+        ArrayList<String> eventosNovos = eventResult.events;
+        dataEventos = FXCollections.observableArrayList();
+
+        tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designacao"));
+        tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
+        tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
+        tbFim.setCellValueFactory(new PropertyValueFactory<>("horafim"));
+
+
+        for (String evento : eventosNovos) {
+            String[] eventoData = evento.split(",");
+            Eventos event = new Eventos();
+
+            event.setDesignacao(eventoData[1]);
+            event.setLocal(eventoData[2]);
+            event.setHoraInicio(eventoData[3]);
+            event.setHoraFim(eventoData[4]);
+            dataEventos.add(event);
+        }
+
+        tbEvento.setItems(dataEventos);
+
     }
 }

@@ -95,11 +95,7 @@ public class ConsultPresencesUserController {
             event.setHoraInicio(eventoData[2]);
             dataPresences.add(event);
         }
-
         tbpresencas.setItems(dataPresences);
-
-
-
     }
 
 

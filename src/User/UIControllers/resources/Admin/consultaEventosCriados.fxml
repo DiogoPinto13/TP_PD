@@ -70,7 +70,7 @@
                   <TableColumn fx:id="tbFim" prefWidth="144.0" text="Data - Hora Fim" />
               </columns>
             </TableView>
-            <ComboBox layoutX="378.0" layoutY="52.0" prefWidth="150.0" promptText="Filtros" />
+            <ComboBox fx:id="filtros" layoutX="378.0" layoutY="52.0" prefWidth="150.0" promptText="Filtros" />
             <Label layoutX="224.0" layoutY="14.0" text="Consulta de eventos">
                <font>
                   <Font name="Times New Roman Bold Italic" size="25.0" />

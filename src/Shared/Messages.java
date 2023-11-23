@@ -84,13 +84,16 @@ public enum Messages {
     CHECK_PRESENCES {
         @Override
         public String toString(){return "Check if an event have presences registered.";}
-    }, GET_INFO_EVENT{
+    },
+    GET_INFO_EVENT{
         @Override
         public String toString(){return "Request get info event.";}
-    }, GET_PRESENCES_EVENT{
+    },
+    GET_PRESENCES_EVENT{
         @Override
         public String toString(){return "Request get presences event.";}
-    }, EDIT_EVENT{
+    },
+    EDIT_EVENT{
         @Override
         public String toString(){return "Request edit event.";}
     };

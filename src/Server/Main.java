@@ -118,9 +118,6 @@ class ClientHandler extends Thread{
                             out.flush();
                             //EventManager.queryEvents(username, null);
                             break;
-                        case GET_CSV_PRESENCES:
-                            //EventManager.queryToCSV(username, null);
-                            break;
                         //admin commands here:
                         case CREATE_EVENT:
                             String[] arguments = request.getMessage().split(",");
@@ -175,8 +172,13 @@ class ClientHandler extends Thread{
                             response = (EventManager.getEventInfo(request.getMessage()));
                             break;
                         case QUERY_EVENTS:
+                            flagProtection = true;
+                            String[] argsQuery = request.getMessage().split(",");
+                            EventResult eventResult2 = new EventResult(" ");
+                            eventResult2.setColumns(" ");
 
-
+                            out.writeObject(EventManager.queryEventsFilters(argsQuery[0], argsQuery[1]));
+                            out.flush();
                             break;
                         case GET_PRESENCES_EVENT:
                             flagProtection = true;

@@ -92,18 +92,15 @@ public class Admin {
         }
         return null;
     }
-    public static EventResult queryEvents(){
-
-
+    public static EventResult queryEvents(String column, String text ){
+        Request request = new Request(Messages.QUERY_EVENTS, column+","+ text);
+        try{
+            out.writeObject(request);
+            return (EventResult) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return null;
-    }
-    public static EventResult queryEventsToCSV(){
-
-        return null;
-    }
-    public static String deletePresences(String eventDesignation, String clientName){
-
-        return ErrorMessages.SQL_ERROR.toString();
     }
     public static String registerPresence(String eventDesignation, String clientName){
         Request request = new Request(Messages.INSERT_PRESENCES, eventDesignation+","+ clientName);
