@@ -462,4 +462,36 @@ public class EventManager {
         return null;
 
     }
+
+    public static EventResult queryEventsFilterUser(String s, String s1, String s2) {
+        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilderData = new StringBuilder();
+        String query = "SELECT eventos.* FROM eventos, eventos_utilizadores WHERE "+s+" like '%"+s1+"%'" +
+                " AND eventos_utilizadores.idevento = eventos.idevento" +
+                " AND eventos_utilizadores.username = '"+s2+"';";
+
+        try(ResultSet rs = DatabaseManager.executeQuery(query)){
+            if(rs == null)
+                return null;
+            ResultSetMetaData metaData = rs.getMetaData();
+            int nColunas = metaData.getColumnCount();
+            //escreve o nome das colunas
+            for(int i = 1; i <= nColunas; i++){
+                stringBuilder.append(metaData.getColumnName(i)).append(",");
+            }
+            EventResult eventResult = new EventResult(stringBuilder.toString());
+            while(rs.next()){
+                stringBuilderData.setLength(0);
+                for(int i = 1; i <= nColunas; i++){
+                    stringBuilderData.append(rs.getString(i));
+                    stringBuilderData.append(",");
+                }
+                eventResult.events.add(stringBuilderData.toString());
+            }
+            return eventResult;
+        }catch (SQLException sqlException){
+            System.out.println("Error with the database: " + sqlException);
+        }
+        return null;
+    }
 }

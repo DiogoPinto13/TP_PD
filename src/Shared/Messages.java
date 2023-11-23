@@ -96,6 +96,9 @@ public enum Messages {
     EDIT_EVENT{
         @Override
         public String toString(){return "Request edit event.";}
+    }, GET_PRESENCES_FILTER{
+        @Override
+        public String toString(){return "Request get presences with filters.";}
     };
     @Override
     public abstract String toString();

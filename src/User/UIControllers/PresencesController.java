@@ -1,6 +1,7 @@
 package User.UIControllers;
 
 import Shared.EventResult;
+import User.Admin;
 import User.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,9 +11,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -33,6 +35,12 @@ public class PresencesController {
     public TableColumn tbInicio;
     @FXML
     public TableColumn tbFim;
+    @FXML
+    public ComboBox CBFiltros;
+    @FXML
+    public Button pesquisa;
+    @FXML
+    public TextField filtro;
 
     private Stage stage;
     private Scene scene;
@@ -42,41 +50,20 @@ public class PresencesController {
 
     public void initialize() {
 
+        ObservableList<String> options = FXCollections.observableArrayList("Designação","Local", "Inicio", "Fim", "Todos");
+        CBFiltros.setItems(options);
+        CBFiltros.getSelectionModel().selectLast();
+
+        Image imageDecline = new Image(getClass().getResourceAsStream("resources/lupa2.gif"));
+        ImageView visualizadorImagem = new ImageView(imageDecline);
+        visualizadorImagem.setFitWidth(20);
+        visualizadorImagem.setFitHeight(15);
+        pesquisa.setStyle("-fx-background-color: #ffff; -fx-border-color: gray; -fx-border-width: 1px; -fx-border-radius: 5px;");
+        pesquisa.setGraphic(visualizadorImagem);
+
 
         EventResult eventResult = Client.getPresences(Client.getUsername());
-        if(eventResult == null){
-            eventResult = new EventResult(" ");
-            eventResult.setColumns(" ");
-            return;
-        }
-        String[] nomeColunas = eventResult.getColumns().split(",");
-
-        ObservableList<String> observableList = FXCollections.observableArrayList(eventResult.events);
-        //tbPresenca.setItems(observableList);
-        //pede a lista das presenças e preenche a tabela
-        ArrayList<String> eventos = eventResult.events;
-        //int size = eventos.size();
-
-        dataEventos = FXCollections.observableArrayList();
-
-        tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designacao"));
-        tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
-        tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
-        tbFim.setCellValueFactory(new PropertyValueFactory<>("horafim"));
-
-
-        for(String evento : eventos){
-            String[] eventoData = evento.split(",");
-            Eventos event = new Eventos();
-
-            event.setDesignacao(eventoData[1]);
-            event.setLocal(eventoData[2]);
-            event.setHoraInicio(eventoData[3]);
-            event.setHoraFim(eventoData[4]);
-            dataEventos.add(event);
-        }
-
-        tbPresenca.setItems(dataEventos);
+        preencheTabela(eventResult);
 
     }
 
@@ -125,5 +112,74 @@ public class PresencesController {
             writer.flush();
             writer.close();
         }
+    }
+
+    public void pesquisa(ActionEvent actionEvent) {
+        String selectedType = CBFiltros.getSelectionModel().getSelectedItem().toString();
+
+        if(selectedType.equals("Todos")){
+            dataEventos.clear();
+            EventResult eventResult = Client.getPresences(Client.getUsername());
+            preencheTabela(eventResult);
+        }
+        else {
+            if(!filtro.getText().equals("")) {
+                if (selectedType.equals("Designação")) {
+                    dataEventos.clear();
+                    EventResult eventResult = Client.queryEvents("designacao", filtro.getText(), Client.getUsername());
+                    preencheTabela(eventResult);
+                } else if (selectedType.equals("Local")) {
+                    dataEventos.clear();
+                    EventResult eventResult = Client.queryEvents("place", filtro.getText(), Client.getUsername());
+                    preencheTabela(eventResult);
+                } else if (selectedType.equals("Inicio")) {
+                    dataEventos.clear();
+                    EventResult eventResult = Client.queryEvents("horaInicio", filtro.getText(), Client.getUsername());
+                    preencheTabela(eventResult);
+                } else if (selectedType.equals("Fim")) {
+                    dataEventos.clear();
+                    EventResult eventResult = Client.queryEvents("horaFim", filtro.getText(), Client.getUsername());
+                    preencheTabela(eventResult);
+                }
+            }
+            else{
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Pesquisa");
+                alert.setHeaderText(null);
+                alert.setContentText("Indique o que pesquisar");
+                alert.showAndWait();
+            }
+        }
+
+    }
+    public void preencheTabela(EventResult eventResult){
+        if (eventResult == null) {
+            eventResult = new EventResult(" ");
+            eventResult.setColumns(" ");
+            return;
+        }
+
+        ArrayList<String> eventosNovos = eventResult.events;
+        dataEventos = FXCollections.observableArrayList();
+
+        tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designacao"));
+        tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
+        tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
+        tbFim.setCellValueFactory(new PropertyValueFactory<>("horafim"));
+
+
+        for (String evento : eventosNovos) {
+            String[] eventoData = evento.split(",");
+            Eventos event = new Eventos();
+
+            event.setDesignacao(eventoData[1]);
+            event.setLocal(eventoData[2]);
+            event.setHoraInicio(eventoData[3]);
+            event.setHoraFim(eventoData[4]);
+            dataEventos.add(event);
+        }
+
+        tbPresenca.setItems(dataEventos);
+
     }
 }

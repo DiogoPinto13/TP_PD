@@ -124,6 +124,16 @@ class ClientHandler extends Thread{
                             out.flush();
                             //EventManager.queryEvents(username, null);
                             break;
+                        case GET_PRESENCES_FILTER:
+                            //response = EventManager.queryEvents(Username, null);
+                            flagProtection = true;
+                            String[] aarg = request.getMessage().split(",");
+
+
+                            out.writeObject(EventManager.queryEventsFilterUser(aarg[0], aarg[1], aarg[2]));
+                            out.flush();
+                            //EventManager.queryEvents(username, null);
+                            break;
                         //admin commands here:
                         case CREATE_EVENT:
                             String[] arguments = request.getMessage().split(",");
@@ -150,8 +160,8 @@ class ClientHandler extends Thread{
                             break;
                         case GET_EVENTS:
                             flagProtection = true;
-                            EventResult eventResult1 = new EventResult(" ");
-                            eventResult1.setColumns(" ");
+                            EventResult eventResult3 = new EventResult(" ");
+                            eventResult3.setColumns(" ");
 
                             out.writeObject(EventManager.queryEvents(null, null));
                             out.flush();
