@@ -5,14 +5,34 @@ import Shared.RMIMulticastMessage;
 import java.io.*;
 import java.net.*;
 
-public class Main {
+public class BackupServer {
     public static void main(String args[]) throws IOException {
-        if(args.length != 2){
-            System.out.println("Parametros errados. Main <ipAddress> <port>");
+        File localDirectory;
+        if(args.length != 1){
+            System.out.println("Sintaxe: java BackupServer localRootDirectory");
+            return;
         }
+
+        localDirectory = new File(args[0].trim());
+
+        if(!localDirectory.exists()){
+            System.out.println("A directoria " + localDirectory + " nao existe!");
+            return;
+        }
+
+        if(!localDirectory.isDirectory()){
+            System.out.println("O caminho " + localDirectory + " nao se refere a uma diretoria!");
+            return;
+        }
+
+        if(!localDirectory.canWrite()){
+            System.out.println("Sem permissoes de escrita na diretoria " + localDirectory + "!");
+            return;
+        }
+
         final int timeout = 30;
-        final int port = Integer.parseInt(args[1]);
-        final String ip = args[0];
+        final int port = 4444;
+        final String ip = "230.44.44.44";
         Object obj;
         DatagramPacket pkt;
         RMIMulticastMessage msg;

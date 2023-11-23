@@ -1,5 +1,6 @@
 package Server;
 
+import java.io.File;
 import java.sql.*;
 /*
 -- Tabela 'eventos'
@@ -107,7 +108,8 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 */
 
 public class DatabaseManager {
-    private final static String url = "jdbc:sqlite:./Database/tp.db";
+    private static String url = "jdbc:sqlite:./";
+    private static String databaseFile = "tp.db";
 
     public static void createNewDatabase() {
 
@@ -126,9 +128,10 @@ public class DatabaseManager {
     /**
      * A method to create a connection to the database
      */
-    public static void connect() {
+    public static void connect(String filePath) {
         Connection conn = null;
         try {
+            url = url + filePath + "/" + databaseFile;
             conn = DriverManager.getConnection(url);
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(true);

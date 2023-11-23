@@ -3,13 +3,16 @@ package Server;
 import Server.RMI.RmiManager;
 import Shared.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -29,12 +32,15 @@ class WaitClient extends Thread{
 
         try(ServerSocket socket = new ServerSocket(port)){
             System.out.println("Main server online in port: "+ socket.getLocalPort());
-
+            socket.setSoTimeout(5 * 1000);
             while(serverVariable.get()){
                 try{
                     Socket toClientSocket = socket.accept();
                     ClientHandler clientHandler = new ClientHandler(toClientSocket, serverVariable);
                     clientHandler.start();
+                }
+                catch (SocketTimeoutException ignored){
+
                 }
                 catch (Exception e){
                     System.out.println("Error while getting the client socket...");
@@ -157,7 +163,7 @@ class ClientHandler extends Thread{
                                 response = EventManager.registerPresenceCode(event1, Integer.parseInt(argsPresence[1]), timeAtual);
                             else{
                                 int code = EventManager.generateCode();
-                                response = EventManager.updatePresenceCode(code, Integer.parseInt(argsPresence[1]),argsPresence[0]) ? ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString() : String.valueOf(code) ;
+                                response = (!EventManager.updatePresenceCode(code, Integer.parseInt(argsPresence[1]), argsPresence[0])) ? String.valueOf(code) : ErrorMessages.FAIL_REGISTER_PRESENCE_CODE.toString() ;
                             }
                             break;
                         case UPDATE_PRESENCE_CODE:
@@ -210,15 +216,34 @@ class ClientHandler extends Thread{
 public class Main {
 
     public static void main(String[] args) {
-
-        if(args.length != 1){
-            System.out.println("Wrong syntax! java Main port");
+        if(args.length != 4){
+            System.out.println("Wrong syntax! java Main port DatabaseLocation RMIServiceName RMIPort");
             return;
         }
+
+        File databaseDirectory = new File(args[1].trim());
+
+        if(!databaseDirectory.exists()){
+            System.out.println("A directoria " + databaseDirectory + " nao existe!");
+            return;
+        }
+
+        if(!databaseDirectory.isDirectory()){
+            System.out.println("O caminho " + databaseDirectory + " nao se refere a uma diretoria!");
+            return;
+        }
+
+        if(!databaseDirectory.canWrite()){
+            System.out.println("Sem permissoes de escrever na diretoria " + databaseDirectory + "!");
+            return;
+        }
+
+        DatabaseManager.connect(args[1]);
+
         RmiManager rmiManager;
         AtomicBoolean serverVariable = new AtomicBoolean(true);
         try {
-            rmiManager = new RmiManager("RMIService", serverVariable);
+            rmiManager = new RmiManager(args[2], databaseDirectory, Integer.parseInt(args[3]), serverVariable);
             if(!rmiManager.registerService())
                 throw new RemoteException();
             System.out.println("RMI Service is Online!");
@@ -235,7 +260,7 @@ public class Main {
         //DatabaseManager.createNewTable();
         // DatabaseManager.clearDatabase();
         //DatabaseManager.fillDatabase();
-        DatabaseManager.connect();
+        //DatabaseManager.connect(args[1]);
         //DatabaseManager.testUser();
 
         //dbManager.createNewDatabase();
@@ -246,7 +271,17 @@ public class Main {
         waitClient.start();
 
         Scanner scanner = new Scanner(System.in);
-        String input;
+        //String input;
         System.out.println("Welcome!");
+        while(!scanner.next().equalsIgnoreCase("exit"));
+        System.out.println("Closing Server.");
+        serverVariable.set(false);
+        try {
+            waitClient.join();
+            rmiManager.getRmiHeartBeatThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
     }
 }
