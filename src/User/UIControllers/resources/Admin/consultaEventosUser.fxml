@@ -83,7 +83,7 @@
                   <Font name="Times New Roman" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="79.0" layoutY="56.0" text="(insira email)">
+            <Label fx:id="emailInput" layoutX="79.0" layoutY="56.0" text="(insira email)">
                <font>
                   <Font name="Times New Roman" size="12.0" />
                </font>

@@ -10,12 +10,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -34,6 +35,10 @@ public class ConsultEventsFromUserController {
     public TableColumn tbLocal;
     @FXML
     public TableColumn tbInicio;
+    @FXML
+    public TextField filtro;
+    @FXML
+    public Label emailInput;
 
     private Stage stage;
     private Scene scene;
@@ -63,36 +68,43 @@ public class ConsultEventsFromUserController {
 
     public void pesquisa(ActionEvent actionEvent) {
 
+        if(!filtro.getText().equals("")) {
 
 
-        EventResult eventResult ;
+            EventResult eventResult = Admin.getPresencesByUsername(filtro.getText());
+            emailInput.setText(filtro.getText());
+            if (eventResult == null) {
+                eventResult = new EventResult(" ");
+                eventResult.setColumns(" ");
+                return;
+            }
 
-        if (eventResult == null) {
-            eventResult = new EventResult(" ");
-            eventResult.setColumns(" ");
-            return;
+            ArrayList<String> eventosNovos = eventResult.events;
+            dataEventos = FXCollections.observableArrayList();
+
+            tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designacao"));
+            tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
+            tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
+
+            for (String evento : eventosNovos) {
+                String[] eventoData = evento.split(",");
+                Eventos event = new Eventos();
+
+                event.setDesignacao(eventoData[1]);
+                event.setLocal(eventoData[2]);
+                event.setHoraInicio(eventoData[3]);
+                event.setHoraFim(eventoData[4]);
+                dataEventos.add(event);
+            }
+
+            tbEvento.setItems(dataEventos);
+
+        }else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Selecione um username");
+            alert.setHeaderText(null);
+            alert.setContentText("Indique um username!");
+            alert.showAndWait();
         }
-
-        ArrayList<String> eventosNovos = eventResult.events;
-        dataEventos = FXCollections.observableArrayList();
-
-        tbDesignacao.setCellValueFactory(new PropertyValueFactory<>("designacao"));
-        tbLocal.setCellValueFactory(new PropertyValueFactory<>("local"));
-        tbInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
-
-        for (String evento : eventosNovos) {
-            String[] eventoData = evento.split(",");
-            Eventos event = new Eventos();
-
-            event.setDesignacao(eventoData[1]);
-            event.setLocal(eventoData[2]);
-            event.setHoraInicio(eventoData[3]);
-            event.setHoraFim(eventoData[4]);
-            dataEventos.add(event);
-        }
-
-        tbEvento.setItems(dataEventos);
-
-
     }
 }

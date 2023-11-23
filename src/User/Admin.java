@@ -165,6 +165,17 @@ public class Admin {
             e.printStackTrace();
         }
         return null;
-
     }
+
+    public static EventResult getPresencesByUsername(String username){
+        Request request = new Request(Messages.GET_PRESENCES, username);
+        try{
+            out.writeObject(request);
+            return (EventResult) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
