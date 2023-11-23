@@ -184,8 +184,9 @@ class ClientHandler extends Thread{
                             out.flush();
                             break;
                         case DELETE_PRESENCES:
-
-                            break;
+                            String[] arg1 = request.getMessage().split(",");
+                            response = (EventManager.deleteManualPresences(arg1[0],arg1[1])) ? ErrorMessages.INVALID_REQUEST.toString() : Messages.OK.toString() ;
+                        break;
                         case INSERT_PRESENCES:
 
                             break;

@@ -153,4 +153,16 @@ public class Admin {
         return null;
 
     }
+
+    public static String EliminatePresenceinEvent(String designacao, String username) {
+        Request request = new Request(Messages.DELETE_PRESENCES, designacao+","+ username);
+        try{
+            out.writeObject(request);
+            return (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
 }

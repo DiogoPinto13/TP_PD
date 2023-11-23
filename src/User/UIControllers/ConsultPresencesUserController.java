@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ConsultPresencesUserController {
     @FXML
@@ -51,6 +52,7 @@ public class ConsultPresencesUserController {
 
     private Stage stage;
     private Scene scene;
+    private static Scene preScene;
 
     public ConsultPresencesUserController(String d){designacao = d;}
 
@@ -146,14 +148,58 @@ public class ConsultPresencesUserController {
         }
     }
 
-    public void eliminarPresenca(ActionEvent event) {
+    public void eliminarPresenca(ActionEvent actionEvent) {
 
 
         int i = tbpresencas.getSelectionModel().getSelectedIndex();
 
         if(i != -1) {
-            Eventos eventos = (Eventos) tbpresencas.getItems().get(i);
+            Eventos e = (Eventos) tbpresencas.getItems().get(i);
 
+            if (!Objects.equals(Admin.EliminatePresenceinEvent(nome.getText(), e.getHoraInicio() ), ErrorMessages.INVALID_REQUEST.toString())) {
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Presença eliminada");
+                alert.setHeaderText(null);
+                alert.setContentText("Uma presença foi eliminada neste evento!");
+                alert.showAndWait();
+
+
+                EventResult eventResult = Admin.getPresencesEvent(designacao);
+                if(eventResult == null){
+                    eventResult = new EventResult(" ");
+                    eventResult.setColumns(" ");
+                    return;
+                }
+
+                ArrayList<String> eventos = eventResult.events;
+
+
+                dataPresences = FXCollections.observableArrayList();
+
+                nome1.setCellValueFactory(new PropertyValueFactory<>("designacao"));
+                username.setCellValueFactory(new PropertyValueFactory<>("local"));
+                hRegisto.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
+
+
+                for(String evento : eventos){
+                    String[] eventoData = evento.split(",");
+                    Eventos event = new Eventos();
+                    event.setDesignacao(eventoData[0]);
+                    event.setLocal(eventoData[1]);
+                    event.setHoraInicio(eventoData[2]);
+                    dataPresences.add(event);
+                }
+
+                tbpresencas.setItems(dataPresences);
+            }
+            else{
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Erro");
+                alert.setHeaderText(null);
+                alert.setContentText("Ocorreu um erro ao eliminar a presença!");
+                alert.showAndWait();
+            }
         }else{
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Selecione uma presença");
@@ -161,18 +207,35 @@ public class ConsultPresencesUserController {
             alert.setContentText("Selecione uma linha da tabela!");
             alert.showAndWait();
         }
-
-
-
     }
 
     public void inserirPresenca(ActionEvent event) throws IOException {
 
 
-        new InsertPresence(nome.getText());
+        Parent root = null;
 
-        Parent root = FXMLLoader.load(getClass().getResource("resources/Admin/InserirPresencaEvento.fxml"));
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/Admin/inserirPresenca.fxml"));
+
+            loader.setControllerFactory(controllerClass -> {
+                if (controllerClass == InsertPresence.class) {
+                    return new InsertPresence(nome.getText());
+                } else {
+                    try {
+                        return controllerClass.newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        preScene = stage.getScene();
+
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
