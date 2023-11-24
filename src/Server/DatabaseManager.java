@@ -295,13 +295,37 @@ public class DatabaseManager {
      * @return Boolean if success
      */
     public static synchronized boolean executeUpdate(String query) {
+        /*int version = 0;
+        try(ResultSet rs = executeQuery("SELECT versao from versao")) {
+            version = rs.getInt("versao");
+        } catch (SQLException e) {
+            System.out.println("error while getting the previous version " + e.getMessage());
+        }
+        updateVersion(version);*/
+        //updateVersion();
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            //conn.setAutoCommit(true);
-            return stmt.execute(query);
+            boolean result = stmt.execute(query);
+            int rows = stmt.getUpdateCount();
+            if(rows > 0 )
+                updateVersion();
+            return result;
         } catch (SQLException e) {
             System.out.println("error while executing the update: " + e.getMessage());
         }
         return false;
+    }
+    /**
+     *
+     * @return if success
+     */
+    public static synchronized void updateVersion(){
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("UPDATE versao SET versao = versao + 1 WHERE idversao = 1");
+        } catch (SQLException e) {
+            System.out.println("error while executing the update: " + e.getMessage());
+        }
+
     }
 }
