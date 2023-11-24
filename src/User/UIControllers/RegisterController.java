@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -33,12 +34,16 @@ public class RegisterController {
 
     public void Register(ActionEvent event) throws IOException {
         if(pass.getText() == null || user.getText() == null || nidentificacao.getText() == null || email.getText() == null){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Dados vazios");
+            alert.setHeaderText(null);
+            alert.setContentText("Preencha todos os campos!");
+            alert.showAndWait();
             return;
         }
         Register register = new Register(user.getText(),nidentificacao.getText(),email.getText(), pass.getText());
-        boolean retorno = User.Client.setObjectRegister(register);
 
-        if(retorno){
+        if(User.Client.setObjectRegister(register)){
             User.Client.setUsername(register.getUsername());
             Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -47,7 +52,12 @@ public class RegisterController {
             stage.show();
         }
         else{
-            //errorMessage.setText("Dados incorretos!");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Erro");
+            alert.setHeaderText(null);
+            alert.setContentText("Ocorreu um erro inesperado!");
+            alert.showAndWait();
+            return;
         }
 
     }

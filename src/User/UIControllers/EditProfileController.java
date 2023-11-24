@@ -41,26 +41,41 @@ public class EditProfileController {
 
 
     public void saveData(ActionEvent actionEvent) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(email.getText()).append(",");
-        stringBuilder.append(nome.getText()).append(",");
-        stringBuilder.append(nidentificacao.getText()).append(",");
-        stringBuilder.append(pass.getText());
-        System.out.println(stringBuilder.toString());
 
-        if(Client.editProfile(stringBuilder.toString())){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERRO!");
+        if(nidentificacao.getText() == null || pass.getText() == null || nome.getText() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Aviso!");
             alert.setHeaderText(null);
-            alert.setContentText("Ocorreu um erro ao atualizar o seu perfil!");
+            alert.setContentText("Preencha todos os dados do seu perfil!");
             alert.showAndWait();
         }
         else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("ERRO!");
-            alert.setHeaderText(null);
-            alert.setContentText("Perfil atualizado!");
-            alert.showAndWait();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(email.getText()).append(",");
+            stringBuilder.append(nome.getText()).append(",");
+            stringBuilder.append(nidentificacao.getText()).append(",");
+            stringBuilder.append(pass.getText());
+            System.out.println(stringBuilder.toString());
+
+            if (Client.editProfile(stringBuilder.toString())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERRO!");
+                alert.setHeaderText(null);
+                alert.setContentText("Ocorreu um erro ao atualizar o seu perfil!");
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("ERRO!");
+                alert.setHeaderText(null);
+                alert.setContentText("Perfil atualizado!");
+                alert.showAndWait();
+
+                Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
+                stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            }
         }
     }
 

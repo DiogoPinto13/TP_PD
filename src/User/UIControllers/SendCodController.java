@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -27,26 +28,16 @@ public class SendCodController {
 
     public void initialize() {}
 
-    public void consulPresencas(ActionEvent actionEvent) {
-    }
-
-    public void sair(ActionEvent actionEvent) {
-        Platform.exit();
-    }
-
-    public void editProfile(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
     public void registCod(ActionEvent actionEvent) throws IOException {
+
         if(isNumeric(cod.getText())){
             boolean result = User.Client.sendCode(cod.getText());
             if(result){
-                mensagem.setText("Insira um código válido!");
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Código inválido");
+                alert.setHeaderText(null);
+                alert.setContentText("O código inserido é inválido!");
+                alert.showAndWait();
                 return;
             }
             Parent root = FXMLLoader.load(getClass().getResource("resources/Client/beginClient.fxml"));

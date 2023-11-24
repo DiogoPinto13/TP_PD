@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -17,6 +18,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static User.UIControllers.SendCodController.isNumeric;
 
 public class gerarCodigoController {
     private Stage stage;
@@ -71,12 +74,21 @@ public class gerarCodigoController {
 
     public void GerarCod(ActionEvent event) {
 
-        evento.getValue();
-        String codigoObtido = Admin.generatePresenceCode(evento.getValue().toString(), Integer.parseInt(duracao.getText()));
-        if(codigoObtido != null)
-            code.setText(codigoObtido);
-        else
-            code.setText("Erro ao gerar o código!");
+        if(duracao.getText() != null && isNumeric(duracao.getText())) {
+            evento.getValue();
+            String codigoObtido = Admin.generatePresenceCode(evento.getValue().toString(), Integer.parseInt(duracao.getText()));
+            if (codigoObtido != null)
+                code.setText(codigoObtido);
+            else
+                code.setText("Erro ao gerar o código!");
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Erro");
+            alert.setHeaderText(null);
+            alert.setContentText("Insira uma duração válida!");
+            alert.showAndWait();
+        }
 
     }
 }
