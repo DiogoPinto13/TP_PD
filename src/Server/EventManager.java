@@ -20,7 +20,7 @@ public class EventManager {
      * @return
      */
     public static boolean registerUserInEvent(String username, int presenceCode){
-        if(!userAlreadyInEvent(username) && checkCode(presenceCode)){
+        if(userAlreadyInEvent(username) && checkCode(presenceCode)){
             return DatabaseManager.executeUpdate("INSERT INTO eventos_utilizadores (idevento,username) " +
                     "VALUES ("
                     + getIdEventByPresenceCode(presenceCode) + ", '"
