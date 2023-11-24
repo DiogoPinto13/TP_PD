@@ -14,7 +14,7 @@ import java.util.Random;
 public class EventManager {
 
     /**
-     * this function is meant to register a user in an event
+     * this function is meant to register a user in a specific event
      * @param username
      * @param presenceCode
      * @return
