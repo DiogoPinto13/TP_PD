@@ -111,8 +111,7 @@ public class DatabaseManager {
     private static String url = "jdbc:sqlite:./";
     private static String databaseFile = "tp.db";
 
-    public static void createNewDatabase(String filePath) {
-        url = url + filePath + "/" + databaseFile;
+    public static void createNewDatabase() {
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
@@ -138,6 +137,8 @@ public class DatabaseManager {
             System.out.println("Connection to SQLite has been established.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            createNewDatabase();
+            createNewTable();
         } finally {
             try {
                 if (conn != null) {
