@@ -295,14 +295,6 @@ public class DatabaseManager {
      * @return Boolean if success
      */
     public static synchronized boolean executeUpdate(String query) {
-        /*int version = 0;
-        try(ResultSet rs = executeQuery("SELECT versao from versao")) {
-            version = rs.getInt("versao");
-        } catch (SQLException e) {
-            System.out.println("error while getting the previous version " + e.getMessage());
-        }
-        updateVersion(version);*/
-        //updateVersion();
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             boolean result = stmt.execute(query);
@@ -320,6 +312,7 @@ public class DatabaseManager {
      * @return if success
      */
     public static synchronized void updateVersion(){
+        UpdateClients.update();
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             stmt.execute("UPDATE versao SET versao = versao + 1 WHERE idversao = 1");

@@ -20,6 +20,25 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
+class UpdateClients {
+    private static ArrayList<ObjectOutputStream> out = new ArrayList<>();
+    private static ArrayList<ObjectInputStream> in = new ArrayList<>();
+
+    public static void prepareUpdate(ObjectInputStream In, ObjectOutputStream Out){
+        out.add(Out); in.add(In);
+    }
+    public static void update(){
+        try {
+            for(ObjectOutputStream objOut : out){
+                objOut.writeObject(Messages.UPDATE.toString());
+                objOut.flush();
+            }
+        } catch (IOException e) {
+            System.out.println("Error while sending the update to the client...");
+        }
+    }
+}
 //wait for clients
 class WaitClient extends Thread{
     private final int port;
@@ -43,12 +62,12 @@ class WaitClient extends Thread{
 
                 }
                 catch (Exception e){
-                    System.out.println("Error while getting the client socket...");
+                    System.out.println("Error while getting the client socket..." + e.getMessage());
                 }
             }
 
         }catch (Exception e){
-            System.out.println("Error while creating the ServerSocket...");
+            System.out.println("Error while creating the ServerSocket..." + e.getMessage());
         }
     }
 }
@@ -57,20 +76,32 @@ class ClientHandler extends Thread{
     private String Username;
     private Object receivedObject;
     private final AtomicBoolean serverVariable;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     public ClientHandler(Socket socket, AtomicBoolean newServerVariable){
         clientSocket = socket;
         serverVariable = newServerVariable;
+        try {
+            out = new ObjectOutputStream(clientSocket.getOutputStream());
+            in = new ObjectInputStream(clientSocket.getInputStream());
+            UpdateClients.prepareUpdate(in, out);
+        } catch (IOException e) {
+            try {
+                clientSocket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            System.out.println("error while opening the object output and input stream...");
+        }
     }
-
     public void run(){
         /*try {
             clientSocket.setSoTimeout(10*1000);
         } catch (SocketException e) {
             e.printStackTrace();
         }*/
-        try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())){
+        try{
             String response = null;
             boolean flagProtection = false;
             do{

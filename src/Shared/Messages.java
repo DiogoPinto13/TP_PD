@@ -1,6 +1,10 @@
 package Shared;
 
 public enum Messages {
+    UPDATE{
+        @Override
+        public String toString(){return "Update data";}
+    },
     OK{
         @Override
         public String toString(){return "code 201";}
