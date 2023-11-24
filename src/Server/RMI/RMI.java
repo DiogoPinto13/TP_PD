@@ -11,6 +11,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.net.*;
 import Shared.RMI.*;
+
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -49,9 +51,12 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
     public static void sendHeartbeat(){
         DatagramPacket pkt;
         try (ByteArrayOutputStream buff = new ByteArrayOutputStream();
-             ObjectOutputStream out = new ObjectOutputStream(buff)) {
+             ObjectOutputStream out = new ObjectOutputStream(buff);
+             ResultSet rs = DatabaseManager.executeQuery("select versao from versao;")) {
+            int version = rs.getInt("versao");
 
-            out.writeObject(new RMIMulticastMessage(serviceName, port, DatabaseManager.executeQuery("select versao from versao;").getInt("versao")));
+
+            out.writeObject(new RMIMulticastMessage(serviceName, port, version));
             pkt = new DatagramPacket(buff.toByteArray(), buff.size(), InetAddress.getByName(ip), port);
             socket.send(pkt);
         } catch (IOException | SQLException e) {
