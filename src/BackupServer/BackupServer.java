@@ -1,19 +1,26 @@
 package BackupServer;
 
+import Shared.RMI.RmiServerInterface;
 import Shared.RMIMulticastMessage;
 
 import java.io.*;
 import java.net.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 public class BackupServer {
+    private static final String databaseName = "backup.db";
     public static void main(String args[]) throws IOException {
-        File localDirectory;
         if(args.length != 1){
             System.out.println("Sintaxe: java BackupServer localRootDirectory");
             return;
         }
 
-        localDirectory = new File(args[0].trim());
+        File localDirectory = new File(args[0].trim());
 
         if(!localDirectory.exists()){
             System.out.println("A directoria " + localDirectory + " nao existe!");
@@ -30,14 +37,24 @@ public class BackupServer {
             return;
         }
 
+        try (DirectoryStream<Path> directory = Files.newDirectoryStream(localDirectory.toPath())) {
+            if(directory.iterator().hasNext()){
+                System.out.println("A diretoria nao esta vazia.");
+                return;
+            }
+        }
+
         final int timeout = 30;
         final int port = 4444;
+        int currentDatabaseVersion = -1;
         final String ip = "230.44.44.44";
         Object obj;
         DatagramPacket pkt;
         RMIMulticastMessage msg;
+        RmiClientService clientService = new RmiClientService();
+        RmiServerInterface serverInterface = null;
         NetworkInterface nif;
-        MulticastSocket s = null;
+        MulticastSocket s;
 
         try {
             nif = NetworkInterface.getByInetAddress(InetAddress.getByName(ip)); //e.g., 127.0.0.1, 192.168.10.1, ...
@@ -54,8 +71,9 @@ public class BackupServer {
             System.out.println("Error while trying to connect the Socket to a Multicast Group.");
             return;
         }
-        System.out.println("Socket successfully started.");
+        String localFilePath = new File(localDirectory.getPath()+File.separator+databaseName).getCanonicalPath();
         try {
+            System.out.println("Socket successfully started.");
             while (true) {
                 pkt = new DatagramPacket(new byte[1000], 1000);
                 s.receive(pkt);
@@ -66,19 +84,43 @@ public class BackupServer {
 
                     if (obj instanceof RMIMulticastMessage) {
                         msg = (RMIMulticastMessage) obj;
-                        System.out.println("ServiceName: " + msg.getServiceName());
+                        /*System.out.println("ServiceName: " + msg.getServiceName());
                         System.out.println("RegistryPort: " + msg.getRegistryPort());
-                        System.out.println("DatabaseVersion: " + msg.getDatabaseVersion());
+                        System.out.println("DatabaseVersion: " + msg.getDatabaseVersion());*/
+                        if(serverInterface != Naming.lookup("rmi://localhost/"+msg.getServiceName()))
+                            serverInterface = (RmiServerInterface) Naming.lookup("rmi://localhost/"+msg.getServiceName());
+                        if(msg.getDatabaseVersion() != currentDatabaseVersion){
+                            if(serverInterface != null){
+                                try(FileOutputStream localFileOutputStream = new FileOutputStream(localFilePath)){
+                                    clientService.setFout(localFileOutputStream);
+                                    serverInterface.getFile(clientService);
+                                }
+                                catch(RemoteException e){
+                                    System.out.println("Error while connecting to RMI Service.");
+                                }
+                                catch(IOException e){
+                                    System.out.println("Error while downloading file.");
+                                }
+                                currentDatabaseVersion = msg.getDatabaseVersion();
+                                System.out.println("Database File updated.");
+                            }
+                        }
+                        else
+                            System.out.println("Database Version unchanged.");
                     }
-                } catch (ClassNotFoundException e) {
-                    System.out.println();
+                }
+                catch(NotBoundException ignored){
+                    System.out.println("Heartbeat received. Registry name invalid.");
+                }
+                catch (ClassNotFoundException e) {
                     System.out.println("Mensagem recebida de tipo inesperado! " + e);
-                } catch (IOException e) {
-                    System.out.println();
+                }
+                catch (IOException e) {
                     System.out.println("Impossibilidade de aceder ao conteudo da mensagem recebida! " + e);
-                } catch (Exception e) {
-                    System.out.println();
+                }
+                catch (Exception e) {
                     System.out.println("Excepcao: " + e);
+                    break;
                 }
             }
         }
@@ -88,5 +130,7 @@ public class BackupServer {
         catch (IOException e) {
             e.printStackTrace();
         }
+        s.close();
+        System.exit(0);
     }
 }

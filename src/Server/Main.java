@@ -276,7 +276,6 @@ class ClientHandler extends Thread{
 
 
 public class Main {
-
     public static void main(String[] args) {
         if(args.length != 4){
             System.out.println("Wrong syntax! java Main port DatabaseLocation RMIServiceName RMIPort");
@@ -324,23 +323,10 @@ public class Main {
             return;
         }
 
-        //DatabaseManager.clearDatabase();
-        //DatabaseManager.createNewDatabase();
-        //DatabaseManager.createNewTable();
-        // DatabaseManager.clearDatabase();
-        //DatabaseManager.fillDatabase();
-        //DatabaseManager.connect(args[1]);
-        //DatabaseManager.testUser();
-
-        //dbManager.createNewDatabase();
-        //dbManager.connect();
-        //dbManager.createNewTable();
-
         WaitClient waitClient = new WaitClient(Integer.parseInt(args[0]), serverVariable);
         waitClient.start();
 
         Scanner scanner = new Scanner(System.in);
-        //String input;
         System.out.println("Welcome!");
         while(!scanner.next().equalsIgnoreCase("exit"));
         System.out.println("Closing Server.");

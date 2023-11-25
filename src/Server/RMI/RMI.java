@@ -25,9 +25,11 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
     private final AtomicBoolean serverVariable;
     private static MulticastSocket socket = null; //Gonna try to figure out how multicast works
     private final File localDirectory;
+    private static int registryPort;
 
-    public RMI(String newRegistry, File databaseDirectory, AtomicBoolean newServerVariable) throws java.rmi.RemoteException, SocketException {
+    public RMI(String newRegistry, int newRegistryPort, File databaseDirectory, AtomicBoolean newServerVariable) throws java.rmi.RemoteException, SocketException {
         serviceName = newRegistry;
+        registryPort = newRegistryPort;
         localDirectory = databaseDirectory;
         serverVariable = newServerVariable;
         NetworkInterface nif;
@@ -56,7 +58,7 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
             int version = rs.getInt("versao");
 
 
-            out.writeObject(new RMIMulticastMessage(serviceName, port, version));
+            out.writeObject(new RMIMulticastMessage(serviceName, registryPort, version));
             pkt = new DatagramPacket(buff.toByteArray(), buff.size(), InetAddress.getByName(ip), port);
             socket.send(pkt);
         } catch (IOException | SQLException e) {
@@ -67,15 +69,7 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
     @Override
     public void run() {
         while(serverVariable.get()){ //THE HEARTBEAT WORKS
-
             sendHeartbeat();
-
-            //heartbeat must contain:
-            //porto de escuta do registry, (Registry.REGISTRY_PORT)
-            //nome de registo do seu serviço RMI no registry local (serviceName)
-            //número de versão da base DatabaseManager.executeQuery("query for version");
-            //System.out.println("Heartbeat");
-
             try{
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
@@ -83,6 +77,7 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
             }
         }
         try {
+            socket.close();
             Naming.unbind("rmi://localhost/" + serviceName);
         } catch (RemoteException | MalformedURLException | NotBoundException e) {
             e.printStackTrace();
@@ -90,66 +85,35 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
         System.out.println("Closing RMI.");
     }
 
-    protected FileInputStream getRequestedFileInputStream(String fileName) throws IOException {
+    protected FileInputStream getRequestedFileInputStream(String filename) throws IOException {
         String requestedCanonicalFilePath;
 
-        fileName = fileName.trim();
-
-        /*
-         * Verifica se o ficheiro solicitado existe e encontra-se por baixo da localDirectory.
-         */
-
-        requestedCanonicalFilePath = new File(localDirectory+File.separator+fileName).getCanonicalPath();
+        requestedCanonicalFilePath = new File(localDirectory+File.separator+filename).getCanonicalPath();
 
         if(!requestedCanonicalFilePath.startsWith(localDirectory.getCanonicalPath()+File.separator)){
             System.out.println("Nao e' permitido aceder ao ficheiro " + requestedCanonicalFilePath + "!");
             System.out.println("A directoria de base nao corresponde a " + localDirectory.getCanonicalPath()+"!");
-            throw new AccessDeniedException(fileName);
+            throw new AccessDeniedException(filename);
         }
-
-        /*
-         * Abre o ficheiro solicitado para leitura.
-         */
         return new FileInputStream(requestedCanonicalFilePath);
 
     }
 
     @Override
-    public void getFile(String fileName, RmiClientInterface cliRemoto) throws IOException, RemoteException {
+    public void getFile(RmiClientInterface remoteClientService) throws IOException, RemoteException {
         byte [] fileChunk = new byte[MAX_CHUNCK_SIZE];
         int nbytes;
-
-        fileName = fileName.trim();
-        System.out.println("Recebido pedido para: " + fileName);
-
-        try(FileInputStream requestedFileInputStream = getRequestedFileInputStream(fileName)){
-
-            /*
-             * Obtem os bytes do ficheiro por blocos de bytes ("file chunks").
-             */
+        String filename = DatabaseManager.getDatabaseFileName();
+        try(FileInputStream requestedFileInputStream = getRequestedFileInputStream(filename)){
             while((nbytes = requestedFileInputStream.read(fileChunk))!=-1){
-
-                /*
-                 * Escreve o bloco actual no cliente, invocando o metodo writeFileChunk da
-                 * sua interface remota.
-                 */
-                cliRemoto.writeFileChunk(fileChunk, nbytes);
-                /*...*/
-
+                remoteClientService.writeFileChunk(fileChunk, nbytes);
             }
-
-            System.out.println("Ficheiro " + new File(localDirectory+File.separator+fileName).getCanonicalPath() +
-                    " transferido para o cliente com sucesso.");
-            System.out.println();
-
-            return;
-
-        }catch(FileNotFoundException e){   //Subclasse de IOException
+        }catch(FileNotFoundException e){
             System.out.println("Ocorreu a excecao {" + e + "} ao tentar abrir o ficheiro!");
-            throw new FileNotFoundException(fileName);
+            throw new FileNotFoundException(filename);
         }catch(IOException e){
-            System.out.println("Ocorreu a excecao de E/S: \n\t" + e);
-            throw new IOException(fileName, e.getCause());
+            System.out.println("Ocorreu a excecao de I/O: \n\t" + e);
+            throw new IOException(filename, e.getCause());
         }
     }
 }

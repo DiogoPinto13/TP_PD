@@ -1,5 +1,7 @@
 package Server;
 
+import Server.RMI.RMI;
+
 import java.io.File;
 import java.sql.*;
 /*
@@ -110,6 +112,8 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 public class DatabaseManager {
     private static String url = "jdbc:sqlite:./";
     private static String databaseFile = "tp.db";
+
+    public static String getDatabaseFileName() {return databaseFile;}
 
     public static void createNewDatabase() {
         try (Connection conn = DriverManager.getConnection(url)) {
@@ -313,13 +317,13 @@ public class DatabaseManager {
      * @return if success
      */
     public static synchronized void updateVersion(){
-        UpdateClients.update();
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             stmt.execute("UPDATE versao SET versao = versao + 1 WHERE idversao = 1");
+            RMI.sendHeartbeat();
+            UpdateClients.update();
         } catch (SQLException e) {
             System.out.println("error while executing the update: " + e.getMessage());
         }
-
     }
 }

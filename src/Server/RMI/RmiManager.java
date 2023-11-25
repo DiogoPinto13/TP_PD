@@ -18,7 +18,7 @@ public class RmiManager {
         LocateRegistry.createRegistry(RegistryPort);
         rmiServiceName = newServiceName;
         registry = "rmi://localhost/" + rmiServiceName;
-        RmiService = new RMI(rmiServiceName, databaseLocation, newServerVariable);
+        RmiService = new RMI(rmiServiceName, RegistryPort, databaseLocation, newServerVariable);
     }
 
     public Thread getRmiHeartBeatThread() {return rmiHeartBeatThread;}
