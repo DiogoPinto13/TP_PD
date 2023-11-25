@@ -342,7 +342,7 @@ public class DatabaseManager {
              Statement stmt = conn.createStatement()) {
             stmt.execute("UPDATE versao SET versao = versao + 1 WHERE idversao = 1");
             RMI.sendHeartbeat();
-            UpdateClients.update();
+            //UpdateClients.update();
         } catch (SQLException e) {
             System.out.println("error while executing the update: " + e.getMessage());
         }
