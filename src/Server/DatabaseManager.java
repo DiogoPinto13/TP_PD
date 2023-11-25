@@ -3,6 +3,9 @@ package Server;
 import Server.RMI.RMI;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 /*
 -- Tabela 'eventos'
@@ -135,14 +138,21 @@ public class DatabaseManager {
         Connection conn = null;
         try {
             url = url + filePath + "/" + databaseFile;
+            String filePathDB = "./Database/tp.db";
+            Path path = Paths.get(filePathDB);
+
+            if(!Files.exists(path)){
+                createNewDatabase();
+                createNewTable();
+                fillDatabase1();
+            }
+
             conn = DriverManager.getConnection(url);
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(true);
             System.out.println("Connection to SQLite has been established.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            createNewDatabase();
-            createNewTable();
         } finally {
             try {
                 if (conn != null) {
@@ -267,6 +277,17 @@ public class DatabaseManager {
             System.out.println(e.getMessage());
         }
     }
+    public static void fillDatabase1(){
+        String user = "INSERT INTO utilizadores (idutilizador, username, password, nome, isAdmin) VALUES ('admin12345', 'admin', 'admin', 'administrator', true);";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            conn.setAutoCommit(true);
+            stmt.execute(user);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
     public static void testUser(){
         try (Connection conn = DriverManager.getConnection(url);
         Statement stmt = conn.createStatement();
@@ -313,7 +334,7 @@ public class DatabaseManager {
         return false;
     }
     /**
-     *
+     * this function is mean to update the version of the database when either an insert or update its called
      * @return if success
      */
     public static synchronized void updateVersion(){

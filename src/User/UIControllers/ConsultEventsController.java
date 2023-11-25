@@ -53,6 +53,9 @@ public class ConsultEventsController {
     private ObservableList<Eventos> dataEventos;
 
     public void initialize(){
+        update();
+    }
+    public void update(){
 
         ObservableList<String> options = FXCollections.observableArrayList("Designação","Local", "Inicio", "Fim", "Todos");
         filtros.setItems(options);
