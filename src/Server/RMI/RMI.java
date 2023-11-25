@@ -68,14 +68,14 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
 
     @Override
     public void run() {
-        while(serverVariable.get()){ //THE HEARTBEAT WORKS
+        do{ //THE HEARTBEAT WORKS
             sendHeartbeat();
             try{
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }while(serverVariable.get());
         try {
             socket.close();
             Naming.unbind("rmi://localhost/" + serviceName);
