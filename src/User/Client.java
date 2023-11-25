@@ -52,13 +52,14 @@ public class Client {
     public static ObjectInputStream getIn(){
         return in;
     }
+
     public static void closeConnection(){
         try {
             out.close();
             in.close();
             socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
     public static void prepareClient() {
@@ -75,6 +76,7 @@ public class Client {
             alert.setHeaderText("Server not Found or Offline.");
             alert.setContentText("The requested Server could not be found or is offline.");
             alert.showAndWait();
+            closeConnection();
             Platform.exit();
         }
         catch (SocketTimeoutException e){
@@ -82,10 +84,12 @@ public class Client {
             alert.setHeaderText("Request Timeout");
             alert.setContentText("The request to the server timed out.");
             alert.showAndWait();
+            closeConnection();
             Platform.exit();
         }
         catch (Exception e) {
             System.out.println("exception");
+            closeConnection();
             e.printStackTrace();
         }
     }
@@ -100,7 +104,7 @@ public class Client {
             return response;
 
         } catch (Exception e){
-            socket=null;
+            closeConnection();
             System.out.println("exception");
             //e.printStackTrace();
         }
@@ -117,10 +121,9 @@ public class Client {
             if(response.equals(ErrorMessages.USERNAME_ALREADY_EXISTS.toString())){
                 return false;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            closeConnection();
+            System.out.println(e.getMessage());
         }
         return true;
     }
@@ -131,6 +134,7 @@ public class Client {
             out.writeObject(request);
             return (String) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
+            closeConnection();
             e.printStackTrace();
         }
         return ErrorMessages.SQL_ERROR.toString();
@@ -144,7 +148,8 @@ public class Client {
                 return false;
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            closeConnection();
+            System.out.println(e.getMessage());
         }
         return true;
     }
@@ -159,7 +164,8 @@ public class Client {
                 return false;
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            closeConnection();
+            System.out.println(e.getMessage());
         }
         return true;
     }
@@ -170,7 +176,8 @@ public class Client {
             out.writeObject(request);
             return (EventResult) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            closeConnection();
+            System.out.println(e.getMessage());
         }
         return null;
     }
@@ -181,7 +188,8 @@ public class Client {
             out.writeObject(request);
             return (EventResult) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            closeConnection();
+            System.out.println(e.getMessage());
         }
         return null;
 
