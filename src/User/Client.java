@@ -11,7 +11,7 @@ import java.net.*;
 import java.util.Scanner;
 
 public class Client {
-    private static final int timeoutTime = 1;
+    private static final int timeoutTime = 10;
     private static int port;
     //public static int getPort(){ return port; }
     public static void setPort(int newPort){port = newPort;}
