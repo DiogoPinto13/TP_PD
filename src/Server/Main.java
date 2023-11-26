@@ -306,7 +306,10 @@ public class Main {
         //DatabaseManager.fillDatabase();
         //DatabaseManager.connect(args[1]);
         //DatabaseManager.testUser();
-        DatabaseManager.connect(args[1]);
+        if(!DatabaseManager.connect(args[1])){
+            System.out.println("Error while connecting to the Database.");
+        }
+        System.out.println("Connection to SQLite has been established.");
 
         RmiManager rmiManager;
         AtomicBoolean serverVariable = new AtomicBoolean(true);
