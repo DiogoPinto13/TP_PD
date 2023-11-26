@@ -139,7 +139,7 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
         }
     }
     @Override
-    public boolean registerToServer(RmiClientInterface clientInterface) throws IOException, RemoteException {
+    public boolean registerToServer(RmiClientInterface clientInterface) throws RemoteException {
         return clients.add(clientInterface);
     }
 }

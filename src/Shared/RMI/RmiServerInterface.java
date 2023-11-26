@@ -6,5 +6,5 @@ import java.rmi.RemoteException;
 public interface RmiServerInterface extends java.rmi.Remote {
     //functions
     void getFile(RmiClientInterface cliRef) throws IOException, RemoteException;
-    boolean registerToServer(RmiClientInterface clientInterface) throws IOException, RemoteException;
+    boolean registerToServer(RmiClientInterface clientInterface) throws RemoteException;
 }

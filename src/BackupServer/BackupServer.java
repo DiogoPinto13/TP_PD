@@ -88,14 +88,17 @@ public class BackupServer {
                                 try{
                                     clientService.setFout();
                                     serverInterface.getFile(clientService);
-                                    serverInterface.registerToServer(clientService);
+                                    if(!serverInterface.registerToServer(clientService))
+                                        throw new RemoteException();
                                     clientService.closeFout();
                                 }
                                 catch(RemoteException e){
                                     System.out.println("Error while connecting to RMI Service.");
+                                    break;
                                 }
                                 catch(IOException e){
                                     System.out.println("Error while downloading file.");
+                                    break;
                                 }
                                 currentDatabaseVersion = msg.getDatabaseVersion();
                                 System.out.println("First time Setup Complete.");
