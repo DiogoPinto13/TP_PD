@@ -4,12 +4,11 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.Naming;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RmiManager {
-    private final RMI RmiService;
+    private final RmiServerService RmiService;
     private final String registry;
     private final String rmiServiceName;
     private final int registryPort;
@@ -19,7 +18,7 @@ public class RmiManager {
         registryPort = newRegistryPort;
         rmiServiceName = newServiceName;
         registry = "rmi://localhost/" + rmiServiceName;
-        RmiService = new RMI(rmiServiceName, registryPort, databaseLocation, newServerVariable);
+        RmiService = new RmiServerService(rmiServiceName, registryPort, databaseLocation, newServerVariable);
         LocateRegistry.createRegistry(registryPort);
     }
 

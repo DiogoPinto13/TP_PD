@@ -5,21 +5,19 @@ import Shared.RMIMulticastMessage;
 
 import java.io.*;
 import java.nio.file.AccessDeniedException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.net.*;
 import Shared.RMI.*;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runnable {
+public class RmiServerService extends UnicastRemoteObject implements RmiServerInterface, Runnable {
     private static final int MAX_CHUNK_SIZE = 10000;
     private final int port = 4444;
     private final String ip = "230.44.44.44";
@@ -29,7 +27,7 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
     private static File localDirectory = new File("");
     private final int registryPort;
     private static final List<RmiClientInterface> clients = new ArrayList<>();
-    public RMI(String newRegistry, int newRegistryPort, File databaseDirectory, AtomicBoolean newServerVariable) throws java.rmi.RemoteException, SocketException {
+    public RmiServerService(String newRegistry, int newRegistryPort, File databaseDirectory, AtomicBoolean newServerVariable) throws java.rmi.RemoteException, SocketException {
         super(newRegistryPort);
         serviceName = newRegistry;
         registryPort = newRegistryPort;
@@ -93,7 +91,7 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
     }
     @Override
     public void run() {
-        do{ //THE HEARTBEAT WORKS
+        do{
             try{
                 Thread.sleep(10000);
             } catch (InterruptedException e) {

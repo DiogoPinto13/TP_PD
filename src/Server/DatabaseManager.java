@@ -1,8 +1,7 @@
 package Server;
 
-import Server.RMI.RMI;
+import Server.RMI.RmiServerService;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -125,7 +124,6 @@ public class DatabaseManager {
                 System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A new database has been created.");
             }
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -137,14 +135,16 @@ public class DatabaseManager {
     public static boolean connect(String filePath) {
         Connection conn = null;
         try {
-            String filePathDB = "./" + filePath + "/tp.db";
+            String filePathDB = "./" + filePath + "/" + databaseFile;
             Path path = Paths.get(filePathDB);
             if(!Files.exists(path)){
+                url = url + filePath + "/" + databaseFile;
                 createNewDatabase();
                 createNewTable();
                 fillDatabase1();
             }
-            url = url + filePath + "/" + databaseFile;
+            else
+                url = url + filePath + "/" + databaseFile;
             conn = DriverManager.getConnection(url);
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(true);
@@ -340,7 +340,7 @@ public class DatabaseManager {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             stmt.execute("UPDATE versao SET versao = versao + 1 WHERE idversao = 1");
-            RMI.updateServerBackupDatabases(getDatabaseVersion());
+            RmiServerService.updateServerBackupDatabases(getDatabaseVersion());
             //UpdateClients.update();
         } catch (SQLException e) {
             System.out.println("error while executing the update: " + e.getMessage());
