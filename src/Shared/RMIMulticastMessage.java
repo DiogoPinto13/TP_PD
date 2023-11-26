@@ -3,7 +3,6 @@ package Shared;
 import java.io.Serializable;
 
 public class RMIMulticastMessage implements Serializable {
-    //will have stuff
     private final String serviceName;
     private final int registryPort;
     private final int databaseVersion;

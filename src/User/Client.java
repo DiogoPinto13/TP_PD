@@ -64,8 +64,6 @@ public class Client {
             socket.setSoTimeout(timeoutTime*1000);
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
-            //socket.connect()
-
         }
         catch (SocketTimeoutException e){
             Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
