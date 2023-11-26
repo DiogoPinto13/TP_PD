@@ -17,10 +17,18 @@ public class RmiClientService extends UnicastRemoteObject implements RmiClientIn
     public synchronized void setFout() throws FileNotFoundException {
         this.fout = new FileOutputStream(localFilePath);
     }
+
+    @Override
+    public void closeFout() throws RemoteException, IOException {
+        if(fout != null){
+            fout.close();
+            System.out.println("File Downloaded.");
+        }
+    }
+
     @Override
     public void writeFileChunk(byte[] fileChunk, int nbytes) throws RemoteException, IOException {
         fout.write(fileChunk, 0, nbytes);
-        System.out.println("Backup Database Updated.");
     }
     @Override
     public boolean checkDatabaseVersion(int databaseVersion) throws RemoteException, IOException {

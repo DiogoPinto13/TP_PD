@@ -75,6 +75,7 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
                         while((nbytes = requestedFileInputStream.read(fileChunk))!=-1){
                             client.writeFileChunk(fileChunk, nbytes);
                         }
+                        client.closeFout();
                     } catch (FileNotFoundException e) {
                         clients.remove(client);
                     } catch (IOException e) {

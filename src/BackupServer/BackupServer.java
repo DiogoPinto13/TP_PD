@@ -89,6 +89,7 @@ public class BackupServer {
                                     clientService.setFout();
                                     serverInterface.getFile(clientService);
                                     serverInterface.registerToServer(clientService);
+                                    clientService.closeFout();
                                 }
                                 catch(RemoteException e){
                                     System.out.println("Error while connecting to RMI Service.");
@@ -97,7 +98,7 @@ public class BackupServer {
                                     System.out.println("Error while downloading file.");
                                 }
                                 currentDatabaseVersion = msg.getDatabaseVersion();
-                                System.out.println("Database File updated.");
+                                System.out.println("First time Setup Complete.");
                             }
                             else{
                                 System.out.println("Database versions don't match, closing app.");

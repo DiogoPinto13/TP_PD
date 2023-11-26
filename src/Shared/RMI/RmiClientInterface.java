@@ -9,5 +9,6 @@ import java.rmi.RemoteException;
 public interface RmiClientInterface extends java.rmi.Remote {
     void writeFileChunk(byte [] fileChunk, int nbytes) throws FileNotFoundException, java.rmi.RemoteException, java.io.IOException;
     void setFout() throws RemoteException, IOException;
+    void closeFout() throws RemoteException, IOException;
     boolean checkDatabaseVersion(int databaseVersion) throws java.rmi.RemoteException, java.io.IOException;
 }
