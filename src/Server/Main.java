@@ -85,9 +85,11 @@ class ClientHandler extends Thread{
         try {
             out = new ObjectOutputStream(clientSocket.getOutputStream());
             in = new ObjectInputStream(clientSocket.getInputStream());
-            UpdateClients.prepareUpdate(in, out);
+            //UpdateClients.prepareUpdate(in, out);
         } catch (IOException e) {
             try {
+                out.close();
+                in.close();
                 clientSocket.close();
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -264,6 +266,8 @@ class ClientHandler extends Thread{
             e.printStackTrace();
         } finally {
             try {
+                out.close();
+                in.close();
                 clientSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();

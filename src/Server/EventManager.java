@@ -20,7 +20,7 @@ public class EventManager {
      * @return
      */
     public static boolean registerUserInEvent(String username, int presenceCode){
-        if(userAlreadyInEvent(username) && checkCode(presenceCode)){
+        if(!userAlreadyInEvent(username) && checkCode(presenceCode)){
             return DatabaseManager.executeUpdate("INSERT INTO eventos_utilizadores (idevento,username) " +
                     "VALUES ("
                     + getIdEventByPresenceCode(presenceCode) + ", '"
@@ -221,7 +221,7 @@ public class EventManager {
     public static boolean userAlreadyInEvent(String username){
         try(ResultSet rs = DatabaseManager.executeQuery("SELECT * FROM eventos_utilizadores WHERE idevento = " + getIdEventByUsername(username) +
                 " AND username ='" + username + "';")){
-            return rs != null ? rs.next() : false;
+            return rs != null && rs.next();
         }catch (SQLException sqlException){
             System.out.println("Error with the database: " + sqlException);
         }
