@@ -22,7 +22,7 @@ public class RmiClientService extends UnicastRemoteObject implements RmiClientIn
     public void closeFout() throws RemoteException, IOException {
         if(fout != null){
             fout.close();
-            System.out.println("File Downloaded.");
+            System.out.println("File Downloaded.\nCommand:> ");
         }
     }
 
@@ -32,8 +32,8 @@ public class RmiClientService extends UnicastRemoteObject implements RmiClientIn
     }
     @Override
     public boolean checkDatabaseVersion(int databaseVersion) throws RemoteException, IOException {
-        if(databaseVersion - 1 == BackupServer.currentDatabaseVersion){
-            BackupServer.currentDatabaseVersion = databaseVersion;
+        if(databaseVersion - 1 == BackupServerThread.currentDatabaseVersion){
+            BackupServerThread.currentDatabaseVersion = databaseVersion;
             return true;
         }
         return false;
