@@ -32,7 +32,6 @@ public class LoginController {
     private Pane background;
     private Stage stage;
     private Scene scene;
-    private static Scene preScene;
 
     public LoginController(){
         Client.prepareClient();

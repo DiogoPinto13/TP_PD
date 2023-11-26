@@ -15,12 +15,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class BeginControllerAdmin {
-
     @FXML
     private Label welcome;
     private Stage stage;
     private Scene scene;
-
     public void initialize(){
         welcome.setText("Bem vindo Admin");
     }

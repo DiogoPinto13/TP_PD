@@ -67,8 +67,9 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
         byte fileChunk[] = new byte[MAX_CHUNK_SIZE];
         int nbytes;
         String filename = DatabaseManager.getDatabaseFileName();
-        for (RmiClientInterface client : clients) {
+        for (int i = 0; i < clients.size(); i++) {
             try{
+                RmiClientInterface client = clients.get(i);
                 if(client.checkDatabaseVersion(databaseVersion))
                     try(FileInputStream requestedFileInputStream = getRequestedFileInputStream(filename)){
                         client.setFout();
@@ -84,11 +85,8 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
                 else
                     clients.remove(client);
             }
-            catch (ConnectException | RemoteException e){
-                clients.remove(client);
-            }
-            catch (IOException e){
-                clients.remove(client);
+            catch (IOException | NullPointerException e){
+                clients.remove(i--);
             }
         }
     }
