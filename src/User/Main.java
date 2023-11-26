@@ -26,8 +26,8 @@ public class Main extends Application {
 
     public static void fatalErrorNotification(String ... args){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText(args[0]);//"Server not Found or Offline."
-        alert.setContentText(args[1]);//"The requested Server could not be found or is offline."
+        alert.setHeaderText(args[0]);
+        alert.setContentText(args[1]);
         alert.showAndWait();
         Client.closeConnection();
         Platform.exit();
@@ -35,22 +35,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        /*int numberOfArguments = getParameters().getRaw().size();
-        System.out.println("Número de argumentos fornecidos: " + numberOfArguments);
-
-
-        Parameters params = getParameters();
-        System.out.println("Argumentos fornecidos: " + params.getRaw());*/
-        //Client.prepareClient(getParameters().getRaw().get(0), getParameters().getRaw().get(1));
-        //Admin.prepareAdmin(getParameters().getRaw().get(0), getParameters().getRaw().get(1));
-
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("UIControllers/resources/Client/login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-
-
         LoginController controller = fxmlLoader.getController();
         controller.setStage(stage);
-
         stage.setTitle("Sistema Registo de Presenças");
         stage.setScene(scene);
         stage.setResizable(false);
