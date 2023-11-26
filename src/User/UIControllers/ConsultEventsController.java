@@ -46,10 +46,7 @@ public class ConsultEventsController {
     public TextField filtro;
     @FXML
     public ComboBox<String> filtros;
-
     private static Scene preScene;
-
-
     private ObservableList<Eventos> dataEventos;
 
     public void initialize(){

@@ -3,14 +3,8 @@ package Server;
 import Server.RMI.RmiManager;
 import Shared.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import java.io.*;
+import java.net.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.sql.ResultSet;
@@ -106,6 +100,7 @@ class ClientHandler extends Thread{
         try{
             String response = null;
             boolean flagProtection = false;
+            System.out.println("Client has connected to the Server.");
             do{
                 receivedObject = in.readObject();
                 if(receivedObject == null)
@@ -258,19 +253,20 @@ class ClientHandler extends Thread{
                 }
                 flagProtection = false;
             }while(!clientSocket.isClosed() && serverVariable.get());
+        } catch (ClassNotFoundException e) {
+            System.out.println("Error while reading the object sent to the server.");
+        } catch (ParseException e) {
+            System.out.println("Error while parsing dates.");
+        } catch (EOFException | SocketException e){
+            System.out.println("Client closed the connection.");
         } catch (IOException e) {
             System.out.println("error: IO" + e);
-        } catch (ClassNotFoundException e) {
-            System.out.println("error while reading/writing the object from/to the server");
-        } catch (ParseException e) {
-            e.printStackTrace();
         } finally {
             try {
                 out.close();
                 in.close();
                 clientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ignored) {
             }
         }
     }
@@ -310,7 +306,11 @@ public class Main {
         //DatabaseManager.fillDatabase();
         //DatabaseManager.connect(args[1]);
         //DatabaseManager.testUser();
-        DatabaseManager.connect(args[1]);
+        if(!DatabaseManager.connect(args[1])){
+            System.out.println("Error while connecting to the Database.");
+            return;
+        }
+        System.out.println("Connection to SQLite has been established.");
 
         RmiManager rmiManager;
         AtomicBoolean serverVariable = new AtomicBoolean(true);
@@ -321,9 +321,11 @@ public class Main {
             System.out.println("RMI Service is Online!");
         }catch (RemoteException e) {
             System.out.println("Error while creating the RMI manager: " + e);
+            System.exit(1);
             return;
         } catch (SocketException e) {
             System.out.println("Error while connecting socket to Multicast Group." + e);
+            System.exit(1);
             return;
         }
 

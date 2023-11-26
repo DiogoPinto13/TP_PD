@@ -13,10 +13,8 @@ import java.util.Scanner;
 public class Client {
     private static final int timeoutTime = 10;
     private static int port;
-    //public static int getPort(){ return port; }
     public static void setPort(int newPort){port = newPort;}
     private static String address;
-    //public static String getAddress(){ return address; }
     public static void setAddress(String newAddress){address = newAddress;}
     /**
      * THIS IS EITHER LOGIN OR REGISTER OBJECT
@@ -58,9 +56,7 @@ public class Client {
             out.close();
             in.close();
             socket.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        } catch (IOException | NullPointerException ignored) { }
     }
     public static void prepareClient() {
         try {
@@ -71,21 +67,10 @@ public class Client {
             //socket.connect()
 
         }
-        catch (ConnectException e){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Server not Found or Offline.");
-            alert.setContentText("The requested Server could not be found or is offline.");
-            alert.showAndWait();
-            closeConnection();
-            Platform.exit();
-        }
         catch (SocketTimeoutException e){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Request Timeout");
-            alert.setContentText("The request to the server timed out.");
-            alert.showAndWait();
-            closeConnection();
-            Platform.exit();
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         }
         catch (Exception e) {
             System.out.println("exception");
@@ -102,11 +87,13 @@ public class Client {
             out.writeObject(newObject);
             response = (String) in.readObject();
             return response;
-
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (Exception e){
             closeConnection();
             System.out.println("exception");
-            //e.printStackTrace();
         }
 
         return ErrorMessages.INVALID_PASSWORD.toString();
@@ -121,6 +108,10 @@ public class Client {
             if(response.equals(ErrorMessages.USERNAME_ALREADY_EXISTS.toString())){
                 return false;
             }
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             closeConnection();
             System.out.println(e.getMessage());
@@ -133,7 +124,13 @@ public class Client {
         try {
             out.writeObject(request);
             return (String) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+        }
+        catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
+        }
+        catch (IOException | ClassNotFoundException e) {
             closeConnection();
             e.printStackTrace();
         }
@@ -147,6 +144,10 @@ public class Client {
             if(response.equals(Messages.EDIT_PROFILE_ERROR.toString())){
                 return false;
             }
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             closeConnection();
             System.out.println(e.getMessage());
@@ -163,6 +164,10 @@ public class Client {
             if(response.equals(Messages.INVALID_PRESENCE_CODE.toString())){
                 return false;
             }
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             closeConnection();
             System.out.println(e.getMessage());
@@ -175,6 +180,10 @@ public class Client {
         try{
             out.writeObject(request);
             return (EventResult) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             closeConnection();
             System.out.println(e.getMessage());
@@ -187,11 +196,14 @@ public class Client {
         try{
             out.writeObject(request);
             return (EventResult) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             closeConnection();
             System.out.println(e.getMessage());
         }
         return null;
-
     }
 }

@@ -134,23 +134,21 @@ public class DatabaseManager {
     /**
      * A method to create a connection to the database
      */
-    public static void connect(String filePath) {
+    public static boolean connect(String filePath) {
         Connection conn = null;
         try {
-            url = url + filePath + "/" + databaseFile;
-            String filePathDB = "./Database/tp.db";
+            String filePathDB = "./" + filePath + "/tp.db";
             Path path = Paths.get(filePathDB);
-
             if(!Files.exists(path)){
                 createNewDatabase();
                 createNewTable();
                 fillDatabase1();
             }
-
+            url = url + filePath + "/" + databaseFile;
             conn = DriverManager.getConnection(url);
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(true);
-            System.out.println("Connection to SQLite has been established.");
+            return true;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -162,6 +160,7 @@ public class DatabaseManager {
                 System.out.println(ex.getMessage());
             }
         }
+        return false;
     }
 
     public static void createNewTable() {
@@ -341,10 +340,20 @@ public class DatabaseManager {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             stmt.execute("UPDATE versao SET versao = versao + 1 WHERE idversao = 1");
-            RMI.sendHeartbeat();
+            RMI.updateServerBackupDatabases(getDatabaseVersion());
             //UpdateClients.update();
         } catch (SQLException e) {
             System.out.println("error while executing the update: " + e.getMessage());
         }
+    }
+
+    public static synchronized int getDatabaseVersion(){
+        try(ResultSet rs = executeQuery("select versao from versao where idversao = 1")){
+            return rs.getInt("versao");
+        }
+        catch (SQLException e){
+            System.out.println("Error while getting database version.");
+        }
+        return -1;
     }
 }

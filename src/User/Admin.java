@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 public class Admin {
 
@@ -15,7 +17,6 @@ public class Admin {
     public static void setUsername(String username){
         Admin.username = username;
     }
-
     private static String username;
     private static Socket socket;
     private static ObjectOutputStream out;
@@ -45,6 +46,10 @@ public class Admin {
         try {
             out.writeObject(request);
             return (String) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -57,6 +62,10 @@ public class Admin {
         try {
             out.writeObject(request);
             return (String) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -67,6 +76,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (String) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -77,6 +90,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (EventResult) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -87,6 +104,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (String) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -97,6 +118,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (EventResult) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -107,6 +132,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (String) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -118,6 +147,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (String) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -129,6 +162,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (String) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -139,9 +176,7 @@ public class Admin {
             out.close();
             in.close();
             socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | NullPointerException ignored) { }
     }
 
     public static EventResult getPresencesEvent(String designacao) {
@@ -149,6 +184,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (EventResult) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -161,6 +200,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (String) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -172,6 +215,10 @@ public class Admin {
         try{
             out.writeObject(request);
             return (EventResult) in.readObject();
+        } catch (SocketTimeoutException e){
+            Main.fatalErrorNotification(Main.requestTimeoutErrorTitle, Main.requestTimeoutErrorDescription);
+        } catch (SocketException e){
+            Main.fatalErrorNotification(Main.noServerErrorTitle, Main.noServerErrorDescription);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

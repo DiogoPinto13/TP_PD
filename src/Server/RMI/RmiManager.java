@@ -12,19 +12,22 @@ public class RmiManager {
     private final RMI RmiService;
     private final String registry;
     private final String rmiServiceName;
+    private final int registryPort;
     private Thread rmiHeartBeatThread;
 
-    public RmiManager(String newServiceName, File databaseLocation, int RegistryPort, AtomicBoolean newServerVariable) throws java.rmi.RemoteException, SocketException {
-        LocateRegistry.createRegistry(RegistryPort);
+    public RmiManager(String newServiceName, File databaseLocation, int newRegistryPort, AtomicBoolean newServerVariable) throws java.rmi.RemoteException, SocketException {
+        registryPort = newRegistryPort;
         rmiServiceName = newServiceName;
         registry = "rmi://localhost/" + rmiServiceName;
-        RmiService = new RMI(rmiServiceName, RegistryPort, databaseLocation, newServerVariable);
+        RmiService = new RMI(rmiServiceName, registryPort, databaseLocation, newServerVariable);
+        LocateRegistry.createRegistry(registryPort);
     }
 
     public Thread getRmiHeartBeatThread() {return rmiHeartBeatThread;}
 
     public boolean registerService(){
         try{
+            LocateRegistry.getRegistry(registryPort).rebind(registry, RmiService);
             Naming.rebind(registry, RmiService);
             rmiHeartBeatThread = new Thread(RmiService);
             rmiHeartBeatThread.start();
