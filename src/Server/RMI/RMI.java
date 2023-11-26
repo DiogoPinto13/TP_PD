@@ -8,6 +8,7 @@ import java.nio.file.AccessDeniedException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.net.*;
 import Shared.RMI.*;
@@ -19,17 +20,17 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runnable {
-    //variables
     private static final int MAX_CHUNK_SIZE = 10000;
-    private static final int port = 4444;
-    private static final String ip = "230.44.44.44";
-    private static String serviceName;
+    private final int port = 4444;
+    private final String ip = "230.44.44.44";
+    private final String serviceName;
     private final AtomicBoolean serverVariable;
-    private static MulticastSocket socket = null; //Gonna try to figure out how multicast works
+    private final MulticastSocket socket;
     private static File localDirectory = new File("");
-    private static int registryPort;
+    private final int registryPort;
     private static final List<RmiClientInterface> clients = new ArrayList<>();
     public RMI(String newRegistry, int newRegistryPort, File databaseDirectory, AtomicBoolean newServerVariable) throws java.rmi.RemoteException, SocketException {
+        super(newRegistryPort);
         serviceName = newRegistry;
         registryPort = newRegistryPort;
         localDirectory = databaseDirectory;
@@ -50,7 +51,7 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
             throw new SocketException();
         }
     }
-    public static void sendHeartbeat(){
+    public void sendHeartbeat(){
         DatagramPacket pkt;
         try (ByteArrayOutputStream buff = new ByteArrayOutputStream();
              ObjectOutputStream out = new ObjectOutputStream(buff);
@@ -102,8 +103,8 @@ public class RMI extends UnicastRemoteObject implements RmiServerInterface, Runn
         }while(serverVariable.get());
         try {
             socket.close();
-            Naming.unbind("rmi://localhost/" + serviceName);
-        } catch (RemoteException | MalformedURLException | NotBoundException e) {
+            LocateRegistry.getRegistry(registryPort).unbind("rmi://localhost/" + serviceName);
+        } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
         System.out.println("Closing RMI.");

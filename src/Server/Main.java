@@ -308,6 +308,7 @@ public class Main {
         //DatabaseManager.testUser();
         if(!DatabaseManager.connect(args[1])){
             System.out.println("Error while connecting to the Database.");
+            return;
         }
         System.out.println("Connection to SQLite has been established.");
 
@@ -320,9 +321,11 @@ public class Main {
             System.out.println("RMI Service is Online!");
         }catch (RemoteException e) {
             System.out.println("Error while creating the RMI manager: " + e);
+            System.exit(1);
             return;
         } catch (SocketException e) {
             System.out.println("Error while connecting socket to Multicast Group." + e);
+            System.exit(1);
             return;
         }
 
